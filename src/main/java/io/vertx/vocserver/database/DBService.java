@@ -16,9 +16,42 @@ import java.util.HashMap;
 @ProxyGen
 @VertxGen
 public interface DBService {
+    /**
+     * DBService interface
+     */
 
+    /**
+     * getMasterContext - Gets json-ld iudx master context
+     * @param name Property/Class Name
+     * @return {@link DBServiceImpl}
+     */
     @Fluent
-    DBService fetch(Handler<AsyncResult<JsonArray>> resultHandler);
+    DBService getMasterContext(Handler<AsyncResult<JsonArray>> resultHandler);
+
+    /**
+     * getSchema - Gets json-ld for the given class or property
+     * @param name Property/Class Name
+     * @return {@link DBServiceImpl}
+     */
+    @Fluent
+    DBService getSchema(String name, Handler<AsyncResult<JsonArray>> resultHandler);
+
+    /**
+     * insertProperty - Insert a property
+     * @param prop property schema validated JsonObject
+     * @return {@link DBServiceImpl}
+     */
+    @Fluent
+    DBService insertProperty(JsonObject prop, Handler<AsyncResult<JsonArray>> resultHandler);
+
+    /**
+     * insertClass - Insert a class
+     * @param cls class schema validated JsonObject
+     * @return {@link DBServiceImpl}
+     */
+    @Fluent
+    DBService insertClass(JsonObject cls, Handler<AsyncResult<JsonArray>> resultHandler);
+
 
     @GenIgnore
     static DBService create(MongoClient dbClient,  Handler<AsyncResult<DBService>> readyHandler) {

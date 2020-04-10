@@ -1,0 +1,25 @@
+version: '3'
+
+volumes:
+  mongo-data:
+
+networks:
+  voc-net:
+    driver: bridge
+
+services:
+
+  db:
+    image: mongo
+    volumes:
+      - mongo-data:/var/lib/mongodb/
+      - ./config/mongo_setup.sh:/docker-entrypoint-initdb.d/init.sh
+    ports:
+      - "27017:27017"
+    networks: 
+      - voc-net
+    logging:
+         driver: "json-file"
+         options:
+             max-file: "5"
+             max-size: "100m"

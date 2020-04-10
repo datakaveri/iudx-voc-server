@@ -55,16 +55,10 @@
       <artifactId>vertx-service-proxy</artifactId>
     </dependency>
     <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-classic</artifactId>
-      <version>1.2.3</version>
-    </dependency>
-    <dependency>
      <groupId>io.vertx</groupId>
      <artifactId>vertx-mongo-client</artifactId>
      <version>3.9.0</version>
     </dependency>
-
 
 
     <!-- tag::codegen-dep[] -->

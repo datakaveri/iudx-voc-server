@@ -43,6 +43,7 @@ import io.vertx.serviceproxy.HelperUtils;
 
 import io.vertx.core.json.JsonArray;
 import io.vertx.vocserver.database.DBService;
+import io.vertx.core.json.JsonObject;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Handler;
 /*
@@ -115,8 +116,23 @@ public class DBServiceVertxProxyHandler extends ProxyHandler {
       if (action == null) throw new IllegalStateException("action not specified");
       accessed();
       switch (action) {
-        case "fetch": {
-          service.fetch(HelperUtils.createHandler(msg));
+        case "getMasterContext": {
+          service.getMasterContext(HelperUtils.createHandler(msg));
+          break;
+        }
+        case "getSchema": {
+          service.getSchema((java.lang.String)json.getValue("name"),
+                        HelperUtils.createHandler(msg));
+          break;
+        }
+        case "insertProperty": {
+          service.insertProperty((io.vertx.core.json.JsonObject)json.getValue("prop"),
+                        HelperUtils.createHandler(msg));
+          break;
+        }
+        case "insertClass": {
+          service.insertClass((io.vertx.core.json.JsonObject)json.getValue("cls"),
+                        HelperUtils.createHandler(msg));
           break;
         }
         default: throw new IllegalStateException("Invalid action: " + action);
