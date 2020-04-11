@@ -1,14 +1,9 @@
 /**
 * <h1>DBServiceImpl.java</h1>
 * Service Implementations for the DBService
-* 
-*
-* @author  Rakshit Ramesh
-* @version 1.0
-* @since   2020-04-01
 */
 
-package io.vertx.vocserver.database;
+package iudx.vocserver.database;
 
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
@@ -60,16 +55,36 @@ class DBServiceImpl implements DBService {
      * @{@inheritDoc}
      */
     @Override
-    public DBService getSchema(String name, Handler<AsyncResult<JsonArray>> resultHandler) {
-        dbClient.find("properties",
+    public DBService getProperty(String name, Handler<AsyncResult<JsonObject>> resultHandler) {
+        dbClient.findOne("properties",
                         new JsonObject().put("@id", "iudx:" + name),
+                        new JsonObject(),
                         res -> {
                             if (res.succeeded()) {
-                                JsonArray arr = new JsonArray(res.result());
-                                resultHandler.handle(Future.succeededFuture(arr));
+                                resultHandler.handle(Future.succeededFuture(res.result()));
                             }
                             else {
-                                LOGGER.error("Failed Getting Properties/Class \t" + name);
+                                LOGGER.error("Failed Getting Properties \t" + name);
+                                resultHandler.handle(Future.failedFuture(res.cause()));
+                            }
+                        });
+        return this;
+    }
+    
+    /**
+     * @{@inheritDoc}
+     */
+    @Override
+    public DBService getClass(String name, Handler<AsyncResult<JsonObject>> resultHandler) {
+        dbClient.findOne("class",
+                        new JsonObject().put("@id", "iudx:" + name),
+                        new JsonObject(),
+                        res -> {
+                            if (res.succeeded()) {
+                                resultHandler.handle(Future.succeededFuture(res.result()));
+                            }
+                            else {
+                                LOGGER.error("Failed Getting Class \t" + name);
                                 resultHandler.handle(Future.failedFuture(res.cause()));
                             }
                         });

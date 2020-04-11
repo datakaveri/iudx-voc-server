@@ -1,4 +1,8 @@
-package io.vertx.vocserver.database;
+/**
+* <h1>Validator.java</h1>
+* DBService interface
+*/
+package iudx.vocserver.database;
 
 import io.vertx.codegen.annotations.Fluent;
 import io.vertx.codegen.annotations.GenIgnore;
@@ -29,12 +33,20 @@ public interface DBService {
     DBService getMasterContext(Handler<AsyncResult<JsonArray>> resultHandler);
 
     /**
-     * getSchema - Gets json-ld for the given class or property
-     * @param name Property/Class Name
+     * getProperties - Gets json-ld for the given property
+     * @param name Property Name
      * @return {@link DBServiceImpl}
      */
     @Fluent
-    DBService getSchema(String name, Handler<AsyncResult<JsonArray>> resultHandler);
+    DBService getProperty(String name, Handler<AsyncResult<JsonObject>> resultHandler);
+
+    /**
+     * getClass - Gets json-ld for the given class
+     * @param name Class Name
+     * @return {@link DBServiceImpl}
+     */
+    @Fluent
+    DBService getClass(String name, Handler<AsyncResult<JsonObject>> resultHandler);
 
     /**
      * insertProperty - Insert a property

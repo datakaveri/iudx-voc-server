@@ -1,0 +1,189 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "type": "object",
+    "title": "The Root Schema",
+    "description": "The root schema comprises the entire JSON document.",
+    "required": [
+        "@context",
+        "@id",
+        "@type",
+        "rdfs:comment",
+        "rdfs:isDefinedBy",
+        "rdfs:label",
+        "iudx:domainIncludes",
+        "iudx:rangeIncludes",
+        "skos:exactMatch"
+    ],
+    "properties": {
+        "@context": {
+            "type": "object",
+            "title": "The @context Schema",
+            "description": "An explanation about the purpose of this instance.",
+            "required": [
+                "iudx",
+                "rdf",
+                "rdfs"
+            ],
+            "properties": {
+                "iudx": {
+                    "type": "string",
+                    "title": "The Iudx Schema",
+                    "description": "An explanation about the purpose of this instance."
+                },
+                "owl": {
+                    "type": "string",
+                    "title": "The Owl Schema",
+                    "description": "An explanation about the purpose of this instance."
+                },
+                "rdf": {
+                    "type": "string",
+                    "title": "The Rdf Schema",
+                    "description": "An explanation about the purpose of this instance."
+                },
+                "geojson": {
+                    "type": "string",
+                    "title": "The Geojson Schema",
+                    "description": "An explanation about the purpose of this instance."
+                },
+                "schema": {
+                    "type": "string",
+                    "title": "The Schema Schema",
+                    "description": "An explanation about the purpose of this instance."
+                },
+                "skos": {
+                    "type": "string",
+                    "title": "The Skos Schema",
+                    "description": "An explanation about the purpose of this instance."
+                },
+                "rdfs": {
+                    "type": "string",
+                    "title": "The Rdfs Schema",
+                    "description": "An explanation about the purpose of this instance."
+                },
+                "xsd": {
+                    "type": "string",
+                    "title": "The Xsd Schema",
+                    "description": "An explanation about the purpose of this instance."
+                }
+            }
+        },
+        "@id": {
+            "type": "string",
+            "title": "The @id Schema",
+            "description": "Namespaced id of the property"
+        },
+        "@type": {
+            "type": "array",
+            "title": "The @type Schema",
+            "description": "Type of the Property",
+            "default": [],
+            "items": {
+                "type": "string",
+                "title": "The Items Schema",
+                "description": "namespaced id of the property"
+            }
+        },
+        "rdfs:comment": {
+            "type": "object",
+            "title": "The Rdfs:comment Schema",
+            "description": "Comment string describing this property",
+            "required": [
+                "@value"
+            ],
+            "properties": {
+                "@value": {
+                    "type": "string",
+                    "title": "The @value Schema",
+                    "description": "Comment"
+                }
+            }
+        },
+        "rdfs:isDefinedBy": {
+            "type": "object",
+            "title": "The Rdfs:isdefinedby Schema",
+            "description": "Namespace of this property",
+            "required": [
+                "@id"
+            ],
+            "properties": {
+                "@id": {
+                    "type": "string",
+                    "title": "The @id Schema",
+                    "description": "id of the namespace"
+                }
+            }
+        },
+        "rdfs:label": {
+            "type": "object",
+            "title": "The Rdfs:label Schema",
+            "description": "Name of this property",
+            "required": [
+                "@value"
+            ],
+            "properties": {
+                "@value": {
+                    "type": "string",
+                    "title": "The @value Schema",
+                    "description": "Name"
+                }
+            }
+        },
+        "iudx:domainIncludes": {
+            "type": "array",
+            "title": "The Iudx:domainincludes Schema",
+            "description": "To which classes this property belongs",
+            "default": [],
+            "items": {
+                "type": "object",
+                "title": "The Items Schema",
+                "description": "namespaced classes",
+                "required": [
+                    "@id"
+                ],
+                "properties": {
+                    "@id": {
+                        "type": "string",
+                        "title": "The @id Schema",
+                        "description": "id of the namespaced classes"
+                    }
+                }
+            }
+        },
+        "iudx:rangeIncludes": {
+            "type": "array",
+            "title": "The Iudx:rangeincludes Schema",
+            "description": "The type/class that values of this property belong to",
+            "default": [],
+            "items": {
+                "type": "object",
+                "title": "The Items Schema",
+                "description": "namespaced classes",
+                "required": [
+                    "@id"
+                ],
+                "properties": {
+                    "@id": {
+                        "type": "string",
+                        "title": "The @id Schema",
+                        "description": "id of the namespaced classes"
+                    }
+                }
+            }
+        },
+        "skos:exactMatch": {
+            "type": "object",
+            "title": "The Skos:exactmatch Schema",
+            "description": "This property is an exact match of",
+            "required": [
+                "@id"
+            ],
+            "properties": {
+                "@id": {
+                    "type": "string",
+                    "title": "The @id Schema",
+                    "description": "namespaced id of the exact match"
+                }
+            }
+        }
+    }
+}

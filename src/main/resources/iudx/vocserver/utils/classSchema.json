@@ -1,0 +1,155 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "type": "object",
+    "title": "The Root Schema",
+    "description": "The root schema comprises the entire JSON document.",
+    "required": [
+        "@context",
+        "@graph"
+    ],
+    "properties": {
+        "@context": {
+            "type": "object",
+            "title": "The @context Schema",
+            "description": "Context sources",
+            "default": {},
+            "required": [
+                "iudx",
+                "rdf",
+                "rdfs"
+            ],
+            "properties": {
+                "iudx": {
+                    "type": "string",
+                    "title": "The Iudx Schema",
+                    "description": "An explanation about the purpose of this instance."
+                },
+                "owl": {
+                    "type": "string",
+                    "title": "The Owl Schema",
+                    "description": "An explanation about the purpose of this instance."
+                },
+                "rdf": {
+                    "type": "string",
+                    "title": "The Rdf Schema",
+                    "description": "An explanation about the purpose of this instance."
+                },
+                "geojson": {
+                    "type": "string",
+                    "title": "The Geojson Schema",
+                    "description": "An explanation about the purpose of this instance."
+                },
+                "schema": {
+                    "type": "string",
+                    "title": "The Schema Schema",
+                    "description": "An explanation about the purpose of this instance."
+                },
+                "skos": {
+                    "type": "string",
+                    "title": "The Skos Schema",
+                    "description": "An explanation about the purpose of this instance."
+                },
+                "rdfs": {
+                    "type": "string",
+                    "title": "The Rdfs Schema",
+                    "description": "An explanation about the purpose of this instance."
+                }
+            }
+        },
+        "@graph": {
+            "type": "array",
+            "title": "The @graph Schema",
+            "description": "Nodes that are part of the class",
+            "default": [],
+            "items": {
+                "type": "object",
+                "title": "The Items Schema",
+                "description": "An explanation about the purpose of this instance.",
+                "default": {},
+                "required": [
+                    "@id",
+                    "@type",
+                    "rdfs:comment",
+                    "rdfs:label"
+                ],
+                "properties": {
+                    "@id": {
+                        "type": "string",
+                        "title": "The @id Schema",
+                        "description": "id of this node"
+                    },
+                    "@type": {
+                        "type": "array",
+                        "title": "The @type Schema",
+                        "description": "Type of this item",
+                        "default": [],
+                        "items": {
+                            "type": "string",
+                            "title": "The Items Schema",
+                            "description": "Each type is a namespaced class that defines this classes/properties type"
+                        }
+                    },
+                    "rdfs:comment": {
+                        "type": "string",
+                        "title": "The Rdfs:comment Schema",
+                        "description": "Comment string explaining this class"
+                    },
+                    "rdfs:label": {
+                        "type": "string",
+                        "title": "The Rdfs:label Schema",
+                        "description": "Label/Name that is applicable to this class"
+                    },
+                    "rdfs:isDefinedBy": {
+                        "type": "object",
+                        "title": "The Rdfs:isdefinedby Schema",
+                        "description": "Namespace of this class",
+                        "default": {},
+                        "required": [
+                            "@id"
+                        ],
+                        "properties": {
+                            "@id": {
+                                "type": "string",
+                                "title": "The @id Schema",
+                                "description": "id of the namespace"
+                            }
+                        }
+                    },
+                    "rdfs:subClassOf": {
+                        "type": "object",
+                        "title": "The Rdfs:subclassof Schema",
+                        "description": "subClass that this class belongs to",
+                        "default": {},
+                        "required": [
+                            "@id"
+                        ],
+                        "properties": {
+                            "@id": {
+                                "type": "string",
+                                "title": "The @id Schema",
+                                "description": "id of the subclass"
+                            }
+                        }
+                    },
+                    "skos:closeMatch": {
+                        "type": "object",
+                        "title": "The Skos:closematch Schema",
+                        "description": "this class closely matches",
+                        "default": {},
+                        "required": [
+                            "@id"
+                        ],
+                        "properties": {
+                            "@id": {
+                                "type": "string",
+                                "title": "The @id Schema",
+                                "description": "namespaced id of the close match"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+

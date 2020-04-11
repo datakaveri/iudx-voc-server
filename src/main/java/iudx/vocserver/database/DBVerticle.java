@@ -1,4 +1,4 @@
-package io.vertx.vocserver.database;
+package iudx.vocserver.database;
 
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Promise;

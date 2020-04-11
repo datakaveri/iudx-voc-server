@@ -5,13 +5,13 @@
 
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>io.vertx</groupId>
+  <groupId>iudx</groupId>
   <artifactId>vocserver</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.0</version>
 
   <properties>
     <vertx.version>3.8.2</vertx.version>
-    <main.verticle>io.vertx.vocserver.MainVerticle</main.verticle>
+    <main.verticle>iudx.vocserver.MainVerticle</main.verticle>
   </properties>
 
   <dependencyManagement>
@@ -58,6 +58,11 @@
      <groupId>io.vertx</groupId>
      <artifactId>vertx-mongo-client</artifactId>
      <version>3.9.0</version>
+    </dependency>
+    <dependency>
+        <groupId>com.github.java-json-tools</groupId>
+        <artifactId>json-schema-validator</artifactId>
+        <version>2.2.12</version>
     </dependency>
 
 

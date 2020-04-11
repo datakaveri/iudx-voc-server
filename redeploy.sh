@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 export LAUNCHER="io.vertx.core.Launcher"
-export VERTICLE="io.vertx.vocserver.MainVerticle"
+export VERTICLE="iudx.vocserver.MainVerticle"
 export CMD="mvn compile"
 export VERTX_CMD="run"
 

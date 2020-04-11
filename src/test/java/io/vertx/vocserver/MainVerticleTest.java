@@ -1,4 +1,4 @@
-package io.vertx.vocserver;
+package iudx.vocserver;
 
 import io.vertx.core.Vertx;
 import io.vertx.ext.unit.Async;

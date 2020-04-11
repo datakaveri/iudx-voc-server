@@ -1,11 +1,12 @@
-package io.vertx.vocserver;
+package iudx.vocserver;
 
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Promise;
-import io.vertx.vocserver.database.DBVerticle;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
+
+import iudx.vocserver.database.DBVerticle;
 
 public class MainVerticle extends AbstractVerticle {
 
@@ -21,7 +22,7 @@ public class MainVerticle extends AbstractVerticle {
 
             Promise<String> httpVerticleDeployment = Promise.promise();
             vertx.deployVerticle(
-                    "io.vertx.vocserver.http.HttpServerVerticle",
+                    "iudx.vocserver.http.HttpServerVerticle",
                     new DeploymentOptions().setInstances(2),
                     httpVerticleDeployment);
 

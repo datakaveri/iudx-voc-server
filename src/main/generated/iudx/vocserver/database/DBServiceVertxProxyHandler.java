@@ -14,9 +14,9 @@
 * under the License.
 */
 
-package io.vertx.vocserver.database;
+package iudx.vocserver.database;
 
-import io.vertx.vocserver.database.DBService;
+import iudx.vocserver.database.DBService;
 import io.vertx.core.Vertx;
 import io.vertx.core.Handler;
 import io.vertx.core.AsyncResult;
@@ -41,8 +41,8 @@ import io.vertx.serviceproxy.ServiceException;
 import io.vertx.serviceproxy.ServiceExceptionMessageCodec;
 import io.vertx.serviceproxy.HelperUtils;
 
+import iudx.vocserver.database.DBService;
 import io.vertx.core.json.JsonArray;
-import io.vertx.vocserver.database.DBService;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Handler;
@@ -120,8 +120,13 @@ public class DBServiceVertxProxyHandler extends ProxyHandler {
           service.getMasterContext(HelperUtils.createHandler(msg));
           break;
         }
-        case "getSchema": {
-          service.getSchema((java.lang.String)json.getValue("name"),
+        case "getProperty": {
+          service.getProperty((java.lang.String)json.getValue("name"),
+                        HelperUtils.createHandler(msg));
+          break;
+        }
+        case "getClass": {
+          service.getClass((java.lang.String)json.getValue("name"),
                         HelperUtils.createHandler(msg));
           break;
         }
