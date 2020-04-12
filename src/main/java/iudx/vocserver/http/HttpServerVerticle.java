@@ -9,6 +9,7 @@ import io.vertx.core.*;
 import io.vertx.core.http.HttpServer;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
+import io.vertx.ext.web.handler.BodyHandler;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
@@ -55,6 +56,7 @@ public class HttpServerVerticle extends AbstractVerticle {
         Router router = Router.router(vertx);
         /** Get classes or properties by name */
         router.get("/:name").handler(this::getSchemaHandler);
+        router.route("/:name").handler(BodyHandler.create());
         router.post("/:name").handler(this::insertSchemaHandler);
 
         /* Defaults to 8080 */
@@ -85,31 +87,36 @@ public class HttpServerVerticle extends AbstractVerticle {
         /** This can be simplified by setting a flag, leaving it expanded for future use. */
         if (isClass == true) {
             dbService.getClass(name, reply -> {
-                if (reply.succeeded() && reply.result().size() != 0) {
+                if (reply.succeeded()) {
                     context.response().putHeader("Content-Type", "application/json");
-                    context.response().end(reply.result().encode());
-                    return;
+                    context.response().setStatusCode(200)
+                                        .end(reply.result().encode());
+                }
+                else {
+                    context.response().putHeader("Content-Type", "application/json");
+                    context.response().setStatusCode(404).end();
                 }
             });
         }
         else if (isClass == false) {
             dbService.getProperty(name, reply -> {
-                if (reply.succeeded() && reply.result().size() != 0) {
+                if (reply.succeeded()) {
                     context.response().putHeader("Content-Type", "application/json");
-                    context.response().end(reply.result().encode());
-                    return;
+                    context.response().setStatusCode(200)
+                                        .end(reply.result().encode());
+                }
+                else {
+                    context.response().putHeader("Content-Type", "application/json");
+                    context.response().setStatusCode(404).end();
                 }
             });
         }
-        /** Failure */
-        context.response().setStatusCode(404);
-        context.response().putHeader("Content-Type", "application/json");
-        context.response().end((new JsonObject()).encode());
     }
 
 
     /**
      * insertSchemaHandler - handler to insert a class or property
+     * @TODO: Check duplicates
      */
     // tag::db-service-calls[]
     private void insertSchemaHandler(RoutingContext context) {
@@ -117,23 +124,24 @@ public class HttpServerVerticle extends AbstractVerticle {
         /** Check if provided param is class or property */
         boolean isClass = Character.isUpperCase(name.charAt(0));
         /** This can be simplified by setting a flag, leaving it expanded for future use. */
+        context.response().putHeader("Content-Type", "application/json");
         try {
             String body = context.getBodyAsString();
-            LOGGER.info("body" + body);
+
             if (isClass == true) {
                 boolean isValid = classValidator.validate(body);
-                LOGGER.info("isValid" + isValid);
+                LOGGER.info("isValid " + isValid);
                 if (isValid == false) {
-                    context.response().setStatusCode(404);
+                    context.response().setStatusCode(404).end();
                 }
                 else {
-                    dbService.insertClass(context.getBodyAsJson(), reply -> {
-                        if (reply.succeeded() && reply.result().size() != 0) {
-                            context.response().setStatusCode(201);
-                            return;
+                    dbService.insertClass(name, context.getBodyAsJson(), reply -> {
+                        if (reply.succeeded()) {
+                            LOGGER.info("Insertion success");
+                            context.response().setStatusCode(201).end();
                         }
                         else {
-                            context.response().setStatusCode(404);
+                            context.response().setStatusCode(404).end();
                         }
                     });
                 }
@@ -141,16 +149,16 @@ public class HttpServerVerticle extends AbstractVerticle {
             else if (isClass == false) {
                 boolean isValid = propertyValidator.validate(body);
                 if (isValid == false) {
-                    context.response().setStatusCode(404);
+                    context.response().setStatusCode(404).end();
                 }
                 else {
-                    dbService.insertClass(context.getBodyAsJson(), reply -> {
-                        if (reply.succeeded() && reply.result().size() != 0) {
-                            context.response().setStatusCode(201);
-                            return;
+                    dbService.insertProperty(name, context.getBodyAsJson(), reply -> {
+                        if (reply.succeeded()) {
+                            LOGGER.info("Insertion success");
+                            context.response().setStatusCode(201).end();
                         }
                         else {
-                            context.response().setStatusCode(404);
+                            context.response().setStatusCode(404).end();
                         }
                     });
                 }
@@ -159,7 +167,5 @@ public class HttpServerVerticle extends AbstractVerticle {
         catch (NullPointerException e) {
             context.response().setStatusCode(404);
         }
-        context.response().putHeader("Content-Type", "application/json");
-        context.response().end((new JsonObject()).encode());
     }
 }

@@ -123,17 +123,18 @@ public class DBServiceVertxEBProxy implements DBService {
     return this;
   }
   @Override
-  public  DBService insertProperty(JsonObject prop, Handler<AsyncResult<JsonArray>> resultHandler){
+  public  DBService insertProperty(String name, JsonObject prop, Handler<AsyncResult<JsonObject>> resultHandler){
     if (closed) {
       resultHandler.handle(Future.failedFuture(new IllegalStateException("Proxy is closed")));
       return this;
     }
     JsonObject _json = new JsonObject();
+    _json.put("name", name);
     _json.put("prop", prop);
 
     DeliveryOptions _deliveryOptions = (_options != null) ? new DeliveryOptions(_options) : new DeliveryOptions();
     _deliveryOptions.addHeader("action", "insertProperty");
-    _vertx.eventBus().<JsonArray>request(_address, _json, _deliveryOptions, res -> {
+    _vertx.eventBus().<JsonObject>request(_address, _json, _deliveryOptions, res -> {
       if (res.failed()) {
         resultHandler.handle(Future.failedFuture(res.cause()));
       } else {
@@ -143,17 +144,18 @@ public class DBServiceVertxEBProxy implements DBService {
     return this;
   }
   @Override
-  public  DBService insertClass(JsonObject cls, Handler<AsyncResult<JsonArray>> resultHandler){
+  public  DBService insertClass(String name, JsonObject cls, Handler<AsyncResult<JsonObject>> resultHandler){
     if (closed) {
       resultHandler.handle(Future.failedFuture(new IllegalStateException("Proxy is closed")));
       return this;
     }
     JsonObject _json = new JsonObject();
+    _json.put("name", name);
     _json.put("cls", cls);
 
     DeliveryOptions _deliveryOptions = (_options != null) ? new DeliveryOptions(_options) : new DeliveryOptions();
     _deliveryOptions.addHeader("action", "insertClass");
-    _vertx.eventBus().<JsonArray>request(_address, _json, _deliveryOptions, res -> {
+    _vertx.eventBus().<JsonObject>request(_address, _json, _deliveryOptions, res -> {
       if (res.failed()) {
         resultHandler.handle(Future.failedFuture(res.cause()));
       } else {

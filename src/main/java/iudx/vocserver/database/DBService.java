@@ -54,7 +54,7 @@ public interface DBService {
      * @return {@link DBServiceImpl}
      */
     @Fluent
-    DBService insertProperty(JsonObject prop, Handler<AsyncResult<JsonArray>> resultHandler);
+    DBService insertProperty(String name, JsonObject prop, Handler<AsyncResult<JsonObject>> resultHandler);
 
     /**
      * insertClass - Insert a class
@@ -62,7 +62,7 @@ public interface DBService {
      * @return {@link DBServiceImpl}
      */
     @Fluent
-    DBService insertClass(JsonObject cls, Handler<AsyncResult<JsonArray>> resultHandler);
+    DBService insertClass(String name, JsonObject cls, Handler<AsyncResult<JsonObject>> resultHandler);
 
 
     @GenIgnore

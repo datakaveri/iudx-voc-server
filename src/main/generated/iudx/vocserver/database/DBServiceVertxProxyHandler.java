@@ -131,12 +131,14 @@ public class DBServiceVertxProxyHandler extends ProxyHandler {
           break;
         }
         case "insertProperty": {
-          service.insertProperty((io.vertx.core.json.JsonObject)json.getValue("prop"),
+          service.insertProperty((java.lang.String)json.getValue("name"),
+                        (io.vertx.core.json.JsonObject)json.getValue("prop"),
                         HelperUtils.createHandler(msg));
           break;
         }
         case "insertClass": {
-          service.insertClass((io.vertx.core.json.JsonObject)json.getValue("cls"),
+          service.insertClass((java.lang.String)json.getValue("name"),
+                        (io.vertx.core.json.JsonObject)json.getValue("cls"),
                         HelperUtils.createHandler(msg));
           break;
         }
