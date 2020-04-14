@@ -1,5 +1,5 @@
 /**
-* <h1>Validator.java</h1>
+* <h1>DBService.java</h1>
 * DBService interface
 */
 package iudx.vocserver.database;

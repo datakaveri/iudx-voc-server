@@ -12,10 +12,10 @@ import io.vertx.core.logging.LoggerFactory;
 // tag::dbverticle[]
 public class DBVerticle extends AbstractVerticle {
 
-    public static final String CONFIG_DB_MONGO_URL = "vocserver.mongo.url";
-    public static final String CONFIG_DB_MONGO_NAME = "vocserver.mongo.dbname";
-    public static final String CONFIG_DB_QUEUE = "vocserver.queue";
-    public static final String CONFIG_DB_MONGO_POOLNAME = "vocserver.mongo.poolname";
+    public static final String CONFIG_DB_URL = "vocserver.database.url";
+    public static final String CONFIG_DB_NAME = "vocserver.database.name";
+    public static final String CONFIG_DB_QUEUE = "vocserver.database.queue";
+    public static final String CONFIG_DB_POOLNAME = "vocserver.database.poolname";
     private static final Logger LOGGER = LoggerFactory.getLogger(DBVerticle.class);
 
     @Override
@@ -23,9 +23,11 @@ public class DBVerticle extends AbstractVerticle {
 
         /* Load default mongo client config if none specified*/
         JsonObject mongoconfig = new JsonObject()
-            .put("connection_string", config().getString(CONFIG_DB_MONGO_URL, "mongodb://localhost:27017"))
-            .put("db_name", config().getString(CONFIG_DB_MONGO_NAME, "voc"));
-        MongoClient dbClient = MongoClient.createShared(vertx, mongoconfig);
+            .put("connection_string", config().getString(CONFIG_DB_URL))
+            .put("db_name", config().getString(CONFIG_DB_NAME));
+        MongoClient dbClient = MongoClient.createShared(vertx,
+                                                        mongoconfig,
+                                                        config().getString(CONFIG_DB_POOLNAME));
         DBService.create(dbClient, ready -> {
             if (ready.succeeded()) {
                 ServiceBinder binder = new ServiceBinder(vertx);

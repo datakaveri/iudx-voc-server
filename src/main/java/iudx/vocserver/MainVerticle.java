@@ -6,7 +6,6 @@ import io.vertx.core.Promise;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 
-import iudx.vocserver.database.DBVerticle;
 
 public class MainVerticle extends AbstractVerticle {
 
@@ -14,28 +13,42 @@ public class MainVerticle extends AbstractVerticle {
 
     @Override
     public void start(Promise<Void> promise) throws Exception {
-
+        
+        /** Deploy DBVerticle */
         Promise<String> dbVerticleDeployment = Promise.promise();
-        vertx.deployVerticle(new DBVerticle(), dbVerticleDeployment);
+        vertx.deployVerticle("iudx.vocserver.database.DBVerticle",
+                                new DeploymentOptions()
+                                    .setConfig(config()),
+                            dbVerticleDeployment);
 
-        dbVerticleDeployment.future().compose(id -> {
-
-            Promise<String> httpVerticleDeployment = Promise.promise();
-            vertx.deployVerticle(
-                    "iudx.vocserver.http.HttpServerVerticle",
-                    new DeploymentOptions().setInstances(2),
-                    httpVerticleDeployment);
-
-            LOGGER.info("Started main and http vericles");
-            return httpVerticleDeployment.future();
-
-        }).setHandler(ar -> {
-            if (ar.succeeded()) {
-                promise.complete();
-            } else {
-                promise.fail(ar.cause());
-            }
-        });
+        /** Compose-deploy HTTP Verticle */
+        dbVerticleDeployment.future()
+            .compose(id -> {
+                Promise<String> httpVerticleDeployment = Promise.promise();
+                vertx.deployVerticle(
+                        "iudx.vocserver.http.HttpServerVerticle",
+                        new DeploymentOptions()
+                            .setInstances(config().getInteger("vocserver.http.instances"))
+                            .setConfig(config()),
+                        httpVerticleDeployment);
+                return httpVerticleDeployment.future();
+            })
+            .compose(id -> {
+                Promise<String> authVerticleDeployment = Promise.promise();
+                vertx.deployVerticle(
+                        "iudx.vocserver.auth.AuthVerticle",
+                        new DeploymentOptions()
+                            .setInstances(config().getInteger("vocserver.auth.instances"))
+                            .setConfig(config()),
+                        authVerticleDeployment);
+                return authVerticleDeployment.future();
+            })
+            .setHandler(ar -> {
+                if (ar.succeeded()) {
+                    promise.complete();
+                } else {
+                    promise.fail(ar.cause());
+                }
+            });
     }
-
 }

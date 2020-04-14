@@ -13,9 +13,14 @@ import io.vertx.ext.web.handler.BodyHandler;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
+import io.vertx.core.http.HttpServerOptions;
+import io.vertx.core.net.JksOptions;
+import io.vertx.core.VertxException;
+
 
 
 import iudx.vocserver.database.DBService;
+import iudx.vocserver.auth.AuthService;
 import iudx.vocserver.utils.Validator;
 
 public class HttpServerVerticle extends AbstractVerticle {
@@ -26,31 +31,48 @@ public class HttpServerVerticle extends AbstractVerticle {
      */
 
     // Config variables
-    public static final String CONFIG_HTTP_SERVER_PORT = "http.server.port";
-    public static final String CONFIG_DB_QUEUE = "vocserver.queue";
+    public static final String CONFIG_HTTP_SERVER_PORT = "vocserver.http.port";
+    public static final String CONFIG_DB_QUEUE = "vocserver.database.queue";
+    public static final String CONFIG_AUTH_QUEUE = "vocserver.auth.queue";
+    public static final String JKS_FILE = "vocserver.jksfile";
+    public static final String JKS_PASSWD = "vocserver.jkspasswd";
 
     // Default logger
     private static final Logger LOGGER = LoggerFactory.getLogger(HttpServerVerticle.class);
 
     // iudx-voc-server DBService
     private DBService dbService;
+    // iudx-voc-server AuthService
+    private AuthService authService;
 
     // Validator objects
+    private boolean isValidSchema;
     private Validator classValidator;
     private Validator propertyValidator;
 
+    // Auth attributes
+    private boolean isValidUser;
     /**
      * AbstractVerticle start
      * */
     @Override
     public void start(Promise<Void> promise) throws Exception {
 
-        String dbQueue = config().getString(CONFIG_DB_QUEUE, "vocserver.queue");
+        String dbQueue = config().getString(CONFIG_DB_QUEUE);
+        String authQueue = config().getString(CONFIG_AUTH_QUEUE);
+
         dbService = DBService.createProxy(vertx, dbQueue);
+        authService = AuthService.createProxy(vertx, authQueue);
+
         propertyValidator = new Validator("/propertySchema.json");
         classValidator = new Validator("/classSchema.json");
 
-        HttpServer server = vertx.createHttpServer();
+        HttpServerOptions options = new HttpServerOptions()
+                                    .setSsl(true)
+                                    .setKeyStoreOptions(new JksOptions()
+                                        .setPath(config().getString(JKS_FILE))
+                                        .setPassword(config().getString(JKS_PASSWD)));
+        HttpServer server = vertx.createHttpServer(options);
 
         /** ROUTES */
         Router router = Router.router(vertx);
@@ -59,7 +81,6 @@ public class HttpServerVerticle extends AbstractVerticle {
         router.route("/:name").handler(BodyHandler.create());
         router.post("/:name").handler(this::insertSchemaHandler);
 
-        /* Defaults to 8080 */
         /** @TODO: Make port configureable */
         int portNumber = config().getInteger(CONFIG_HTTP_SERVER_PORT, 8080);
         server
@@ -86,13 +107,16 @@ public class HttpServerVerticle extends AbstractVerticle {
         boolean isClass = Character.isUpperCase(name.charAt(0));
         /** This can be simplified by setting a flag, leaving it expanded for future use. */
         if (isClass == true) {
+            LOGGER.info("Getting class " + name);
             dbService.getClass(name, reply -> {
                 if (reply.succeeded()) {
+                    LOGGER.info("Success in getting class ");
                     context.response().putHeader("Content-Type", "application/json");
                     context.response().setStatusCode(200)
                                         .end(reply.result().encode());
                 }
                 else {
+                    LOGGER.info("Failed");
                     context.response().putHeader("Content-Type", "application/json");
                     context.response().setStatusCode(404).end();
                 }
@@ -121,51 +145,68 @@ public class HttpServerVerticle extends AbstractVerticle {
     // tag::db-service-calls[]
     private void insertSchemaHandler(RoutingContext context) {
         String name = context.request().getParam("name");
+        String body = context.getBodyAsString();
         /** Check if provided param is class or property */
         boolean isClass = Character.isUpperCase(name.charAt(0));
         /** This can be simplified by setting a flag, leaving it expanded for future use. */
         context.response().putHeader("Content-Type", "application/json");
-        try {
-            String body = context.getBodyAsString();
-
-            if (isClass == true) {
-                boolean isValid = classValidator.validate(body);
-                LOGGER.info("isValid " + isValid);
-                if (isValid == false) {
-                    context.response().setStatusCode(404).end();
-                }
-                else {
-                    dbService.insertClass(name, context.getBodyAsJson(), reply -> {
-                        if (reply.succeeded()) {
-                            LOGGER.info("Insertion success");
-                            context.response().setStatusCode(201).end();
+        /** Validate token */
+        String username = context.request().getHeader("username");
+        String password = context.request().getHeader("password");
+        LOGGER.info("uname " + username);
+        LOGGER.info("passwd " + password);
+        authService.validateToken(username, password,
+            authreply -> {
+                if (authreply.succeeded()) {
+                    if (isClass == true) {
+                        try {
+                            isValidSchema = classValidator.validate(body);
                         }
-                        else {
+                        catch (Exception e) {
+                            isValidSchema = false;
+                        }
+                        if (isValidSchema == false) {
                             context.response().setStatusCode(404).end();
                         }
-                    });
-                }
-            }
-            else if (isClass == false) {
-                boolean isValid = propertyValidator.validate(body);
-                if (isValid == false) {
-                    context.response().setStatusCode(404).end();
-                }
-                else {
-                    dbService.insertProperty(name, context.getBodyAsJson(), reply -> {
-                        if (reply.succeeded()) {
-                            LOGGER.info("Insertion success");
-                            context.response().setStatusCode(201).end();
-                        }
                         else {
+                            dbService.insertClass(name, context.getBodyAsJson(), reply -> {
+                                if (reply.succeeded()) {
+                                    LOGGER.info("Inserted " + name);
+                                    context.response().setStatusCode(201).end();
+                                }
+                                else {
+                                    context.response().setStatusCode(404).end();
+                                }
+                            });
+                        }
+                    }
+                    else if (isClass == false) {
+                        try {
+                            isValidSchema = propertyValidator.validate(body);
+                        }
+                        catch (Exception e) {
+                            isValidSchema = false;
+                        }
+                        if (isValidSchema == false) {
                             context.response().setStatusCode(404).end();
                         }
-                    });
+                        else {
+                            dbService.insertProperty(name, context.getBodyAsJson(), reply -> {
+                                if (reply.succeeded()) {
+                                    LOGGER.info("Insertion success");
+                                    context.response().setStatusCode(201).end();
+                                }
+                                else {
+                                    context.response().setStatusCode(404).end();
+                                }
+                            });
+                        }
+                    }
                 }
-            }
-        }
-        catch (NullPointerException e) {
-            context.response().setStatusCode(404);
-        }
+                if (authreply.failed()) {
+                    LOGGER.info("Got invalid usename and password");
+                    context.response().setStatusCode(401).end();
+                }
+        });
     }
 }
