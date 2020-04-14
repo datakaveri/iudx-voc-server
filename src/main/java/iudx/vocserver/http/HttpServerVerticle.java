@@ -77,9 +77,9 @@ public class HttpServerVerticle extends AbstractVerticle {
         /** ROUTES */
         Router router = Router.router(vertx);
         /** Get classes or properties by name */
-        router.get("/:name").handler(this::getSchemaHandler);
-        router.route("/:name").handler(BodyHandler.create());
-        router.post("/:name").handler(this::insertSchemaHandler);
+        router.get("/:name").consumes("application/json+ld").handler(this::getSchemaHandler);
+        router.route("/:name").consumes("application/json+ld").handler(BodyHandler.create());
+        router.post("/:name").consumes("application/json+ld").handler(this::insertSchemaHandler);
 
         /** @TODO: Make port configureable */
         int portNumber = config().getInteger(CONFIG_HTTP_SERVER_PORT, 8080);
@@ -107,16 +107,14 @@ public class HttpServerVerticle extends AbstractVerticle {
         boolean isClass = Character.isUpperCase(name.charAt(0));
         /** This can be simplified by setting a flag, leaving it expanded for future use. */
         if (isClass == true) {
-            LOGGER.info("Getting class " + name);
             dbService.getClass(name, reply -> {
                 if (reply.succeeded()) {
-                    LOGGER.info("Success in getting class ");
                     context.response().putHeader("Content-Type", "application/json");
                     context.response().setStatusCode(200)
                                         .end(reply.result().encode());
                 }
                 else {
-                    LOGGER.info("Failed");
+                    LOGGER.info("Failed getting class " + name);
                     context.response().putHeader("Content-Type", "application/json");
                     context.response().setStatusCode(404).end();
                 }
@@ -153,8 +151,6 @@ public class HttpServerVerticle extends AbstractVerticle {
         /** Validate token */
         String username = context.request().getHeader("username");
         String password = context.request().getHeader("password");
-        LOGGER.info("uname " + username);
-        LOGGER.info("passwd " + password);
         authService.validateToken(username, password,
             authreply -> {
                 if (authreply.succeeded()) {

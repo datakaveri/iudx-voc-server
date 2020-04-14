@@ -1,7 +1,7 @@
 {
-  "vocserver.port": 8080,
   "vocserver.jksfile": "config/iudxtruststore.jks",
   "vocserver.jkspasswd": "somepassword",
+  "vocserver.http.port": 8080,
   "vocserver.http.instances": 2,
   "vocserver.database.queue": "vocserver.database.queue",
   "vocserver.database.url": "mongodb://localhost:27017",
