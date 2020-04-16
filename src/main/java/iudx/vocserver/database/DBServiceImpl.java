@@ -43,7 +43,7 @@ class DBServiceImpl implements DBService {
     // Find all properties
     private static final String QUERY_FIND_ALL_PROPERTIES = 
         "[ {\"$unwind\": \"$@graph\"}," 
-        + " { \"$match\": {\"@graph.@type\": { \"$in\": [\"rdfs:Properties\"] }}}," 
+        + " { \"$match\": {\"@graph.@type\": { \"$in\": [\"rdf:Property\"] }}}," 
         + " { \"$project\": {\"_id\": 0, \"rdfs:label\": \"$@graph.rdfs:label\", \"rdfs:comment\": \"$@graph.rdfs:comment\" } } ])";
     // Find a class
     private static final String QUERY_FIND_CLASS = 
