@@ -18,6 +18,9 @@ import io.vertx.core.net.JksOptions;
 import io.vertx.core.VertxException;
 
 
+import io.vertx.core.http.HttpServerResponse;
+import io.vertx.ext.web.handler.StaticHandler;
+
 
 import iudx.vocserver.database.DBService;
 import iudx.vocserver.auth.AuthService;
@@ -82,9 +85,16 @@ public class HttpServerVerticle extends AbstractVerticle {
         router.route("/:name").consumes("application/json+ld").handler(BodyHandler.create());
         router.post("/:name").consumes("application/json+ld").handler(this::insertSchemaHandler);
 
-        /** Get all classes */
+        /** Get all classes  and properties*/
         router.get("/classes").consumes("application/json").handler(this::getClassesHandler);
         router.get("/properties").consumes("application/json").handler(this::getPropertiesHandler);
+
+        router.route("/").handler(routingContext -> {
+			HttpServerResponse response = routingContext.response();
+			response.sendFile("ui/pages/schema_home/index.html");
+		});
+
+        router.route("/assets/*").handler(StaticHandler.create("ui/assets"));
 
         /** @TODO: Make port configureable */
         int portNumber = config().getInteger(CONFIG_HTTP_SERVER_PORT, 8080);
