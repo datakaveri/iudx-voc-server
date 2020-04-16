@@ -15,7 +15,8 @@ import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.jdbc.JDBCClient;
 import io.vertx.ext.mongo.MongoClient;
-import java.util.HashMap;
+import java.util.List;
+
 
 @ProxyGen
 @VertxGen
@@ -31,6 +32,22 @@ public interface DBService {
      */
     @Fluent
     DBService getMasterContext(Handler<AsyncResult<JsonArray>> resultHandler);
+
+    /**
+     * getAllProperties - Gets all vocabulary properties
+     * @param name Property Name
+     * @return {@link DBServiceImpl}
+     */
+    @Fluent
+    DBService getAllProperties(Handler<AsyncResult<JsonArray>> resultHandler);
+
+    /**
+     * getAllClasses - Gets all vocabulary classes
+     * @param name Property Name
+     * @return {@link DBServiceImpl}
+     */
+    @Fluent
+    DBService getAllClasses(Handler<AsyncResult<JsonArray>> resultHandler);
 
     /**
      * getProperties - Gets json-ld for the given property
