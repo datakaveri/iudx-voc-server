@@ -1,0 +1,245 @@
+html,
+body {
+  height: 100%;
+  font-size: 20px !important;
+}
+.se-pre-con {
+	position: fixed;
+	left: 0px;
+	top: 0px;
+	width: 100%;
+	height: 100%;
+	z-index: 9999;
+	background: url(../img/spinner.gif) center no-repeat #fff;
+}
+
+.dot{
+  height: 18px;
+  width: 18px;
+  border-radius: 5%;
+}
+
+.status_dot{
+  height: 75px;
+  width: 75px;
+  border-radius: 25%;
+  padding: 10px;
+  margin: 10px;
+}
+
+.dot, .status_dot {
+  display: inline-block;
+}
+
+.white{
+  color:white !important;
+}
+
+.centerFlex {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+}
+
+.pagination>.disabled>span, .pagination>.disabled>span:hover, .pagination>.disabled>span:focus, .pagination>.disabled>a, .pagination>.disabled>a:hover, .pagination>.disabled>a:focus{
+  cursor: pointer !important;
+}
+
+.pagination>li>a{
+    position: relative;
+    float: left;
+    padding: 6px 12px;
+    margin-left: -1px;
+    line-height: 1.42857143;
+    color: #337ab7;
+    text-decoration: none;
+    background-color: #fff;
+    border: 1px solid #ddd;
+}
+
+.page-active > a{
+    color: #fff !important;
+    text-decoration: none !important;
+    background-color: #337ab7 !important;
+}
+
+#resource_item_details, button, .leaflet-popup-content-wrapper, .sidebar-catergory{
+  font-size: 20px !important;
+}
+
+.toast_msg{
+  font-size: 20px !important;
+}
+
+.list_icon_attr{
+  font-size: 15px !important;
+}
+
+.sidebar{
+  font-size: 20px !important;
+}
+
+*{
+  font-family: 'Darker Grotesque', sans-serif !important;
+ }
+
+.bold{
+  font-weight: bold !important;
+}
+
+/*.map_icon_attr{
+  font-size: 7px !important;
+}
+*/
+
+.copy-btn{
+  color: white !important;
+  background-color: #3ec0a6 !important;
+}
+
+.svg-white{
+  fill: #000 !important;
+}
+
+.secure_icon{
+  width: 25px !important;
+}
+
+.text-white{
+  color: white !important;
+}
+
+.limit{
+    width:50px;
+}
+
+.ajs-button{
+  color: #fff !important;
+  background-color: #007bff !important;
+  border-color: #007bff !important;
+}
+
+.spinner {
+  margin: 100px auto;
+  width: 50px;
+  height: 40px;
+  text-align: center;
+  font-size: 10px;
+}
+
+.spinner > div {
+  background-color: #333;
+  height: 100%;
+  width: 6px;
+  display: inline-block;
+  
+  -webkit-animation: sk-stretchdelay 1.2s infinite ease-in-out;
+  animation: sk-stretchdelay 1.2s infinite ease-in-out;
+  -moz-animation: sk-stretchdelay 1.2s infinite ease-in-out;
+}
+
+.spinner .rect2 {
+  -moz-animation-delay: -1.1s;
+  -webkit-animation-delay: -1.1s;
+  animation-delay: -1.1s;
+}
+
+.spinner .rect3 {
+  -moz-animation-delay: -1.0s;
+  -webkit-animation-delay: -1.0s;
+  animation-delay: -1.0s;
+}
+
+.spinner .rect4 {
+  -moz-animation-delay: -0.9s;
+  -webkit-animation-delay: -0.9s;
+  animation-delay: -0.9s;
+}
+
+.spinner .rect5 {
+  -webkit-animation-delay: -0.8s;
+  animation-delay: -0.8s;
+}
+
+@-webkit-keyframes sk-stretchdelay {
+  0%, 40%, 100% { -webkit-transform: scaleY(0.4) }  
+  20% { -webkit-transform: scaleY(1.0) }
+}
+
+@keyframes sk-stretchdelay {
+  0%, 40%, 100% { 
+    transform: scaleY(0.4);
+    -webkit-transform: scaleY(0.4);
+  }  20% { 
+    transform: scaleY(1.0);
+    -webkit-transform: scaleY(1.0);
+  }
+}
+
+/**
+ * Tooltip Styles
+ */
+
+/* Add this attribute to the element that needs a tooltip */
+[data-tooltip] {
+  position: relative;
+  z-index: 9999999;
+  cursor: pointer;
+}
+
+/* Hide the tooltip content by default */
+[data-tooltip]:before,
+[data-tooltip]:after {
+  visibility: hidden;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+  filter: progid: DXImageTransform.Microsoft.Alpha(Opacity=0);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Position tooltip above the element */
+[data-tooltip]:before {
+  position: absolute;
+  bottom: 80%;
+  left: 50%;
+  margin-bottom: 5px;
+  margin-left: -30px;
+  padding: 7px;
+  width: 60px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  background-color: #000;
+  background-color: hsla(0, 0%, 20%, 0.9);
+  color: #fff;
+  content: attr(data-tooltip);
+  text-align: center;
+  font-size: 14px;
+  line-height: 1.2;
+}
+
+/* Triangle hack to make tooltip look like a speech bubble */
+[data-tooltip]:after {
+  position: absolute;
+  bottom: 80%;
+  left: 50%;
+  margin-left: 1px;
+  width: 0;
+  border-top: 5px solid #000;
+  border-top: 5px solid hsla(0, 0%, 20%, 0.9);
+  border-right: 5px solid transparent;
+  border-left: 5px solid transparent;
+  content: " ";
+  font-size: 0;
+  line-height: 0;
+}
+
+/* Show tooltip content on hover */
+[data-tooltip]:hover:before,
+[data-tooltip]:hover:after {
+  visibility: visible;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
+  filter: progid: DXImageTransform.Microsoft.Alpha(Opacity=100);
+  opacity: 1;
+  z-index: 9999999;
+}

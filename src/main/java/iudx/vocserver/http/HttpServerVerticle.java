@@ -18,6 +18,9 @@ import io.vertx.core.net.JksOptions;
 import io.vertx.core.VertxException;
 
 
+ import io.vertx.core.http.HttpServerResponse;
+import io.vertx.ext.web.handler.StaticHandler;
+
 
 import iudx.vocserver.database.DBService;
 import iudx.vocserver.auth.AuthService;
@@ -80,6 +83,30 @@ public class HttpServerVerticle extends AbstractVerticle {
         router.get("/:name").consumes("application/json+ld").handler(this::getSchemaHandler);
         router.route("/:name").consumes("application/json+ld").handler(BodyHandler.create());
         router.post("/:name").consumes("application/json+ld").handler(this::insertSchemaHandler);
+
+        //  Routes intended for schema
+        // router.serveFile("/", "ui/pages/schema_home/index.html");
+        // router.serveFile("/schemas", "ui/pages/schema_class/index.html");
+        // router.serveFile("/schema_property", "ui/pages/schema_property/index.html");
+
+        router.route("/").handler(routingContext -> {
+			HttpServerResponse response = routingContext.response();
+			response.sendFile("ui/pages/schema_home/index.html");
+		});
+
+        router.route("/schemas").handler(routingContext -> {
+			HttpServerResponse response = routingContext.response();
+			response.sendFile("ui/pages/schema_class/index.html");
+		});
+
+            //    router.route("/:name").handler(routingContext -> {
+            //             HttpServerResponse response = routingContext.response();
+            //             response.sendFile("ui/pages/schema_property/index.html");
+            //     });
+        //router.route("/*").handler(StaticHandler.create("ui/pages"));
+        router.route("/assets/*").handler(StaticHandler.create("ui/assets"));
+
+
 
         /** @TODO: Make port configureable */
         int portNumber = config().getInteger(CONFIG_HTTP_SERVER_PORT, 8080);
@@ -205,4 +232,16 @@ public class HttpServerVerticle extends AbstractVerticle {
                 }
         });
     }
+
+// private void serveFile(String url, String indexHTMLFilePath) {
+// 	  this.router
+// 		  .route(url)
+// 		    .handler(
+// 		        routingContext -> {
+// 		          HttpServerResponse response = routingContext.response();
+// 		          response.sendFile(indexHTMLFilePath);
+// 		        });
+//   }
+
+
 }

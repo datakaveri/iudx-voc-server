@@ -1,0 +1,423 @@
+.sidebar_filter_param{
+  /*overflow-y: scroll !important;*/
+  height:auto !important;
+  max-height: 1.8 !important;
+  /* display: block; */
+  display:inline-block;
+  /*margin-left : 50px;*/
+}
+
+.no-js #loader { display: none;  }
+.js #loader { display: block; position: absolute; left: 100px; top: 0; }
+
+.myclass {
+/* margin-right:34px!important; */
+font-size:14px!important;
+}
+.dp-contents{
+  display:contents;
+}
+#button_back{
+
+  z-index:99999;
+  position: fixed;
+  left: 55%;
+  bottom: 5%;
+  }
+.se-pre-con {
+	position: fixed;
+	left: 0px;
+	top: 0px;
+	width: 100%;
+	height: 100%;
+	z-index: 9999;
+	background: url(../img/spinner.gif) center no-repeat #fff;
+}
+
+.iudx-instances{
+  font-size: 50px;
+}
+
+/* Slideshow container */
+.slideshow-container {
+  position: relative;
+  background: #3ed3f9;
+  padding-right:40px!important;
+}
+
+/* Slides */
+.mySlides {
+  display: none;
+  padding: 50px;
+  text-align: center;
+}
+
+/* Next & previous buttons */
+.prev, .next {
+  cursor: pointer;
+  position: absolute;
+  top: 50%;
+  width: auto;
+  margin-top: -30px;
+  padding: 16px;
+  color: #888;
+  font-weight: bold;
+  font-size: 20px;
+  border-radius: 0 3px 3px 0;
+  user-select: none;
+}
+
+/* Position the "next button" to the right */
+.next {
+  position: absolute;
+  right: 0;
+  border-radius: 3px 0 0 3px;
+}
+
+/* On hover, add a black background color with a little bit see-through */
+.prev:hover, .next:hover {
+  background-color: rgba(0,0,0,0.8);
+  color: white;
+}
+
+/* The dot/bullet/indicator container */
+.dot-container {
+  text-align: center;
+  padding: 20px;
+  background: #ddd;
+}
+
+/* The dots/bullets/indicators */
+.dot {
+  cursor: pointer;
+  height: 15px;
+  width: 15px;
+  margin: 0 2px;
+  background-color: #bbb;
+  border-radius: 50%;
+  display: inline-block;
+  transition: background-color 0.6s ease;
+}
+
+/* Add a background color to the active dot/circle */
+.active, .dot:hover {
+  background-color: #717171;
+}
+
+/* Add an italic font style to all quotes */
+q {font-style: italic;}
+
+/* Add a blue color to the author */
+.author {color: cornflowerblue;}
+
+#slideshow {
+  display:none;
+  position: fixed;
+  width: 50%;
+  z-index: 9999;
+  height: 50%;
+  left: 50%;
+  right: 50%;
+  bottom: 50%;
+  top: 10%;
+  width: 800px;
+}
+#button_slide{
+
+z-index:99999;
+position: fixed;
+    left: 50%;
+    top: 5%;
+}
+.btn-info{
+margin-left:5px;
+margin-bottom:10px;
+}
+.btn-primary{
+  margin-left:10px;
+  }
+#spinner{
+  position: fixed;
+  top:50%;
+  left:50%;
+}
+.label-size{
+  font-size:17px;
+  
+}
+label {display: block}
+
+.filter_box{
+  width: 350px !important;
+  height: 300px !important;
+  overflow-y: auto !important;
+  
+}
+.details-css{
+/* font-size: 20px; */
+color:rgb(0, 102, 255)
+
+
+}
+.version{
+  background-color: transparent !important;
+  border: none !important;
+}
+
+.swagger_section{
+  display: none !important;
+}
+
+#text-icon {
+  z-index: 999999 !important;
+  position: fixed;
+  top: 10px;
+  left: 1450px;
+ 
+  padding: 5px;
+}
+.text-icon-line {
+  /* width: 35px;
+  height: 2px; */
+  background-color: transparent;
+  /* border: 2px solid blue; */
+  color: blue;
+  font-size: 22px;
+  margin: 70px 0;
+}
+.bg-white{
+  background-color: white;
+}
+
+#menu-bar-icon {
+  z-index: 999999 !important;
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  border: 2px solid grey;
+  padding: 5px;
+  border-radius: 25%;
+}
+
+.menu-icon-line {
+  width: 35px;
+  height: 2px;
+  background-color: grey;
+  margin: 6px 0;
+}
+
+#map {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.leaflet-sidebar {
+  position: absolute;
+  height: 100%;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  padding: 10px;
+  z-index: 2000;
+}
+
+.leaflet-sidebar.left {
+  left: -500px;
+  transition: left 0.5s, width 0.5s;
+  padding-right: 0;
+}
+
+.leaflet-sidebar.left.visible {
+  left: 0;
+}
+
+.leaflet-sidebar.right {
+  right: -500px;
+  transition: right 0.5s, width 0.5s;
+  padding-left: 0;
+}
+
+.leaflet-sidebar.right.visible {
+  right: 0;
+}
+
+.leaflet-sidebar>.leaflet-control {
+  height: 100%;
+  width: 100%;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  padding: 8px 24px;
+  font-size: 1.1em;
+  background: white;
+  box-shadow: 0 1px 7px rgba(0, 0, 0, 0.65);
+  -webkit-border-radius: 4px;
+  border-radius: 4px;
+}
+
+.leaflet-touch .leaflet-sidebar>.leaflet-control {
+  box-shadow: none;
+  border: 2px solid rgba(0, 0, 0, 0.2);
+  background-clip: padding-box;
+}
+
+
+.leaflet-sidebar .close{
+  z-index: 800 !important;
+}
+
+
+@media (max-width: 767px) {
+  .leaflet-sidebar {
+    width: 100%;
+    padding: 0;
+  }
+  .leaflet-sidebar.left.visible~.leaflet-left {
+    left: 100%;
+  }
+  .leaflet-sidebar.right.visible~.leaflet-right {
+    right: 100%;
+  }
+  .leaflet-sidebar.left {
+    left: -100%;
+  }
+  .leaflet-sidebar.left.visible {
+    left: 0;
+  }
+  .leaflet-sidebar.right {
+    right: -100%;
+  }
+  .leaflet-sidebar.right.visible {
+    right: 0;
+  }
+  .leaflet-sidebar>.leaflet-control {
+    box-shadow: none;
+    -webkit-border-radius: 0;
+    border-radius: 0;
+  }
+  .leaflet-touch .leaflet-sidebar>.leaflet-control {
+    border: 0;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  .leaflet-sidebar {
+    width: 305px;
+  }
+  .leaflet-sidebar.left.visible~.leaflet-left {
+    left: 305px;
+  }
+  .leaflet-sidebar.right.visible~.leaflet-right {
+    right: 305px;
+  }
+}
+
+@media (min-width: 992px) and (max-width: 1199px) {
+  .leaflet-sidebar {
+    width: 390px;
+  }
+  .leaflet-sidebar.left.visible~.leaflet-left {
+    left: 390px;
+  }
+  .leaflet-sidebar.right.visible~.leaflet-right {
+    right: 390px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .leaflet-sidebar {
+    width: 460px;
+  }
+  .leaflet-sidebar.left.visible~.leaflet-left {
+    left: 460px;
+  }
+  .leaflet-sidebar.right.visible~.leaflet-right {
+    right: 460px;
+  }
+}
+
+.leaflet-sidebar .close {
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  width: 31px;
+  height: 31px;
+  color: #333;
+  font-size: 25px;
+  line-height: 1em;
+  text-align: center;
+  background: white;
+  -webkit-border-radius: 16px;
+  border-radius: 16px;
+  cursor: pointer;
+  z-index: 8;
+}
+
+.leaflet-left {
+  transition: left 0.5s;
+}
+
+.leaflet-right {
+  transition: right 0.5s;
+}
+
+.nav-pills li {
+  margin-left: 5px;
+}
+
+.lorem {
+  margin-top: 30px;
+}
+
+#point {
+  display: none;
+}
+
+#_batch {
+  display: none;
+}
+
+.legend {
+	line-height: 18px;
+	color: #555;
+}
+.legend i {
+	width: 18px;
+	height: 18px;
+	float: left;
+	margin-right: 8px;
+	opacity: 0.7;
+}
+
+.info {
+	padding: 6px 8px;
+	font: 14px/16px Arial, Helvetica, sans-serif;
+	background: white;
+	background: rgba(255,255,255,0.8);
+	box-shadow: 0 0 15px rgba(0,0,0,0.2);
+	border-radius: 5px;
+}
+.info h4 {
+	margin: 0 0 5px;
+	color: #777;
+}
+
+#filter_btn{
+  margin-top: 250px;
+  margin-left: 50px;
+}
+.label-margin{
+
+  margin-top:20px;
+  margin-left:40px;
+
+}
+
+.center_align{
+  text-align: center;
+}
