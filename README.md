@@ -5,9 +5,17 @@
 
 1. Modify the configuration options in ./config/vocserver.json
 
-2. From the project root folder 
+2. Turn on the mongodb docker 
+For local
+` docker-compose up -d db-local` 
+or
+For production
+` docker-compose up -d db` 
+
+3. From the project root folder 
 ` mvn clean package -Dmaven.test.skip=true && java -jar target/vocserver-1.0-fat.jar -conf config/vocserver.json
 `
+
 
 ## Making a jks 
 

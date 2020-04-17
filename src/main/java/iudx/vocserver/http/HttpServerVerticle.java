@@ -18,7 +18,7 @@ import io.vertx.core.net.JksOptions;
 import io.vertx.core.VertxException;
 
 
- import io.vertx.core.http.HttpServerResponse;
+import io.vertx.core.http.HttpServerResponse;
 import io.vertx.ext.web.handler.StaticHandler;
 
 
@@ -79,34 +79,22 @@ public class HttpServerVerticle extends AbstractVerticle {
 
         /** ROUTES */
         Router router = Router.router(vertx);
+
         /** Get classes or properties by name */
         router.get("/:name").consumes("application/json+ld").handler(this::getSchemaHandler);
         router.route("/:name").consumes("application/json+ld").handler(BodyHandler.create());
         router.post("/:name").consumes("application/json+ld").handler(this::insertSchemaHandler);
 
-        //  Routes intended for schema
-        // router.serveFile("/", "ui/pages/schema_home/index.html");
-        // router.serveFile("/schemas", "ui/pages/schema_class/index.html");
-        // router.serveFile("/schema_property", "ui/pages/schema_property/index.html");
+        /** Get all classes  and properties*/
+        router.get("/classes").consumes("application/json").handler(this::getClassesHandler);
+        router.get("/properties").consumes("application/json").handler(this::getPropertiesHandler);
 
         router.route("/").handler(routingContext -> {
 			HttpServerResponse response = routingContext.response();
 			response.sendFile("ui/pages/schema_home/index.html");
 		});
 
-        // router.route("/schemas").handler(routingContext -> {
-		// 	HttpServerResponse response = routingContext.response();
-		// 	response.sendFile("ui/pages/schema_class/index.html");
-		// });
-
-            //    router.route("/:name").handler(routingContext -> {
-            //             HttpServerResponse response = routingContext.response();
-            //             response.sendFile("ui/pages/schema_property/index.html");
-            //     });
-        //router.route("/*").handler(StaticHandler.create("ui/pages"));
         router.route("/assets/*").handler(StaticHandler.create("ui/assets"));
-
-
 
         /** @TODO: Make port configureable */
         int portNumber = config().getInteger(CONFIG_HTTP_SERVER_PORT, 8080);
@@ -125,6 +113,42 @@ public class HttpServerVerticle extends AbstractVerticle {
 
 
     /**
+     * getClassesHandler - handler to get all classes 
+     */
+    // tag::db-service-calls[]
+    private void getClassesHandler(RoutingContext context) {
+            dbService.getAllClasses(reply -> {
+                if (reply.succeeded()) {
+                    context.response().putHeader("content-type", "application/json");
+                    context.response().setStatusCode(200)
+                                        .end(reply.result().encode());
+                }
+                else {
+                    context.response().putHeader("content-type", "application/json");
+                    context.response().setStatusCode(404).end();
+                }
+            });
+    }
+
+    /**
+     * getPropertiesHandler - handler to get all properties 
+     */
+    // tag::db-service-calls[]
+    private void getPropertiesHandler(RoutingContext context) {
+            dbService.getAllProperties(reply -> {
+                if (reply.succeeded()) {
+                    context.response().putHeader("content-type", "application/json");
+                    context.response().setStatusCode(200)
+                                        .end(reply.result().encode());
+                }
+                else {
+                    context.response().putHeader("content-type", "application/json");
+                    context.response().setStatusCode(404).end();
+                }
+            });
+    }
+
+    /**
      * getSchemaHandler - handler to get classes or properties by name
      */
     // tag::db-service-calls[]
@@ -136,13 +160,13 @@ public class HttpServerVerticle extends AbstractVerticle {
         if (isClass == true) {
             dbService.getClass(name, reply -> {
                 if (reply.succeeded()) {
-                    context.response().putHeader("Content-Type", "application/json");
+                    context.response().putHeader("content-type", "application/json");
                     context.response().setStatusCode(200)
                                         .end(reply.result().encode());
                 }
                 else {
                     LOGGER.info("Failed getting class " + name);
-                    context.response().putHeader("Content-Type", "application/json");
+                    context.response().putHeader("content-type", "application/json");
                     context.response().setStatusCode(404).end();
                 }
             });
@@ -150,12 +174,12 @@ public class HttpServerVerticle extends AbstractVerticle {
         else if (isClass == false) {
             dbService.getProperty(name, reply -> {
                 if (reply.succeeded()) {
-                    context.response().putHeader("Content-Type", "application/json");
+                    context.response().putHeader("content-type", "application/json");
                     context.response().setStatusCode(200)
                                         .end(reply.result().encode());
                 }
                 else {
-                    context.response().putHeader("Content-Type", "application/json");
+                    context.response().putHeader("content-type", "application/json");
                     context.response().setStatusCode(404).end();
                 }
             });
@@ -174,7 +198,7 @@ public class HttpServerVerticle extends AbstractVerticle {
         /** Check if provided param is class or property */
         boolean isClass = Character.isUpperCase(name.charAt(0));
         /** This can be simplified by setting a flag, leaving it expanded for future use. */
-        context.response().putHeader("Content-Type", "application/json");
+        context.response().putHeader("content-type", "application/json");
         /** Validate token */
         String username = context.request().getHeader("username");
         String password = context.request().getHeader("password");
@@ -189,6 +213,7 @@ public class HttpServerVerticle extends AbstractVerticle {
                             isValidSchema = false;
                         }
                         if (isValidSchema == false) {
+                            LOGGER.info("Failed inserting, invalid schema " + name);
                             context.response().setStatusCode(404).end();
                         }
                         else {
@@ -211,6 +236,7 @@ public class HttpServerVerticle extends AbstractVerticle {
                             isValidSchema = false;
                         }
                         if (isValidSchema == false) {
+                            LOGGER.info("Failed inserting, invalid schema " + name);
                             context.response().setStatusCode(404).end();
                         }
                         else {
@@ -232,16 +258,4 @@ public class HttpServerVerticle extends AbstractVerticle {
                 }
         });
     }
-
-// private void serveFile(String url, String indexHTMLFilePath) {
-// 	  this.router
-// 		  .route(url)
-// 		    .handler(
-// 		        routingContext -> {
-// 		          HttpServerResponse response = routingContext.response();
-// 		          response.sendFile(indexHTMLFilePath);
-// 		        });
-//   }
-
-
 }

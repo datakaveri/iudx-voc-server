@@ -13,7 +13,13 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.ext.mongo.MongoClient;
+import io.vertx.ext.mongo.FindOptions;
+import io.vertx.ext.mongo.AggregateOptions;
 import io.vertx.ext.mongo.UpdateOptions;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.lang.Throwable;
+import java.util.concurrent.CountDownLatch;
+
 
 
 
@@ -27,6 +33,31 @@ class DBServiceImpl implements DBService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DBServiceImpl.class);
     private final MongoClient dbClient;
+
+    /** Queries */ 
+    // Find all class
+    private static final String QUERY_FIND_ALL_CLASS = 
+        "[ {\"$unwind\": \"$@graph\"}," 
+        + " { \"$match\": {\"@graph.@type\": { \"$in\": [\"rdfs:Class\"] }}}," 
+        + " { \"$project\": {\"_id\": 0, \"rdfs:label\": \"$@graph.rdfs:label\", \"rdfs:comment\": \"$@graph.rdfs:comment\" } } ])";
+    // Find all properties
+    private static final String QUERY_FIND_ALL_PROPERTIES = 
+        "[ {\"$unwind\": \"$@graph\"}," 
+        + " { \"$match\": {\"@graph.@type\": { \"$in\": [\"rdf:Property\"] }}}," 
+        + " { \"$project\": {\"_id\": 0, \"rdfs:label\": \"$@graph.rdfs:label\", \"rdfs:comment\": \"$@graph.rdfs:comment\" } } ])";
+    // Find a class
+    private static final String QUERY_FIND_CLASS = 
+        "{\"@graph\": {\"$elemMatch\": {\"@id\": \"$1\"}}}";
+    // Find a property
+    private static final String QUERY_FIND_PROPERTY = 
+        "{\"@graph\": {\"$elemMatch\": {\"@id\": \"$1\"}}}";
+    // Insert a property
+    private static final String QUERY_INSERT_CLASS = 
+        "{\"@graph\": {\"$elemMatch\": {\"@id\": \"$1\"}}}";
+    // Insert a class
+    private static final String QUERY_INSERT_PROPERTY = 
+        "{\"@graph\": {\"$elemMatch\": {\"@id\": \"$1\"}}}";
+
 
     DBServiceImpl(MongoClient dbClient, Handler<AsyncResult<DBService>> readyHandler) {
         this.dbClient = dbClient;
@@ -55,19 +86,71 @@ class DBServiceImpl implements DBService {
 
     /**
      * @{@inheritDoc}
+     * @TODO: Batch size issue. Need to iterate cursor or find alternative solution later.
+     */
+    @Override
+    public DBService getAllClasses(Handler<AsyncResult<JsonArray>> resultHandler) {
+        JsonObject command = new JsonObject().put("aggregate", "classes")
+                                                .put("pipeline", new JsonArray(QUERY_FIND_ALL_CLASS))
+                                                .put("cursor",  new JsonObject().put("batchSize", 1000));
+        dbClient.runCommand("aggregate", command, res -> {
+            if (res.succeeded()) {
+                resultHandler.handle(Future.succeededFuture(res.result()
+                                                                .getJsonObject("cursor")
+                                                                .getJsonArray("firstBatch")));
+            } else {
+                LOGGER.info(res.cause());
+                resultHandler.handle(Future.failedFuture(res.cause()));
+            }
+        });
+        return this;
+    }
+
+    /**
+     * @{@inheritDoc}
+     * @TODO: Batch size issue. Need to iterate cursor or find alternative solution later.
+     */
+    @Override
+    public DBService getAllProperties(Handler<AsyncResult<JsonArray>> resultHandler) {
+        JsonObject command = new JsonObject().put("aggregate", "properties")
+                                                .put("pipeline", new JsonArray(QUERY_FIND_ALL_PROPERTIES))
+                                                .put("cursor",  new JsonObject().put("batchSize", 1000));
+        dbClient.runCommand("aggregate", command, res -> {
+            if (res.succeeded()) {
+                resultHandler.handle(Future.succeededFuture(res.result()
+                                                                .getJsonObject("cursor")
+                                                                .getJsonArray("firstBatch")));
+            } else {
+                LOGGER.info(res.cause());
+                resultHandler.handle(Future.failedFuture(res.cause()));
+            }
+        });
+        return this;
+    }
+
+
+    
+    /**
+     * @{@inheritDoc}
      */
     @Override
     public DBService getProperty(String name, Handler<AsyncResult<JsonObject>> resultHandler) {
-        dbClient.findOne("properties",
-                        new JsonObject().put("@id", "iudx:" + name),
-                        new JsonObject().put("_id", false)
-                                        .put("@id", false),
+        dbClient.findWithOptions("properties",
+                        new JsonObject(QUERY_FIND_PROPERTY.replace("$1", "iudx:"+name)),
+                        new FindOptions().setFields(new JsonObject().put("_id", false)
+                                                                    .put("@id", false))
+                                        .setLimit(1),
                         res -> {
                             if (res.succeeded()) {
-                                resultHandler.handle(Future.succeededFuture(res.result()));
+                                    try {
+                                        resultHandler.handle(Future.succeededFuture(res.result().get(0)));
+                                    } catch (Exception e) {
+                                        LOGGER.error("Failed Getting Properties " + name);
+                                        resultHandler.handle(Future.failedFuture(res.cause()));
+                                    }
                             }
                             else {
-                                LOGGER.error("Failed Getting Properties \t" + name);
+                                LOGGER.error("Failed Getting Properties " + name);
                                 resultHandler.handle(Future.failedFuture(res.cause()));
                             }
                         });
@@ -79,17 +162,22 @@ class DBServiceImpl implements DBService {
      */
     @Override
     public DBService getClass(String name, Handler<AsyncResult<JsonObject>> resultHandler) {
-        LOGGER.info("Hit getClass, getting " + name);
-        dbClient.findOne("classes",
-                        new JsonObject().put("@id", "iudx:" + name),
-                        new JsonObject().put("_id", false)
-                                        .put("@id", false),
+        dbClient.findWithOptions("classes",
+                        new JsonObject(QUERY_FIND_CLASS.replace("$1", "iudx:"+name)),
+                        new FindOptions().setFields(new JsonObject().put("_id", false)
+                                                                    .put("@id", false))
+                                        .setLimit(1),
                         res -> {
                             if (res.succeeded()) {
-                                resultHandler.handle(Future.succeededFuture(res.result()));
+                                try {
+                                    resultHandler.handle(Future.succeededFuture(res.result().get(0)));
+                                } catch (Exception e) {
+                                    LOGGER.info("Failed getting property " + name);
+                                    resultHandler.handle(Future.failedFuture(res.cause()));
+                                }
                             }
                             else {
-                                LOGGER.info("Failed getting class");
+                                LOGGER.info("Failed getting property " + name);
                                 resultHandler.handle(Future.failedFuture(res.cause()));
                             }
                         });
@@ -102,9 +190,8 @@ class DBServiceImpl implements DBService {
     @Override
     public DBService insertProperty(String name, JsonObject prop,
                                     Handler<AsyncResult<JsonObject>> resultHandler) {
-        LOGGER.info("Prop id " + prop.getString("@id"));
         dbClient.updateCollectionWithOptions("properties",
-                new JsonObject().put("@id", "iudx:" + name),
+                new JsonObject(QUERY_INSERT_PROPERTY.replace("$1", "iudx:"+name)),
                 new JsonObject().put("$set", prop),
                 new UpdateOptions().setUpsert(true),
                 res -> {
@@ -113,7 +200,7 @@ class DBServiceImpl implements DBService {
                     }
                     else {
                         /** @TODO: Report name */
-                        LOGGER.error("Failed inserting property");
+                        LOGGER.error("Failed inserting property " + name);
                         resultHandler.handle(Future.failedFuture(res.cause()));
                     }
                 });
@@ -127,7 +214,7 @@ class DBServiceImpl implements DBService {
     public DBService insertClass(String name, JsonObject cls,
                                     Handler<AsyncResult<JsonObject>> resultHandler) {
         dbClient.updateCollectionWithOptions("classes",
-                new JsonObject().put("@id", "iudx:" + name),
+                new JsonObject(QUERY_INSERT_CLASS.replace("$1", "iudx:"+name)),
                 new JsonObject().put("$set", cls),
                 new UpdateOptions().setUpsert(true),
                 res -> {
