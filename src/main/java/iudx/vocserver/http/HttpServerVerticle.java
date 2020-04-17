@@ -94,10 +94,10 @@ public class HttpServerVerticle extends AbstractVerticle {
 			response.sendFile("ui/pages/schema_home/index.html");
 		});
 
-        router.route("/schemas").handler(routingContext -> {
-			HttpServerResponse response = routingContext.response();
-			response.sendFile("ui/pages/schema_class/index.html");
-		});
+        // router.route("/schemas").handler(routingContext -> {
+		// 	HttpServerResponse response = routingContext.response();
+		// 	response.sendFile("ui/pages/schema_class/index.html");
+		// });
 
             //    router.route("/:name").handler(routingContext -> {
             //             HttpServerResponse response = routingContext.response();

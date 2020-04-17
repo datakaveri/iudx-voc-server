@@ -45,23 +45,18 @@
             <ul>
 
                 <li>
-
                     <a href="#">Documentation</a>
                 </li>
 
                 <li >
-
-                    <a href="./schema_property">Property</a>
+                    <a href="#properties" onclick="showAllProperties()">Property</a>
                 </li>
 
                 <li >
-
-                    <a href="./schemas">Schemas</a>
+                    <a href="#classes" onclick="showAllClasses()">Schemas</a>
                 </li>
                 <li>
-
-                    <a href="./">About</a>
-
+                    <a href="./">Home</a>
                 </li>
             </ul>
         </div>
@@ -72,21 +67,11 @@
 
     <!-- <div class="se-pre-con"></div> -->
 
-    <section class="container section">
+    <section id="home-section" class="container section">
                         
             <div id="mainContent">
 
-
-
-
-
-
-
-
-
-
                     <h1>Welcome to iudx.schema.org</h1>
-                  
                   
                   <p>
                       <!-- Schema.org is a collaborative, community activity with a mission to create,
@@ -128,26 +113,87 @@
                   
                   <br/>
                   </div>
-                  
-                  
-                  
-                  
-                  
-                  
-                  <div id="footer"><p>
-                    <!-- <a href="docs/terms.html">Terms and conditions</a></p> -->
-                  </div>
-        
     </section>
+
+    <section id="schema_class_section" class="container section">
+        <div id="mainContent">
+        <table id="schema_section" class="definition-table">
+            <thead>
+                <tr>
+                    <th>Class</th>
+                    <th>&nbsp;</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody id="classSchema">
+            </tbody>
+        </table>
+        </div>
+    </section>
+
+    <section id="schema_property_section" class="container section">
+        <div id="mainContent">
+        <table id="schema_section" class="definition-table">
+            <thead>
+                <tr>
+                    <th>Property</th>
+                    <!-- <th>Expected Type</th> -->
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody id="propertySchema" class="supertype">
+            </tbody>
+        </table>
+        </div>
+    </section>
+
+    <footer id="footer">
+            <p>&copy; 2020 <a href="https://iudx.org.in" target="_blank">IUDX</a></p>
+          </footer>
 
     <script src="../../assets/js/schema_functions.js"></script>
     <script>
         $(document).ready(function(){
-            $('#footer').html(getFooterContent())
-        });
+
+        var proxy = 'https://cors-anywhere.herokuapp.com/';
+
+$.ajax({
+    url: proxy + "https://voc.iudx.org.in/classes",
+    type: 'GET',
+    contentType: 'application/json',
+    success: function (data) {
+    //    console.log(data);
+    var dataResult = data;
+    for(i=0;i<dataResult.length;i++){
+
+            $('#classSchema').append(getSchemaClass(dataResult));
+        }
+    },
+    error: function (error) {
+        console.log(error);
+    }
+});
+$.ajax({
+    url: proxy + "https://voc.iudx.org.in/properties",
+    type: 'GET',
+    contentType: 'application/json',
+    success: function (data) {
+    //    console.log(data);
+    var dataResult = data;
+    for(i=0;i<dataResult.length;i++){
+
+            $('#propertySchema').append(getSchemaProperties(dataResult));
+        }
+    
+    },
+    error: function (error) {
+        console.log(error);
+    }
+});
+
+});
+
+       
     </script>
-
-
-
 </body>
 </html>
