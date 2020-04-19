@@ -16,6 +16,7 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.ext.jdbc.JDBCClient;
 import io.vertx.ext.mongo.MongoClient;
 import java.util.HashMap;
+import io.vertx.ext.web.client.WebClient;
 
 @ProxyGen
 @VertxGen
@@ -30,11 +31,11 @@ public interface AuthService {
      * @return {@link DBServiceImpl}
      */
     @Fluent
-    AuthService validateToken(String uname, String token, Handler<AsyncResult<Boolean>> resultHandler);
+    AuthService validateToken(String token, Handler<AsyncResult<Boolean>> resultHandler);
 
     @GenIgnore
-    static AuthService create(JsonObject credentials, Handler<AsyncResult<AuthService>> readyHandler) {
-        return new AuthServiceImpl(credentials, readyHandler);
+    static AuthService create(WebClient client, String authUrl, Handler<AsyncResult<AuthService>> readyHandler) {
+        return new AuthServiceImpl(client, authUrl, readyHandler);
     }
 
     @GenIgnore

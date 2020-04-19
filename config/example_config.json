@@ -1,14 +1,15 @@
 {
-  "vocserver.jksfile": "config/iudxtruststore.jks",
+  "authserver.jksfile": "config/authkeystore_example.jks",
+  "authserver.jkspasswd": "somepasswd",
+  "authserver.url": "auth.iudx.org.in",
+  "vocserver.jksfile": "config/iudxkeystore.jks",
   "vocserver.jkspasswd": "somepassword",
-  "vocserver.http.port": 8080,
+  "vocserver.http.port": 443,
   "vocserver.http.instances": 2,
   "vocserver.database.queue": "vocserver.database.queue",
   "vocserver.database.url": "mongodb://localhost:27017",
   "vocserver.database.name": "voc",
   "vocserver.database.poolname": "mongo_pool",
   "vocserver.auth.instances": 2,
-  "vocserver.auth.queue": "vocserver.auth.queue",
-  "vocserver.auth.username": "someusername",
-  "vocserver.auth.password": "somepassword"
+  "vocserver.auth.queue": "vocserver.auth.queue"
 }

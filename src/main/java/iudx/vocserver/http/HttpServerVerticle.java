@@ -16,10 +16,13 @@ import io.vertx.core.logging.LoggerFactory;
 import io.vertx.core.http.HttpServerOptions;
 import io.vertx.core.net.JksOptions;
 import io.vertx.core.VertxException;
-
-
+import io.vertx.ext.web.handler.CorsHandler;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.ext.web.handler.StaticHandler;
+import io.vertx.core.http.HttpMethod;
+
+import java.util.Set;
+import java.util.HashSet;
 
 
 import iudx.vocserver.database.DBService;
@@ -53,8 +56,6 @@ public class HttpServerVerticle extends AbstractVerticle {
     private Validator classValidator;
     private Validator propertyValidator;
 
-    // Auth attributes
-    private boolean isValidUser;
     /**
      * AbstractVerticle start
      * */
@@ -79,7 +80,27 @@ public class HttpServerVerticle extends AbstractVerticle {
 
         /** ROUTES */
         Router router = Router.router(vertx);
+        
+        /** CORS Related */
+        Set<String> allowedHeaders = new HashSet<>();
+        allowedHeaders.add("Accept");
+        allowedHeaders.add("token");
+        allowedHeaders.add("Content-Length");
+        allowedHeaders.add("Content-Type");
+        allowedHeaders.add("Host");
+        allowedHeaders.add("Origin");
+        allowedHeaders.add("Referer");
+        allowedHeaders.add("Access-Control-Allow-Origin");
 
+        Set<HttpMethod> allowedMethods = new HashSet<>();
+        allowedMethods.add(HttpMethod.GET);
+        allowedMethods.add(HttpMethod.POST);
+        allowedMethods.add(HttpMethod.OPTIONS);
+        allowedMethods.add(HttpMethod.DELETE);
+        allowedMethods.add(HttpMethod.PATCH);
+        allowedMethods.add(HttpMethod.PUT);
+        router.route().handler(CorsHandler.create("*").allowedHeaders(allowedHeaders).allowedMethods(allowedMethods));
+        
         /** Get classes or properties by name */
         router.get("/:name").consumes("application/json+ld").handler(this::getSchemaHandler);
         router.route("/:name").consumes("application/json+ld").handler(BodyHandler.create());
@@ -88,6 +109,7 @@ public class HttpServerVerticle extends AbstractVerticle {
         /** Get all classes  and properties*/
         router.get("/classes").consumes("application/json").handler(this::getClassesHandler);
         router.get("/properties").consumes("application/json").handler(this::getPropertiesHandler);
+
 
         router.route("/").handler(routingContext -> {
 			HttpServerResponse response = routingContext.response();
@@ -200,9 +222,8 @@ public class HttpServerVerticle extends AbstractVerticle {
         /** This can be simplified by setting a flag, leaving it expanded for future use. */
         context.response().putHeader("content-type", "application/json");
         /** Validate token */
-        String username = context.request().getHeader("username");
-        String password = context.request().getHeader("password");
-        authService.validateToken(username, password,
+        String token = context.request().getHeader("token");
+        authService.validateToken(token,
             authreply -> {
                 if (authreply.succeeded()) {
                     if (isClass == true) {

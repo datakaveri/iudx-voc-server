@@ -7,7 +7,7 @@ release.properties
 dependency-reduced-pom.xml
 buildNumber.properties
 .mvn/timing.properties
-config/iudxtruststore.jks
+config/*.jks
 config/vocserver.json
 config/vocserver_local.json
 config/rakshitr@iisc.ac.in-class-1-certificate.pem

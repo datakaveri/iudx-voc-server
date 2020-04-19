@@ -3,7 +3,11 @@ package iudx.vocserver.auth;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Promise;
 import io.vertx.core.json.JsonObject;
+import io.vertx.ext.web.client.WebClient;
 import io.vertx.serviceproxy.ServiceBinder;
+import io.vertx.ext.web.client.WebClientOptions;
+import io.vertx.core.net.JksOptions;
+
 
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
@@ -12,18 +16,29 @@ import io.vertx.core.logging.LoggerFactory;
 public class AuthVerticle extends AbstractVerticle {
 
     public static final String CONFIG_AUTH_QUEUE = "vocserver.auth.queue";
-    private static final String SERVER_UNAME = "vocserver.auth.username";
-    private static final String SERVER_PASSWD = "vocserver.auth.password";
+    private static final String AUTH_KEYSTORE_PATH = "authserver.jksfile";
+    private static final String AUTH_KEYSTORE_PASSWORD = "authserver.jkspasswd";
+    private static final String AUTH_URL = "authserver.url";
     private static final Logger LOGGER = LoggerFactory.getLogger(AuthVerticle.class);
+
+
+    private String url;
 
     @Override
     public void start(Promise<Void> promise) throws Exception {
 
-        JsonObject credentials = new JsonObject()
-                                        .put("username", config().getString(SERVER_UNAME))
-                                        .put("password", config().getString(SERVER_PASSWD));
 
-        AuthService.create(credentials,
+        WebClientOptions options = new WebClientOptions()
+                                       .setSsl(true)
+                                       .setKeyStoreOptions(new JksOptions()
+                                               .setPath(config().getString(AUTH_KEYSTORE_PATH))
+                                               .setPassword(config()
+                                                   .getString(AUTH_KEYSTORE_PASSWORD)));
+
+        WebClient client = WebClient.create(vertx, options);
+        url = config().getString(AUTH_URL);
+        
+        AuthService.create(client, url,
             ready -> {
                 if (ready.succeeded()) {
                     ServiceBinder binder = new ServiceBinder(vertx);
