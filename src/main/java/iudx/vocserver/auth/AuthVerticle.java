@@ -22,8 +22,6 @@ public class AuthVerticle extends AbstractVerticle {
     private static final Logger LOGGER = LoggerFactory.getLogger(AuthVerticle.class);
 
 
-    private String url;
-
     @Override
     public void start(Promise<Void> promise) throws Exception {
 
@@ -36,7 +34,7 @@ public class AuthVerticle extends AbstractVerticle {
                                                    .getString(AUTH_KEYSTORE_PASSWORD)));
 
         WebClient client = WebClient.create(vertx, options);
-        url = config().getString(AUTH_URL);
+        String url = config().getString(AUTH_URL);
         
         AuthService.create(client, url,
             ready -> {

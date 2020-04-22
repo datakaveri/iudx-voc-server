@@ -120,6 +120,14 @@ public class DBServiceVertxProxyHandler extends ProxyHandler {
           service.getMasterContext(HelperUtils.createHandler(msg));
           break;
         }
+        case "getAllProperties": {
+          service.getAllProperties(HelperUtils.createHandler(msg));
+          break;
+        }
+        case "getAllClasses": {
+          service.getAllClasses(HelperUtils.createHandler(msg));
+          break;
+        }
         case "getProperty": {
           service.getProperty((java.lang.String)json.getValue("name"),
                         HelperUtils.createHandler(msg));

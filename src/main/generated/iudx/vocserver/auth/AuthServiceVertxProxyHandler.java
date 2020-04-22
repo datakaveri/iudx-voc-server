@@ -115,8 +115,7 @@ public class AuthServiceVertxProxyHandler extends ProxyHandler {
       accessed();
       switch (action) {
         case "validateToken": {
-          service.validateToken((java.lang.String)json.getValue("uname"),
-                        (java.lang.String)json.getValue("token"),
+          service.validateToken((java.lang.String)json.getValue("token"),
                         HelperUtils.createHandler(msg));
           break;
         }
