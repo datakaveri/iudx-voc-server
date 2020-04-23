@@ -37,6 +37,7 @@ public class HttpServerVerticle extends AbstractVerticle {
      */
 
     // Config variables
+    public static final String CONFIG_HTTP_CNAME = "vocserver.http.cname";
     public static final String CONFIG_HTTP_SERVER_PORT = "vocserver.http.port";
     public static final String CONFIG_DB_QUEUE = "vocserver.database.queue";
     public static final String CONFIG_AUTH_QUEUE = "vocserver.auth.queue";
@@ -83,14 +84,14 @@ public class HttpServerVerticle extends AbstractVerticle {
         
         /** CORS Related */
         Set<String> allowedHeaders = new HashSet<>();
-        allowedHeaders.add("Accept");
+        allowedHeaders.add("accept");
         allowedHeaders.add("token");
-        allowedHeaders.add("Content-Length");
-        allowedHeaders.add("Content-Type");
-        allowedHeaders.add("Host");
-        allowedHeaders.add("Origin");
-        allowedHeaders.add("Referer");
-        allowedHeaders.add("Access-Control-Allow-Origin");
+        allowedHeaders.add("content-length");
+        allowedHeaders.add("content-type");
+        allowedHeaders.add("host");
+        allowedHeaders.add("origin");
+        allowedHeaders.add("referer");
+        allowedHeaders.add("access-control-allow-origin");
 
         Set<HttpMethod> allowedMethods = new HashSet<>();
         allowedMethods.add(HttpMethod.GET);
@@ -223,7 +224,9 @@ public class HttpServerVerticle extends AbstractVerticle {
         context.response().putHeader("content-type", "application/json");
         /** Validate token */
         String token = context.request().getHeader("token");
-        authService.validateToken(token,
+        /** Sever ID is the vocab server domain name*/
+        String serverId = config().getString(CONFIG_HTTP_CNAME);
+        authService.validateToken(token, serverId,
             authreply -> {
                 if (authreply.succeeded()) {
                     if (isClass == true) {

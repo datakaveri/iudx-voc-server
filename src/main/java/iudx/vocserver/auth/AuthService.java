@@ -31,7 +31,7 @@ public interface AuthService {
      * @return {@link DBServiceImpl}
      */
     @Fluent
-    AuthService validateToken(String token, Handler<AsyncResult<Boolean>> resultHandler);
+    AuthService validateToken(String token, String serverId, Handler<AsyncResult<Boolean>> resultHandler);
 
     @GenIgnore
     static AuthService create(WebClient client, String authUrl, Handler<AsyncResult<AuthService>> readyHandler) {
