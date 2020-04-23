@@ -1,6 +1,7 @@
 {
   "authserver.jksfile": "can be the same as vocserver.jksfile",
   "authserver.jkspasswd": "password",
+  "authserver.type": "iudxauth or localauth",
   "authserver.url": "authurl",
   "vocserver.jksfile": "JKS file",
   "vocserver.jkspasswd": "Some password",

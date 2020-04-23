@@ -23,12 +23,12 @@ import java.lang.Throwable;
 class AuthServiceImpl implements AuthService {
     private static final Logger LOGGER = LoggerFactory.getLogger(AuthServiceImpl.class);
     private WebClient client;
-    private String url;
+    private JsonObject authObject;
 
 
-    AuthServiceImpl(WebClient client, String url, Handler<AsyncResult<AuthService>> readyHandler) {
+    AuthServiceImpl(WebClient client, JsonObject authObject, Handler<AsyncResult<AuthService>> readyHandler) {
         this.client = client;
-        this.url = url;
+        this.authObject = authObject;
         readyHandler.handle(Future.succeededFuture(this));
     }
 
@@ -39,40 +39,45 @@ class AuthServiceImpl implements AuthService {
     public AuthService validateToken(String token, String serverId,
             Handler<AsyncResult<Boolean>> resultHandler) {
 
+        if (authObject.getString("authType").equals("localauth")) {
+            resultHandler.handle(Future.succeededFuture(true));
+            return this;
+        }
+
         client
-            .post(443, url, "/auth/v1/token/introspect")
+            .post(443, authObject.getString("url"), "/auth/v1/token/introspect")
             .ssl(true)
             .putHeader("content-type", "application/json")
             .sendJsonObject(new JsonObject().put("token", token),
-                    ar -> {
-                        if (ar.succeeded()) {
-                            if (ar.result().statusCode() == 200) {
-                                JsonArray validPatterns = ar.result().bodyAsJsonObject()
-                                                            .getJsonArray("request");
-                                LOGGER.info("Got valid ids " + validPatterns.encode());
-                                int validToken = 0;
-                                for (int i = 0; i<validPatterns.size(); i++) {
-                                    Pattern patObj = Pattern.compile(validPatterns
-                                                                    .getJsonObject(i)
-                                                                    .getString("id")
-                                                                    .split("/")[2]
-                                                                    .replace("/", "\\/")
-                                                                    .replace(".", "\\.")
-                                                                    .replace("*", ".*"));
+                ar -> {
+                    if (ar.succeeded()) {
+                        if (ar.result().statusCode() == 200) {
+                            JsonArray validPatterns = ar.result().bodyAsJsonObject()
+                                .getJsonArray("request");
+                            LOGGER.info("Got valid ids " + validPatterns.encode());
+                            int validToken = 0;
+                            for (int i = 0; i<validPatterns.size(); i++) {
+                                Pattern patObj = Pattern.compile(validPatterns
+                                        .getJsonObject(i)
+                                        .getString("id")
+                                        .split("/")[2]
+                                        .replace("/", "\\/")
+                                        .replace(".", "\\.")
+                                        .replace("*", ".*"));
 
-                                    if (patObj.matcher(serverId).matches()) validToken = 1;
-                                }
-                                if (validToken == 1 ){
-                                    LOGGER.info("Obtained valid token");
-                                    resultHandler.handle(Future.succeededFuture(true));
-                                } else {
-                                    resultHandler.handle(Future.failedFuture(new Throwable("Invalid token")));
-                                }
-                            } else {
-                                resultHandler.handle(Future.failedFuture(ar.cause()));
+                                if (patObj.matcher(serverId).matches()) validToken = 1;
                             }
+                            if (validToken == 1 ){
+                                LOGGER.info("Obtained valid token");
+                                resultHandler.handle(Future.succeededFuture(true));
+                            } else {
+                                resultHandler.handle(Future.failedFuture(new Throwable("Invalid token")));
+                            }
+                        } else {
+                            resultHandler.handle(Future.failedFuture(ar.cause()));
                         }
-                    });
+                    }
+                });
         return this;
-            }
+    }
 }

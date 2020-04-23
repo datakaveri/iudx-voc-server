@@ -169,27 +169,25 @@
     <script src="../../assets/js/schema_functions.js"></script>
     <script>
         $(document).ready(function(){
+            // TODO: Populate classes only on click
+        $.ajax({
+            url:  "/classes",
+            type: 'GET',
+            contentType: 'application/json',
+            success: function (data) {
+            //    console.log(data);
+            var dataResult = data;
+            for(i=0;i<dataResult.length;i++){
 
-        var proxy = 'https://cors-anywhere.herokuapp.com/';
-
-$.ajax({
-    url: proxy + "https://voc.iudx.org.in/classes",
-    type: 'GET',
-    contentType: 'application/json',
-    success: function (data) {
-    //    console.log(data);
-    var dataResult = data;
-    for(i=0;i<dataResult.length;i++){
-
-            $('#classSchema').append(getSchemaClass(dataResult));
-        }
-    },
-    error: function (error) {
-        console.log(error);
-    }
-});
+                    $('#classSchema').append(getSchemaClass(dataResult));
+                }
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        });
  $.ajax({
-    url: proxy + "https://voc.iudx.org.in/properties",
+    url:  "/properties",
     type: 'GET',
     contentType: 'application/json',
     success: function (data) {
@@ -205,24 +203,6 @@ $.ajax({
         console.log(error);
     }
 });
-$.ajax({
-    url: proxy + "https://voc.iudx.org.in/ResourceItem",
-    type: 'GET',
-    contentType: 'application/json+ld',
-    success: function (data) {
-       console.log(data);
-        // getClassProperty(data,)
-    // for(i=0;i<dataResult.length;i++){
-
-    //         // $('#propertySchema').append(getSchemaProperties(dataResult));
-    //     }
-    
-    },
-    error: function (error) {
-        console.log(error);
-    }
-});
-
 });
 
        

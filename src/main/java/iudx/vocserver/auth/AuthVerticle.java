@@ -14,10 +14,12 @@ import io.vertx.core.logging.LoggerFactory;
 
 // tag::authverticle[]
 public class AuthVerticle extends AbstractVerticle {
-
     public static final String CONFIG_AUTH_QUEUE = "vocserver.auth.queue";
     private static final String AUTH_KEYSTORE_PATH = "authserver.jksfile";
+    private static final String AUTH_TYPE = "authserver.type";
     private static final String AUTH_KEYSTORE_PASSWORD = "authserver.jkspasswd";
+    private static final String AUTH_LOCAL_USERNAME = "authserver.localuser";
+    private static final String AUTH_LOCAL_PASSWORD = "authserver.localpassword";
     private static final String AUTH_URL = "authserver.url";
     private static final Logger LOGGER = LoggerFactory.getLogger(AuthVerticle.class);
 
@@ -34,9 +36,19 @@ public class AuthVerticle extends AbstractVerticle {
                                                    .getString(AUTH_KEYSTORE_PASSWORD)));
 
         WebClient client = WebClient.create(vertx, options);
-        String url = config().getString(AUTH_URL);
-        
-        AuthService.create(client, url,
+
+        JsonObject authConfig = new JsonObject();
+
+        String authType = config().getString(AUTH_TYPE);
+        if (authType.equals("localauth")) {
+            authConfig.put("authType", "localauth");
+        } else {
+            authConfig.put("authType", "iudxauth");
+            authConfig.put("url", config().getString(AUTH_URL));
+        }
+
+
+        AuthService.create(client, authConfig,
             ready -> {
                 if (ready.succeeded()) {
                     ServiceBinder binder = new ServiceBinder(vertx);
