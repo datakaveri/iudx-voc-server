@@ -34,8 +34,8 @@ public interface AuthService {
     AuthService validateToken(String token, String serverId, Handler<AsyncResult<Boolean>> resultHandler);
 
     @GenIgnore
-    static AuthService create(WebClient client, String authUrl, Handler<AsyncResult<AuthService>> readyHandler) {
-        return new AuthServiceImpl(client, authUrl, readyHandler);
+    static AuthService create(WebClient client, JsonObject authDetails, Handler<AsyncResult<AuthService>> readyHandler) {
+        return new AuthServiceImpl(client, authDetails, readyHandler);
     }
 
     @GenIgnore

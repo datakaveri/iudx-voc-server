@@ -30,6 +30,7 @@ function showAllClasses() {
     $('#class_property_section').hide();
     $("#footer").show();
 }
+
 function getSchemaClass(__data) {
     return (
         `
@@ -60,34 +61,105 @@ function getSchemaClass(__data) {
 function getSchemaProperties(__data) {
     return (
         `
-   
     <tr>           
-    <th class="prop-nam" scope="row">
-
-<code property="rdfs:label"><a href="./address">` +
+                        <th class="prop-nam" scope="row">
+      
+                        <code property="rdfs:label"><a href="#` +
+        __data[i]["rdfs:label"] +
+        `" onclick="getProperty_expanded('` +
+        __data[i]["rdfs:label"] +
+        `','` +
+        __data[i]["rdfs:comment"] +
+        `');">` +
         __data[i]["rdfs:label"] +
         `</a></code>
-  </th>
-
-<td class="prop-desc" property="rdfs:comment">` +
+                        </th>
+                        <td>&nbsp;</td>
+                        <td class="prop-desc" property="rdfs:comment">` +
         __data[i]["rdfs:comment"] +
         `</td></tr><tr typeof="rdfs:Property" resource="http://schema.org/addressCountry">
-  
-
-</tr>
-            `
+          
+        
+                    </tr>
+                         `
     );
 }
+
+
+function getProperty_expanded(propertyName) {
+    // var schema = "Schema:";
+    $("#schema_class_section").hide();
+    $('#class_property_section').show();
+    $("#class_propertySchema").html("");
+
+    //  document.location.href = 'https://localhost.iudx.org.in:8443/schema_property';
+    $.ajax({
+        url:  "/" + class_label,
+        type: "GET",
+        contentType: "application/json+ld",
+        success: function (data) {
+            console.log(data["@graph"]);
+            var redirectURL = location.origin + "/" + class_label;
+            var dataResult_graph = data["@graph"];
+            var arr = [];
+            for (i = 0; i < dataResult_graph.length; i++) {
+                if (
+                    dataResult_graph[i]["@type"] !== undefined &&
+                    dataResult_graph[i]["@type"][0] === "rdf:Property"
+                ) {
+                    // console.log(dataResult_graph[i]["@type"]);
+                    // console.log(dataResult_graph[i]["iudx:rangeIncludes"])
+                    // console.log(dataResult_graph[i]["iudx:rangeIncludes"].length);
+                    // for(k=0; k< dataResult_graph[i]["iudx:rangeIncludes"].length;k++)
+                    // {
+                    //     arr.push(dataResult_graph[i]["iudx:rangeIncludes"][k]['@id'])
+                        
+                    // }
+                    // console.log(arr)
+                    for (j = 0; j < dataResult_graph[i]["iudx:domainIncludes"].length; j++) {
+                        // console.log("domainIncludes");data
+                        if (
+                            dataResult_graph[i]["iudx:domainIncludes"][j]["@id"].includes(
+                                "iudx:" + class_label
+                            )
+                        ) {
+                            
+                            $("#class_propertySchema").append(
+                                `
+                                <tr>           
+                                    <th class="prop-nam" scope="row"><code property="rdfs:label"><a href="./address">` +
+                                dataResult_graph[i]["rdfs:label"] +
+                                `</a></code>
+                                    </th>dataResult_graph
+                                   `+getRangeIncludes(dataResult_graph[i]["iudx:rangeIncludes"])+`
+                                    <td class="prop-desc" property="rdfs:comment">` +
+                                dataResult_graph[i]["rdfs:comment"] +
+                                `</td></tr><tr typeof="rdfs:Property" resource="http://schema.org/addressCountry">
+                                </tr>
+    
+                              `
+                            );
+                            // $(location).attr("href", redirectURL);
+                        }
+                    }
+                }
+            }
+        },
+        error: function (error) { }
+    });
+}
+
+
 
 function getClass_property(class_label, class_desc) {
     // var schema = "Schema:";
     $("#schema_class_section").hide();
     $('#class_property_section').show();
-    var proxy = "https://cors-anywhere.herokuapp.com/";
+    $("#class_propertySchema").html("");
 
     //  document.location.href = 'https://localhost.iudx.org.in:8443/schema_property';
     $.ajax({
-        url: proxy + "https://voc.iudx.org.in/" + class_label,
+        url:  "/" + class_label,
         type: "GET",
         contentType: "application/json+ld",
         success: function (data) {
