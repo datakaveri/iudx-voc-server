@@ -102,10 +102,13 @@ public class HttpServerVerticle extends AbstractVerticle {
         allowedMethods.add(HttpMethod.PUT);
         router.route().handler(CorsHandler.create("*").allowedHeaders(allowedHeaders).allowedMethods(allowedMethods));
         
-        /** Get classes or properties by name */
+        /** Get classes or properties by name (JSON-LD API) */
         router.get("/:name").consumes("application/json+ld").handler(this::getSchemaHandler);
         router.route("/:name").consumes("application/json+ld").handler(BodyHandler.create());
         router.post("/:name").consumes("application/json+ld").handler(this::insertSchemaHandler);
+
+        router.getWithRegex("\\/(?<name>[^\\/]+)\\.jsonld").handler(this::getSchemaHandler);
+
 
         /** Get all classes  and properties*/
         router.get("/classes").consumes("application/json").handler(this::getClassesHandler);
@@ -176,7 +179,7 @@ public class HttpServerVerticle extends AbstractVerticle {
      */
     // tag::db-service-calls[]
     private void getSchemaHandler(RoutingContext context) {
-        String name = context.request().getParam("name");
+        String name = context.request().getParam("name").replace(".jsonld", "");
         /** Check if provided param is class or property */
         boolean isClass = Character.isUpperCase(name.charAt(0));
         /** This can be simplified by setting a flag, leaving it expanded for future use. */
