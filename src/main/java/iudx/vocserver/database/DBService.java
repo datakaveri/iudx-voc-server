@@ -67,6 +67,7 @@ public interface DBService {
 
     /**
      * insertProperty - Insert a property
+     * @param name name of the property
      * @param prop property schema validated JsonObject
      * @return {@link DBServiceImpl}
      */
@@ -75,12 +76,28 @@ public interface DBService {
 
     /**
      * insertClass - Insert a class
+     * @param name name of the class
      * @param cls class schema validated JsonObject
      * @return {@link DBServiceImpl}
      */
     @Fluent
     DBService insertClass(String name, JsonObject cls, Handler<AsyncResult<JsonObject>> resultHandler);
 
+    /**
+     * deleteProperty - Delete a property
+     * @param name name of the property
+     * @return {@link DBServiceImpl}
+     */
+    @Fluent
+    DBService deleteProperty(String name, Handler<AsyncResult<JsonObject>> resultHandler);
+
+    /**
+     * deleteClass - Delete a class
+     * @param name name of the class
+     * @return {@link DBServiceImpl}
+     */
+    @Fluent
+    DBService deleteClass(String name, Handler<AsyncResult<JsonObject>> resultHandler);
 
     @GenIgnore
     static DBService create(MongoClient dbClient,  Handler<AsyncResult<DBService>> readyHandler) {
