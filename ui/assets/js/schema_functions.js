@@ -116,7 +116,9 @@ function getProperty_details(prop_name,prop_desc) {
                               `
                             );
         },
-        error: function (error) { }
+        error: function (error) { 
+            console.log("Failed");
+        }
     });
 }
 
@@ -140,7 +142,13 @@ function getClass_property(className, class_desc) {
             for (i = 0; i < dataResult_graph.length; i++) {
                 if (
                     dataResult_graph[i]["@type"] !== undefined &&
-                    dataResult_graph[i]["@type"][0] === "rdf:Property"
+                    dataResult_graph[i]["@type"] === "rdf:Property" ||
+                    dataResult_graph[i]["@type"] === "iudx:Property" ||
+                    dataResult_graph[i]["@type"] === "iudx:TextProperty" ||
+                    dataResult_graph[i]["@type"] === "iudx:GeoProperty" ||
+                    dataResult_graph[i]["@type"] === "iudx:TimeProperty" ||
+                    dataResult_graph[i]["@type"] === "iudx:QuantitativeProperty" ||
+                    dataResult_graph[i]["@type"] === "iudx:StructuredProperty"
                 ) 
                     {
                                            

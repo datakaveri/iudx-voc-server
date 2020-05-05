@@ -33,6 +33,7 @@ services:
     volumes:
       - mongo-data:/var/lib/mongodb/
       - ./config/mongo_setup.sh:/docker-entrypoint-initdb.d/init.sh
+      - ./config/vocserver.json:/docker-entrypoint-initdb.d/vocserver.json
     networks: 
       - voc-net
     expose:
@@ -47,10 +48,12 @@ services:
     volumes:
       - mongo-data:/var/lib/mongodb/
       - ./config/mongo_setup.sh:/docker-entrypoint-initdb.d/init.sh
+      - ./config/vocserver_local.json:/docker-entrypoint-initdb.d/vocserver.json
     networks: 
       - voc-net
     ports:
       - "27017:27017"
+    command: mongod --auth
     logging:
          driver: "json-file"
          options:

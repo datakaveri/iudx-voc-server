@@ -37,9 +37,9 @@ class DBServiceImpl implements DBService {
         + " { \"$project\": {\"_id\": 0, \"rdfs:label\": \"$@graph.rdfs:label\", \"rdfs:comment\": \"$@graph.rdfs:comment\" } } ])";
 
     // Find all properties
+    // TODO: Temporary fix for searching all kinds of properties
     private static final String QUERY_FIND_ALL_PROPERTIES = 
         "[ {\"$unwind\": \"$@graph\"}," 
-        + " { \"$match\": {\"@graph.@type\": { \"$in\": [\"rdf:Property\"] }}}," 
         + " { \"$project\": {\"_id\": 0, \"rdfs:label\": \"$@graph.rdfs:label\", \"rdfs:comment\": \"$@graph.rdfs:comment\" } } ])";
 
     // Find a class
@@ -173,8 +173,33 @@ class DBServiceImpl implements DBService {
      * @{@inheritDoc}
      */
     @Override
+    public DBService insertMasterContext(JsonObject context,
+            Handler<AsyncResult<Boolean>> resultHandler) {
+        dbClient.dropCollection("master",
+                res -> {
+                    if (!res.succeeded()) {
+                        LOGGER.error("Failed inserting master schema");
+                        resultHandler.handle(Future.failedFuture(res.cause()));
+                    }
+                });
+        dbClient.insert("master", context,
+                res -> {
+                    if (res.succeeded()) {
+                        resultHandler.handle(Future.succeededFuture());
+                    } else {
+                        LOGGER.error("Failed inserting master schema");
+                        resultHandler.handle(Future.failedFuture(res.cause()));
+                    }
+        });
+        return this;
+    }
+
+    /**
+     * @{@inheritDoc}
+     */
+    @Override
     public DBService insertProperty(String name, JsonObject prop,
-            Handler<AsyncResult<JsonObject>> resultHandler) {
+            Handler<AsyncResult<Boolean>> resultHandler) {
         dbClient.updateCollectionWithOptions("properties",
                 new JsonObject(QUERY_MATCH_ID.replace("$1", "iudx:"+name)),
                 new JsonObject().put("$set", prop),
@@ -196,7 +221,7 @@ class DBServiceImpl implements DBService {
      */
     @Override
     public DBService insertClass(String name, JsonObject cls,
-            Handler<AsyncResult<JsonObject>> resultHandler) {
+            Handler<AsyncResult<Boolean>> resultHandler) {
         dbClient.updateCollectionWithOptions("classes",
                 new JsonObject(QUERY_MATCH_ID.replace("$1", "iudx:"+name)),
                 new JsonObject().put("$set", cls),
@@ -219,7 +244,7 @@ class DBServiceImpl implements DBService {
      */
     @Override
     public DBService deleteClass(String name,
-            Handler<AsyncResult<JsonObject>> resultHandler) {
+            Handler<AsyncResult<Boolean>> resultHandler) {
         dbClient.findOneAndDelete("classes",
                 new JsonObject(QUERY_MATCH_ID.replace("$1", "iudx:"+name)),
                 res -> {
@@ -238,7 +263,7 @@ class DBServiceImpl implements DBService {
      */
     @Override
     public DBService deleteProperty(String name,
-            Handler<AsyncResult<JsonObject>> resultHandler) {
+            Handler<AsyncResult<Boolean>> resultHandler) {
         dbClient.findOneAndDelete("property",
                 new JsonObject(QUERY_MATCH_ID.replace("$1", "iudx:"+name)),
                 res -> {

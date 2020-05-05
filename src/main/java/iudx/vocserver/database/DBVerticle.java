@@ -16,6 +16,8 @@ public class DBVerticle extends AbstractVerticle {
     public static final String CONFIG_DB_NAME = "vocserver.database.name";
     public static final String CONFIG_DB_QUEUE = "vocserver.database.queue";
     public static final String CONFIG_DB_POOLNAME = "vocserver.database.poolname";
+    public static final String CONFIG_DB_UNAME = "vocserver.database.username";
+    public static final String CONFIG_DB_PASSWORD = "vocserver.database.password";
     private static final Logger LOGGER = LoggerFactory.getLogger(DBVerticle.class);
 
     @Override
@@ -24,6 +26,8 @@ public class DBVerticle extends AbstractVerticle {
         /* Load default mongo client config if none specified*/
         JsonObject mongoconfig = new JsonObject()
             .put("connection_string", config().getString(CONFIG_DB_URL))
+            .put("username", config().getString(CONFIG_DB_UNAME))
+            .put("password", config().getString(CONFIG_DB_PASSWORD))
             .put("db_name", config().getString(CONFIG_DB_NAME));
         MongoClient dbClient = MongoClient.createShared(vertx,
                                                         mongoconfig,
