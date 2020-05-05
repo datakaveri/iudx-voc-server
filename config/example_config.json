@@ -10,6 +10,8 @@
   "vocserver.http.instances": 2,
   "vocserver.database.queue": "vocserver.database.queue",
   "vocserver.database.url": "mongodb://localhost:27017",
+  "vocserver.database.username": "abc",
+  "vocserver.database.password": "123",
   "vocserver.database.name": "voc",
   "vocserver.database.poolname": "mongo_pool",
   "vocserver.auth.instances": 2,

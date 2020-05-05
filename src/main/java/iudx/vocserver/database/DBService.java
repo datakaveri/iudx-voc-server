@@ -27,11 +27,18 @@ public interface DBService {
 
     /**
      * getMasterContext - Gets json-ld iudx master context
-     * @param name Property/Class Name
      * @return {@link DBServiceImpl}
      */
     @Fluent
     DBService getMasterContext(Handler<AsyncResult<JsonArray>> resultHandler);
+
+    /**
+     * insertMasterContext - insert json-ld iudx master context
+     * @param contex JsonObject Master Context
+     * @return {@link DBServiceImpl}
+     */
+    @Fluent
+    DBService insertMasterContext(JsonObject context, Handler<AsyncResult<Boolean>> resultHandler);
 
     /**
      * getAllProperties - Gets all vocabulary properties
@@ -72,7 +79,7 @@ public interface DBService {
      * @return {@link DBServiceImpl}
      */
     @Fluent
-    DBService insertProperty(String name, JsonObject prop, Handler<AsyncResult<JsonObject>> resultHandler);
+    DBService insertProperty(String name, JsonObject prop, Handler<AsyncResult<Boolean>> resultHandler);
 
     /**
      * insertClass - Insert a class
@@ -81,7 +88,7 @@ public interface DBService {
      * @return {@link DBServiceImpl}
      */
     @Fluent
-    DBService insertClass(String name, JsonObject cls, Handler<AsyncResult<JsonObject>> resultHandler);
+    DBService insertClass(String name, JsonObject cls, Handler<AsyncResult<Boolean>> resultHandler);
 
     /**
      * deleteProperty - Delete a property
@@ -89,7 +96,7 @@ public interface DBService {
      * @return {@link DBServiceImpl}
      */
     @Fluent
-    DBService deleteProperty(String name, Handler<AsyncResult<JsonObject>> resultHandler);
+    DBService deleteProperty(String name, Handler<AsyncResult<Boolean>> resultHandler);
 
     /**
      * deleteClass - Delete a class
@@ -97,7 +104,7 @@ public interface DBService {
      * @return {@link DBServiceImpl}
      */
     @Fluent
-    DBService deleteClass(String name, Handler<AsyncResult<JsonObject>> resultHandler);
+    DBService deleteClass(String name, Handler<AsyncResult<Boolean>> resultHandler);
 
     @GenIgnore
     static DBService create(MongoClient dbClient,  Handler<AsyncResult<DBService>> readyHandler) {
