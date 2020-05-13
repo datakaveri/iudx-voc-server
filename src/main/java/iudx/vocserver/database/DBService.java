@@ -30,7 +30,7 @@ public interface DBService {
      * @return {@link DBServiceImpl}
      */
     @Fluent
-    DBService getMasterContext(Handler<AsyncResult<JsonArray>> resultHandler);
+    DBService getMasterContext(Handler<AsyncResult<JsonObject>> resultHandler);
 
     /**
      * insertMasterContext - insert json-ld iudx master context

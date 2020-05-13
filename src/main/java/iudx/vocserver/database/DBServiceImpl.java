@@ -56,13 +56,16 @@ class DBServiceImpl implements DBService {
      * @{@inheritDoc}
      */
     @Override
-    public DBService getMasterContext(Handler<AsyncResult<JsonArray>> resultHandler) {
-        dbClient.find("master",
+    public DBService getMasterContext(Handler<AsyncResult<JsonObject>> resultHandler) {
+        dbClient.findWithOptions("master",
                 new JsonObject(),
+                new FindOptions().setFields(new JsonObject().put("_id", false)
+                    .put("@id", false))
+                .setLimit(1),
                 res -> {
                     if (res.succeeded()) {
-                        JsonArray arr = new JsonArray(res.result());
-                        resultHandler.handle(Future.succeededFuture(arr));
+                        JsonObject obj = res.result().get(0);
+                        resultHandler.handle(Future.succeededFuture(obj));
                     } else {
                         LOGGER.error("Failed Getting Master Context");
                         resultHandler.handle(Future.failedFuture(res.cause()));
