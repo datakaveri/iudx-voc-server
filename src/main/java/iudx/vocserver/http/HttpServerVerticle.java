@@ -54,6 +54,7 @@ public class HttpServerVerticle extends AbstractVerticle {
 
     // Validator objects
     private boolean isValidSchema;
+    private Validator masterValidator;
     private Validator classValidator;
     private Validator propertyValidator;
 
@@ -69,8 +70,9 @@ public class HttpServerVerticle extends AbstractVerticle {
         dbService = DBService.createProxy(vertx, dbQueue);
         authService = AuthService.createProxy(vertx, authQueue);
 
-        propertyValidator = new Validator("/propertySchema.json");
+        masterValidator = new Validator("/masterSchema.json");
         classValidator = new Validator("/classSchema.json");
+        propertyValidator = new Validator("/propertySchema.json");
 
         HttpServerOptions options = new HttpServerOptions()
                                     .setSsl(true)
@@ -102,10 +104,16 @@ public class HttpServerVerticle extends AbstractVerticle {
         allowedMethods.add(HttpMethod.PUT);
         router.route().handler(CorsHandler.create("*").allowedHeaders(allowedHeaders).allowedMethods(allowedMethods));
         
-        /** Get classes or properties by name (JSON-LD API) */
-        router.get("/:name").consumes("application/json+ld").handler(this::getSchemaHandler);
-        router.route("/:name").consumes("application/json+ld").handler(BodyHandler.create());
-        router.post("/:name").consumes("application/json+ld").handler(this::insertSchemaHandler);
+        /** Get/Post master context */
+        router.get("/").consumes("application/ld+json").handler(this::getMasterHandler);
+        router.get("/").consumes("application/json").handler(this::getMasterHandler);
+        router.route("/").consumes("application/ld+json").handler(BodyHandler.create());
+        router.post("/").consumes("application/ld+json").handler(this::insertMasterHandler);
+
+        /** Get/Post classes or properties by name (JSON-LD API) */
+        router.get("/:name").consumes("application/ld+json").handler(this::getSchemaHandler);
+        router.route("/:name").consumes("application/ld+json").handler(BodyHandler.create());
+        router.post("/:name").consumes("application/ld+json").handler(this::insertSchemaHandler);
 
         router.getWithRegex("\\/(?<name>[^\\/]+)\\.jsonld").handler(this::getSchemaHandler);
 
@@ -174,6 +182,25 @@ public class HttpServerVerticle extends AbstractVerticle {
             });
     }
 
+
+    /**
+     * getMasterHandler - handler to get master context
+     */
+    // tag::db-service-calls[]
+    private void getMasterHandler(RoutingContext context) {
+            dbService.getMasterContext(reply -> {
+                if (reply.succeeded()) {
+                    context.response().putHeader("content-type", "application/json");
+                    context.response().setStatusCode(200)
+                                        .end(reply.result().encode());
+                } else {
+                    LOGGER.info("Failed getting master context");
+                    context.response().putHeader("content-type", "application/json");
+                    context.response().setStatusCode(404).end();
+                }
+            });
+        }
+    
     /**
      * getSchemaHandler - handler to get classes or properties by name
      */
@@ -189,22 +216,19 @@ public class HttpServerVerticle extends AbstractVerticle {
                     context.response().putHeader("content-type", "application/json");
                     context.response().setStatusCode(200)
                                         .end(reply.result().encode());
-                }
-                else {
+                } else {
                     LOGGER.info("Failed getting class " + name);
                     context.response().putHeader("content-type", "application/json");
                     context.response().setStatusCode(404).end();
                 }
             });
-        }
-        else if (isClass == false) {
+        } else if (isClass == false) {
             dbService.getProperty(name, reply -> {
                 if (reply.succeeded()) {
                     context.response().putHeader("content-type", "application/json");
                     context.response().setStatusCode(200)
                                         .end(reply.result().encode());
-                }
-                else {
+                } else {
                     context.response().putHeader("content-type", "application/json");
                     context.response().setStatusCode(404).end();
                 }
@@ -212,6 +236,49 @@ public class HttpServerVerticle extends AbstractVerticle {
         }
     }
 
+    /**
+     * insertMasterHandler - handler to insert master context
+     * @TODO: Check duplicates
+     */
+    // tag::db-service-calls[]
+    private void insertMasterHandler(RoutingContext context) {
+        String body = context.getBodyAsString();
+        /** This can be simplified by setting a flag, leaving it expanded for future use. */
+        context.response().putHeader("content-type", "application/json");
+        /** Validate token */
+        String token = context.request().getHeader("token");
+        /** Sever ID is the vocab server domain name*/
+        String serverId = config().getString(CONFIG_HTTP_CNAME);
+        authService.validateToken(token, serverId,
+            authreply -> {
+                if (authreply.succeeded()) {
+                    try {
+                        isValidSchema = masterValidator.validate(body);
+                    }
+                    catch (Exception e) {
+                        isValidSchema = false;
+                        LOGGER.info(e);
+                    }
+                    if (isValidSchema == false) {
+                        LOGGER.info("Failed inserting master context, invalid schema ");
+                        context.response().setStatusCode(404).end();
+                    } else {
+                        dbService.insertMasterContext(context.getBodyAsJson(), reply -> {
+                            if (reply.succeeded()) {
+                                LOGGER.info("Inserted master");
+                                context.response().setStatusCode(201).end();
+                            } else {
+                                context.response().setStatusCode(404).end();
+                            }
+                        });
+                    }
+                }
+                if (authreply.failed()) {
+                    LOGGER.info("Got invalid usename and password");
+                    context.response().setStatusCode(401).end();
+                }
+        });
+    }
 
     /**
      * insertSchemaHandler - handler to insert a class or property
@@ -242,20 +309,17 @@ public class HttpServerVerticle extends AbstractVerticle {
                         if (isValidSchema == false) {
                             LOGGER.info("Failed inserting, invalid schema " + name);
                             context.response().setStatusCode(404).end();
-                        }
-                        else {
+                        } else {
                             dbService.insertClass(name, context.getBodyAsJson(), reply -> {
                                 if (reply.succeeded()) {
                                     LOGGER.info("Inserted " + name);
                                     context.response().setStatusCode(201).end();
-                                }
-                                else {
+                                } else {
                                     context.response().setStatusCode(404).end();
                                 }
                             });
                         }
-                    }
-                    else if (isClass == false) {
+                    } else if (isClass == false) {
                         try {
                             isValidSchema = propertyValidator.validate(body);
                         }
@@ -265,14 +329,12 @@ public class HttpServerVerticle extends AbstractVerticle {
                         if (isValidSchema == false) {
                             LOGGER.info("Failed inserting, invalid schema " + name);
                             context.response().setStatusCode(404).end();
-                        }
-                        else {
+                        } else {
                             dbService.insertProperty(name, context.getBodyAsJson(), reply -> {
                                 if (reply.succeeded()) {
                                     LOGGER.info("Insertion success");
                                     context.response().setStatusCode(201).end();
-                                }
-                                else {
+                                } else {
                                     context.response().setStatusCode(404).end();
                                 }
                             });

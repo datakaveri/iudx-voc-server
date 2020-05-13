@@ -1,0 +1,118 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "type": "object",
+    "title": "The root schema",
+    "description": "The root schema comprises the entire JSON document.",
+    "default": {},
+    "examples": [
+        {
+            "@context": {
+                "type": "@type",
+                "id": "@id",
+                "@vocab": "http://voc.iudx.org.in/",
+                "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+                "schema": "http://schema.org/",
+                "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+                "iudx": "https://iudx.org.in/voc/"
+            }
+        }
+    ],
+    "required": [
+        "@context"
+    ],
+    "additionalProperties": true,
+    "properties": {
+        "@context": {
+            "type": "object",
+            "title": "The @context schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": {},
+            "examples": [
+                {
+                    "type": "@type",
+                    "id": "@id",
+                    "@vocab": "http://voc.iudx.org.in/",
+                    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+                    "schema": "http://schema.org/",
+                    "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+                    "iudx": "https://iudx.org.in/voc/"
+                }
+            ],
+            "required": [
+                "type",
+                "id",
+                "@vocab",
+                "rdfs",
+                "schema",
+                "rdf",
+                "iudx"
+            ],
+            "additionalProperties": true,
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "title": "The type schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": "",
+                    "examples": [
+                        "@type"
+                    ]
+                },
+                "id": {
+                    "type": "string",
+                    "title": "The id schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": "",
+                    "examples": [
+                        "@id"
+                    ]
+                },
+                "@vocab": {
+                    "type": "string",
+                    "title": "The @vocab schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": "",
+                    "examples": [
+                        "http://voc.iudx.org.in/"
+                    ]
+                },
+                "rdfs": {
+                    "type": "string",
+                    "title": "The rdfs schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": "",
+                    "examples": [
+                        "http://www.w3.org/2000/01/rdf-schema#"
+                    ]
+                },
+                "schema": {
+                    "type": "string",
+                    "title": "The schema schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": "",
+                    "examples": [
+                        "http://schema.org/"
+                    ]
+                },
+                "rdf": {
+                    "type": "string",
+                    "title": "The rdf schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": "",
+                    "examples": [
+                        "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+                    ]
+                },
+                "iudx": {
+                    "type": "string",
+                    "title": "The iudx schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": "",
+                    "examples": [
+                        "https://iudx.org.in/voc/"
+                    ]
+                }
+            }
+        }
+    }
+}

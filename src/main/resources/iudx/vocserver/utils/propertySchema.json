@@ -5,6 +5,61 @@
     "title": "The root schema",
     "description": "The root schema comprises the entire JSON document.",
     "default": {},
+    "examples": [
+        {
+            "@context": {
+                "owl": "http://www.w3.org/2002/07/owl#",
+                "xsd": "http://www.w3.org/2001/XMLSchema#",
+                "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+                "geojson": "https://purl.org/geojson/vocab#",
+                "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+                "iudx": "https://iudx.org.in/voc/",
+                "skos": "http://www.w3.org/2004/02/skos/core#",
+                "schema": "http://schema.org/"
+            },
+            "@graph": [
+                {
+                    "@id": "iudx:name",
+                    "@type": [
+                        "iudx:TextProperty"
+                    ],
+                    "rdfs:comment": "Name of the entity.",
+                    "rdfs:label": "name",
+                    "iudx:domainIncludes": [
+                        {
+                            "@id": "iudx:Place"
+                        },
+                        {
+                            "@id": "iudx:Organization"
+                        },
+                        {
+                            "@id": "iudx:ResourceServer"
+                        },
+                        {
+                            "@id": "iudx:ResourceGroup"
+                        },
+                        {
+                            "@id": "iudx:Provider"
+                        },
+                        {
+                            "@id": "iudx:FunctionDescription"
+                        }
+                    ],
+                    "iudx:rangeIncludes": [
+                        {
+                            "@id": "iudx:Text"
+                        }
+                    ],
+                    "skos:exactMatch": {
+                        "@id": "schema:name"
+                    },
+                    "rdfs:isDefinedBy": {
+                        "@id": "iudx:"
+                    }
+                }
+            ]
+        }
+    ],
     "required": [
         "@context",
         "@graph"
@@ -12,43 +67,30 @@
     "additionalProperties": true,
     "properties": {
         "@context": {
-            "$id": "#/properties/@context",
             "type": "object",
             "title": "The @context schema",
             "description": "An explanation about the purpose of this instance.",
             "default": {},
             "examples": [
                 {
-                    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
                     "owl": "http://www.w3.org/2002/07/owl#",
-                    "skos": "http://www.w3.org/2004/02/skos/core#",
-                    "schema": "http://schema.org/",
                     "xsd": "http://www.w3.org/2001/XMLSchema#",
-                    "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+                    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
                     "geojson": "https://purl.org/geojson/vocab#",
-                    "iudx": "https://iudx.org.in/voc/"
+                    "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+                    "iudx": "https://iudx.org.in/voc/",
+                    "skos": "http://www.w3.org/2004/02/skos/core#",
+                    "schema": "http://schema.org/"
                 }
             ],
             "required": [
-                "owl",
-                "iudx",
+                "rdfs",
                 "rdf",
-                "rdfs"
+                "iudx"
             ],
             "additionalProperties": true,
             "properties": {
-                "xsd": {
-                    "$id": "#/properties/@context/properties/xsd",
-                    "type": "string",
-                    "title": "The xsd schema",
-                    "description": "An explanation about the purpose of this instance.",
-                    "default": "",
-                    "examples": [
-                        "http://www.w3.org/2001/XMLSchema#"
-                    ]
-                },
                 "owl": {
-                    "$id": "#/properties/@context/properties/owl",
                     "type": "string",
                     "title": "The owl schema",
                     "description": "An explanation about the purpose of this instance.",
@@ -57,18 +99,25 @@
                         "http://www.w3.org/2002/07/owl#"
                     ]
                 },
-                "iudx": {
-                    "$id": "#/properties/@context/properties/iudx",
+                "xsd": {
                     "type": "string",
-                    "title": "The iudx schema",
+                    "title": "The xsd schema",
                     "description": "An explanation about the purpose of this instance.",
                     "default": "",
                     "examples": [
-                        "https://iudx.org.in/voc/"
+                        "http://www.w3.org/2001/XMLSchema#"
+                    ]
+                },
+                "rdfs": {
+                    "type": "string",
+                    "title": "The rdfs schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": "",
+                    "examples": [
+                        "http://www.w3.org/2000/01/rdf-schema#"
                     ]
                 },
                 "geojson": {
-                    "$id": "#/properties/@context/properties/geojson",
                     "type": "string",
                     "title": "The geojson schema",
                     "description": "An explanation about the purpose of this instance.",
@@ -78,7 +127,6 @@
                     ]
                 },
                 "rdf": {
-                    "$id": "#/properties/@context/properties/rdf",
                     "type": "string",
                     "title": "The rdf schema",
                     "description": "An explanation about the purpose of this instance.",
@@ -87,28 +135,16 @@
                         "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
                     ]
                 },
-                "rdfs": {
-                    "$id": "#/properties/@context/properties/rdfs",
+                "iudx": {
                     "type": "string",
-                    "title": "The rdfs schema",
+                    "title": "The iudx schema",
                     "description": "An explanation about the purpose of this instance.",
                     "default": "",
                     "examples": [
-                        "http://www.w3.org/2000/01/rdf-schema#"
-                    ]
-                },
-                "schema": {
-                    "$id": "#/properties/@context/properties/schema",
-                    "type": "string",
-                    "title": "The schema schema",
-                    "description": "An explanation about the purpose of this instance.",
-                    "default": "",
-                    "examples": [
-                        "http://schema.org/"
+                        "https://iudx.org.in/voc/"
                     ]
                 },
                 "skos": {
-                    "$id": "#/properties/@context/properties/skos",
                     "type": "string",
                     "title": "The skos schema",
                     "description": "An explanation about the purpose of this instance.",
@@ -116,11 +152,19 @@
                     "examples": [
                         "http://www.w3.org/2004/02/skos/core#"
                     ]
+                },
+                "schema": {
+                    "type": "string",
+                    "title": "The schema schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": "",
+                    "examples": [
+                        "http://schema.org/"
+                    ]
                 }
             }
         },
         "@graph": {
-            "$id": "#/properties/@graph",
             "type": "array",
             "title": "The @graph schema",
             "description": "An explanation about the purpose of this instance.",
@@ -128,81 +172,158 @@
             "examples": [
                 [
                     {
-                        "rdfs:isDefinedBy": {
-                            "@id": "iudx:"
-                        },
+                        "@id": "iudx:name",
+                        "@type": [
+                            "iudx:TextProperty"
+                        ],
+                        "rdfs:comment": "Name of the entity.",
+                        "rdfs:label": "name",
                         "iudx:domainIncludes": [
                             {
                                 "@id": "iudx:Place"
                             },
                             {
-                                "@id": "iudx:Resource"
+                                "@id": "iudx:Organization"
+                            },
+                            {
+                                "@id": "iudx:ResourceServer"
                             },
                             {
                                 "@id": "iudx:ResourceGroup"
+                            },
+                            {
+                                "@id": "iudx:Provider"
+                            },
+                            {
+                                "@id": "iudx:FunctionDescription"
                             }
                         ],
-                        "@id": "iudx:geoJSON",
-                        "rdfs:comment": "Geo-coordinates of a place specified in GeoJSON format.",
                         "iudx:rangeIncludes": [
                             {
-                                "@id": "iudx:GeoJSONGeometry"
+                                "@id": "iudx:Text"
                             }
                         ],
-                        "rdfs:label": "geoJSON",
-                        "@type": "iudx:GeoProperty"
+                        "skos:exactMatch": {
+                            "@id": "schema:name"
+                        },
+                        "rdfs:isDefinedBy": {
+                            "@id": "iudx:"
+                        }
                     }
                 ]
             ],
             "additionalItems": true,
             "items": {
-                "$id": "#/properties/@graph/items",
                 "anyOf": [
                     {
-                        "$id": "#/properties/@graph/items/anyOf/0",
                         "type": "object",
                         "title": "The first anyOf schema",
                         "description": "An explanation about the purpose of this instance.",
                         "default": {},
                         "examples": [
                             {
-                                "rdfs:comment": "Geo-coordinates of a place specified in GeoJSON format.",
-                                "iudx:rangeIncludes": [
-                                    {
-                                        "@id": "iudx:GeoJSONGeometry"
-                                    }
+                                "@id": "iudx:name",
+                                "@type": [
+                                    "iudx:TextProperty"
                                 ],
-                                "rdfs:label": "geoJSON",
-                                "@type": "iudx:GeoProperty",
+                                "rdfs:comment": "Name of the entity.",
+                                "rdfs:label": "name",
                                 "iudx:domainIncludes": [
                                     {
                                         "@id": "iudx:Place"
                                     },
                                     {
-                                        "@id": "iudx:Resource"
+                                        "@id": "iudx:Organization"
+                                    },
+                                    {
+                                        "@id": "iudx:ResourceServer"
                                     },
                                     {
                                         "@id": "iudx:ResourceGroup"
+                                    },
+                                    {
+                                        "@id": "iudx:Provider"
+                                    },
+                                    {
+                                        "@id": "iudx:FunctionDescription"
                                     }
                                 ],
+                                "iudx:rangeIncludes": [
+                                    {
+                                        "@id": "iudx:Text"
+                                    }
+                                ],
+                                "skos:exactMatch": {
+                                    "@id": "schema:name"
+                                },
                                 "rdfs:isDefinedBy": {
                                     "@id": "iudx:"
-                                },
-                                "@id": "iudx:geoJSON"
+                                }
                             }
                         ],
                         "required": [
-                            "iudx:domainIncludes",
-                            "iudx:rangeIncludes",
                             "@id",
+                            "@type",
                             "rdfs:comment",
                             "rdfs:label",
-                            "@type"
+                            "iudx:domainIncludes",
+                            "iudx:rangeIncludes"
                         ],
                         "additionalProperties": true,
                         "properties": {
+                            "@id": {
+                                "type": "string",
+                                "title": "The @id schema",
+                                "description": "An explanation about the purpose of this instance.",
+                                "default": "",
+                                "examples": [
+                                    "iudx:name"
+                                ]
+                            },
+                            "@type": {
+                                "type": "array",
+                                "title": "The @type schema",
+                                "description": "An explanation about the purpose of this instance.",
+                                "default": [],
+                                "examples": [
+                                    [
+                                        "iudx:TextProperty"
+                                    ]
+                                ],
+                                "additionalItems": true,
+                                "items": {
+                                    "anyOf": [
+                                        {
+                                            "type": "string",
+                                            "title": "The first anyOf schema",
+                                            "description": "An explanation about the purpose of this instance.",
+                                            "default": "",
+                                            "examples": [
+                                                "iudx:TextProperty"
+                                            ]
+                                        }
+                                    ]
+                                }
+                            },
+                            "rdfs:comment": {
+                                "type": "string",
+                                "title": "The rdfs:comment schema",
+                                "description": "An explanation about the purpose of this instance.",
+                                "default": "",
+                                "examples": [
+                                    "Name of the entity."
+                                ]
+                            },
+                            "rdfs:label": {
+                                "type": "string",
+                                "title": "The rdfs:label schema",
+                                "description": "An explanation about the purpose of this instance.",
+                                "default": "",
+                                "examples": [
+                                    "name"
+                                ]
+                            },
                             "iudx:domainIncludes": {
-                                "$id": "#/properties/@graph/items/anyOf/0/properties/iudx:domainIncludes",
                                 "type": "array",
                                 "title": "The iudx:domainIncludes schema",
                                 "description": "An explanation about the purpose of this instance.",
@@ -213,16 +334,14 @@
                                             "@id": "iudx:Place"
                                         },
                                         {
-                                            "@id": "iudx:Resource"
+                                            "@id": "iudx:Organization"
                                         }
                                     ]
                                 ],
                                 "additionalItems": true,
                                 "items": {
-                                    "$id": "#/properties/@graph/items/anyOf/0/properties/iudx:domainIncludes/items",
                                     "anyOf": [
                                         {
-                                            "$id": "#/properties/@graph/items/anyOf/0/properties/iudx:domainIncludes/items/anyOf/0",
                                             "type": "object",
                                             "title": "The first anyOf schema",
                                             "description": "An explanation about the purpose of this instance.",
@@ -238,7 +357,6 @@
                                             "additionalProperties": true,
                                             "properties": {
                                                 "@id": {
-                                                    "$id": "#/properties/@graph/items/anyOf/0/properties/iudx:domainIncludes/items/anyOf/0/properties/@id",
                                                     "type": "string",
                                                     "title": "The @id schema",
                                                     "description": "An explanation about the purpose of this instance.",
@@ -253,7 +371,6 @@
                                 }
                             },
                             "iudx:rangeIncludes": {
-                                "$id": "#/properties/@graph/items/anyOf/0/properties/iudx:rangeIncludes",
                                 "type": "array",
                                 "title": "The iudx:rangeIncludes schema",
                                 "description": "An explanation about the purpose of this instance.",
@@ -261,23 +378,21 @@
                                 "examples": [
                                     [
                                         {
-                                            "@id": "iudx:GeoJSONGeometry"
+                                            "@id": "iudx:Text"
                                         }
                                     ]
                                 ],
                                 "additionalItems": true,
                                 "items": {
-                                    "$id": "#/properties/@graph/items/anyOf/0/properties/iudx:rangeIncludes/items",
                                     "anyOf": [
                                         {
-                                            "$id": "#/properties/@graph/items/anyOf/0/properties/iudx:rangeIncludes/items/anyOf/0",
                                             "type": "object",
                                             "title": "The first anyOf schema",
                                             "description": "An explanation about the purpose of this instance.",
                                             "default": {},
                                             "examples": [
                                                 {
-                                                    "@id": "iudx:GeoJSONGeometry"
+                                                    "@id": "iudx:Text"
                                                 }
                                             ],
                                             "required": [
@@ -286,13 +401,12 @@
                                             "additionalProperties": true,
                                             "properties": {
                                                 "@id": {
-                                                    "$id": "#/properties/@graph/items/anyOf/0/properties/iudx:rangeIncludes/items/anyOf/0/properties/@id",
                                                     "type": "string",
                                                     "title": "The @id schema",
                                                     "description": "An explanation about the purpose of this instance.",
                                                     "default": "",
                                                     "examples": [
-                                                        "iudx:GeoJSONGeometry"
+                                                        "iudx:Text"
                                                     ]
                                                 }
                                             }
@@ -300,38 +414,33 @@
                                     ]
                                 }
                             },
-                            "@id": {
-                                "$id": "#/properties/@graph/items/anyOf/0/properties/@id",
-                                "type": "string",
-                                "title": "The @id schema",
+                            "skos:exactMatch": {
+                                "type": "object",
+                                "title": "The skos:exactMatch schema",
                                 "description": "An explanation about the purpose of this instance.",
-                                "default": "",
+                                "default": {},
                                 "examples": [
-                                    "iudx:geoJSON"
-                                ]
-                            },
-                            "rdfs:comment": {
-                                "$id": "#/properties/@graph/items/anyOf/0/properties/rdfs:comment",
-                                "type": "string",
-                                "title": "The rdfs:comment schema",
-                                "description": "An explanation about the purpose of this instance.",
-                                "default": "",
-                                "examples": [
-                                    "Geo-coordinates of a place specified in GeoJSON format."
-                                ]
-                            },
-                            "rdfs:label": {
-                                "$id": "#/properties/@graph/items/anyOf/0/properties/rdfs:label",
-                                "type": "string",
-                                "title": "The rdfs:label schema",
-                                "description": "An explanation about the purpose of this instance.",
-                                "default": "",
-                                "examples": [
-                                    "geoJSON"
-                                ]
+                                    {
+                                        "@id": "schema:name"
+                                    }
+                                ],
+                                "required": [
+                                    "@id"
+                                ],
+                                "additionalProperties": true,
+                                "properties": {
+                                    "@id": {
+                                        "type": "string",
+                                        "title": "The @id schema",
+                                        "description": "An explanation about the purpose of this instance.",
+                                        "default": "",
+                                        "examples": [
+                                            "schema:name"
+                                        ]
+                                    }
+                                }
                             },
                             "rdfs:isDefinedBy": {
-                                "$id": "#/properties/@graph/items/anyOf/0/properties/rdfs:isDefinedBy",
                                 "type": "object",
                                 "title": "The rdfs:isDefinedBy schema",
                                 "description": "An explanation about the purpose of this instance.",
@@ -347,7 +456,6 @@
                                 "additionalProperties": true,
                                 "properties": {
                                     "@id": {
-                                        "$id": "#/properties/@graph/items/anyOf/0/properties/rdfs:isDefinedBy/properties/@id",
                                         "type": "string",
                                         "title": "The @id schema",
                                         "description": "An explanation about the purpose of this instance.",
@@ -357,16 +465,6 @@
                                         ]
                                     }
                                 }
-                            },
-                            "@type": {
-                                "$id": "#/properties/@graph/items/anyOf/0/properties/@type",
-                                "type": "string",
-                                "title": "The @type schema",
-                                "description": "An explanation about the purpose of this instance.",
-                                "default": "",
-                                "examples": [
-                                    "iudx:GeoProperty"
-                                ]
                             }
                         }
                     }
