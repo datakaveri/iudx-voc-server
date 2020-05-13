@@ -10,9 +10,9 @@
       </thead>
       <tbody id="classSchema">
         <tr *ngFor="let classes of classData; let i = index">
-          <th>{{ classes }}</th>
+          <th>{{ classes.label }}</th>
           <td></td>
-          <td></td>
+          <td>{{ classes.comment }}</td>
         </tr>
       </tbody>
     </table>

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { DataService } from '../services/data.service';
+import { Class } from '../types/class';
 import { Observable } from 'rxjs';
 
 @Component({
@@ -8,19 +9,22 @@ import { Observable } from 'rxjs';
   styleUrls: ['./classes.component.css']
 })
 export class ClassesComponent implements OnInit {
-  public classList = [];
-  public classData = [];
-  public classDesc = [];
+  classList = [];
+  public classData: Class[] = [];
+
   constructor(private backendservice: DataService) {}
 
   ngOnInit(): void {
+    return this.populateClassTable();
+  }
+  populateClassTable(): void {
     this.backendservice.getAllClasses().subscribe(data => {
       this.classList = Array.from(Object.keys(data), k => data[k]);
-      console.log(this.classList);
-      for (var i = 0; i < this.classList.length; i++) {
-        this.classData[i] = this.classList[i]['rdfs:label'];
-        this.classDesc[i] = this.classList[i]['rdfs:comment'];
-        // console.log(this.classData);
+      for (let cl in this.classList) {
+        this.classData.push({
+          label: this.classList[cl]['rdfs:label'],
+          comment: this.classList[cl]['rdfs:comment']
+        });
       }
     });
   }
