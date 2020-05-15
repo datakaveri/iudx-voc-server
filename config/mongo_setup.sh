@@ -16,5 +16,7 @@ db.properties.createIndex({"@id": 1})
 db.createCollection("classes")
 db.classes.createIndex({"@id": 1})
 
+db.createCollection("summary")
+
 quit()
 EOF

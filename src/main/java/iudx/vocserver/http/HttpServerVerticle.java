@@ -51,6 +51,7 @@ public class HttpServerVerticle extends AbstractVerticle {
     private DBService dbService;
     // iudx-voc-server AuthService
     private AuthService authService;
+    private String serverId ;
 
     // Validator objects
     private boolean isValidSchema;
@@ -66,6 +67,8 @@ public class HttpServerVerticle extends AbstractVerticle {
 
         String dbQueue = config().getString(CONFIG_DB_QUEUE);
         String authQueue = config().getString(CONFIG_AUTH_QUEUE);
+
+        serverId = config().getString(CONFIG_HTTP_CNAME);
 
         dbService = DBService.createProxy(vertx, dbQueue);
         authService = AuthService.createProxy(vertx, authQueue);
@@ -106,14 +109,19 @@ public class HttpServerVerticle extends AbstractVerticle {
         
         /** Get/Post master context */
         router.get("/").consumes("application/ld+json").handler(this::getMasterHandler);
-        router.get("/").consumes("application/json").handler(this::getMasterHandler);
+        router.getWithRegex("\\/master.jsonld").handler(this::getMasterHandler);
         router.route("/").consumes("application/ld+json").handler(BodyHandler.create());
         router.post("/").consumes("application/ld+json").handler(this::insertMasterHandler);
+        router.delete("/").consumes("application/ld+json").handler(this::deleteMasterHandler);
+
+        /** Fuzzy Search */
+        router.get("/").consumes("application/json").handler(this::searchHandler);
 
         /** Get/Post classes or properties by name (JSON-LD API) */
         router.get("/:name").consumes("application/ld+json").handler(this::getSchemaHandler);
         router.route("/:name").consumes("application/ld+json").handler(BodyHandler.create());
         router.post("/:name").consumes("application/ld+json").handler(this::insertSchemaHandler);
+        router.delete("/:name").consumes("application/ld+json").handler(this::deleteSchemaHandler);
 
         router.getWithRegex("\\/(?<name>[^\\/]+)\\.jsonld").handler(this::getSchemaHandler);
 
@@ -123,11 +131,11 @@ public class HttpServerVerticle extends AbstractVerticle {
         router.get("/properties").consumes("application/json").handler(this::getPropertiesHandler);
 
 
-        router.route("/").handler(routingContext -> {
+        /** Changes with angular refactoring */
+        router.route("/").consumes("text/html").handler(routingContext -> {
 			HttpServerResponse response = routingContext.response();
-			response.sendFile("ui/pages/schema_home/index.html");
+			response.sendFile("");
 		});
-
         router.route("/assets/*").handler(StaticHandler.create("ui/assets"));
 
         /** @TODO: Make port configureable */
@@ -188,18 +196,48 @@ public class HttpServerVerticle extends AbstractVerticle {
      */
     // tag::db-service-calls[]
     private void getMasterHandler(RoutingContext context) {
-            dbService.getMasterContext(reply -> {
-                if (reply.succeeded()) {
-                    context.response().putHeader("content-type", "application/json");
-                    context.response().setStatusCode(200)
-                                        .end(reply.result().encode());
-                } else {
-                    LOGGER.info("Failed getting master context");
-                    context.response().putHeader("content-type", "application/json");
-                    context.response().setStatusCode(404).end();
-                }
-            });
+        dbService.getMasterContext(reply -> {
+            if (reply.succeeded()) {
+                context.response().putHeader("content-type", "application/json");
+                context.response().setStatusCode(200)
+                    .end(reply.result().encode());
+            } else {
+                LOGGER.info("Failed getting master context");
+                context.response().putHeader("content-type", "application/json");
+                context.response().setStatusCode(404).end();
+            }
+        });
+    }
+
+    /**
+     * searchHandler - handler to perform fuzzy schema search
+     */
+    // tag::db-service-calls[]
+    private void searchHandler(RoutingContext context) {
+        String pattern = "";
+        try {
+            pattern = context.queryParams().get("search");
+            if (pattern.length() == 0) {
+                context.response().setStatusCode(200).end();
+                return;
+            }
+        } catch (Exception e) {
+            context.response().setStatusCode(404).end();
+            return;
         }
+        dbService.fuzzySearch(pattern, reply -> {
+            if (reply.succeeded()) {
+                context.response().putHeader("content-type", "application/json");
+                context.response().setStatusCode(200)
+                    .end(reply.result().encode());
+            } else {
+                LOGGER.info("Failed searching, query params not found");
+                context.response().putHeader("content-type", "application/json");
+                context.response().setStatusCode(404).end();
+            }
+        });
+    }
+
     
     /**
      * getSchemaHandler - handler to get classes or properties by name
@@ -248,8 +286,7 @@ public class HttpServerVerticle extends AbstractVerticle {
         /** Validate token */
         String token = context.request().getHeader("token");
         /** Sever ID is the vocab server domain name*/
-        String serverId = config().getString(CONFIG_HTTP_CNAME);
-        authService.validateToken(token, serverId,
+        authService.validateToken(token, this.serverId,
             authreply -> {
                 if (authreply.succeeded()) {
                     try {
@@ -295,8 +332,7 @@ public class HttpServerVerticle extends AbstractVerticle {
         /** Validate token */
         String token = context.request().getHeader("token");
         /** Sever ID is the vocab server domain name*/
-        String serverId = config().getString(CONFIG_HTTP_CNAME);
-        authService.validateToken(token, serverId,
+        authService.validateToken(token, this.serverId,
             authreply -> {
                 if (authreply.succeeded()) {
                     if (isClass == true) {
@@ -313,6 +349,9 @@ public class HttpServerVerticle extends AbstractVerticle {
                             dbService.insertClass(name, context.getBodyAsJson(), reply -> {
                                 if (reply.succeeded()) {
                                     LOGGER.info("Inserted " + name);
+                                    // TODO: Very inefficient. Consider making a service that 
+                                    //          inserts label and summary
+                                    dbService.makeSummary( res -> {} );
                                     context.response().setStatusCode(201).end();
                                 } else {
                                     context.response().setStatusCode(404).end();
@@ -340,6 +379,84 @@ public class HttpServerVerticle extends AbstractVerticle {
                             });
                         }
                     }
+                }
+                if (authreply.failed()) {
+                    LOGGER.info("Got invalid usename and password");
+                    context.response().setStatusCode(401).end();
+                }
+        });
+    }
+
+    /**
+     * deleteSchemaHandler - handler to delete a class or property
+     * @TODO: Check duplicates
+     */
+    // tag::db-service-calls[]
+    private void deleteSchemaHandler(RoutingContext context) {
+        String name = context.request().getParam("name");
+        LOGGER.info("Hit deleteSchemaHandler with name " + name);
+        LOGGER.info(this.serverId);
+        /** Check if provided param is class or property */
+        boolean isClass = Character.isUpperCase(name.charAt(0));
+        /** This can be simplified by setting a flag, leaving it expanded for future use. */
+        context.response().putHeader("content-type", "application/json");
+        /** Validate token */
+        String token = context.request().getHeader("token");
+        /** Sever ID is the vocab server domain name*/
+        authService.validateToken(token, this.serverId,
+            authreply -> {
+                if (authreply.succeeded()) {
+                    if (isClass == true) {
+                        dbService.deleteClass(name, reply -> {
+                            if (reply.succeeded()) {
+                                LOGGER.info("Deleted " + name);
+                                // TODO: Very inefficient. Consider making a service that 
+                                //          inserts label and summary
+                                dbService.makeSummary( res -> {} );
+                                context.response().setStatusCode(204).end();
+                            } else {
+                                context.response().setStatusCode(404).end();
+                            }
+                        });
+                    } else if (isClass == false) {
+                        dbService.deleteProperty(name, reply -> {
+                            if (reply.succeeded()) {
+                                LOGGER.info("Deleted " + name);
+                                context.response().setStatusCode(204).end();
+                            } else {
+                                context.response().setStatusCode(404).end();
+                            }
+                        });
+                    }
+                }
+                if (authreply.failed()) {
+                    LOGGER.info("Got invalid usename and password");
+                    context.response().setStatusCode(401).end();
+                }
+        });
+    }
+
+    /**
+     * deleteMaster - handler to delete the master context
+     * @TODO: Check duplicates
+     */
+    // tag::db-service-calls[]
+    private void deleteMasterHandler(RoutingContext context) {
+        context.response().putHeader("content-type", "application/json");
+        /** Validate token */
+        String token = context.request().getHeader("token");
+        /** Sever ID is the vocab server domain name*/
+        authService.validateToken(token, this.serverId,
+            authreply -> {
+                if (authreply.succeeded()) {
+                        dbService.deleteMaster(reply -> {
+                            if (reply.succeeded()) {
+                                LOGGER.info("Deleted master");
+                                context.response().setStatusCode(204).end();
+                            } else {
+                                context.response().setStatusCode(404).end();
+                            }
+                        });
                 }
                 if (authreply.failed()) {
                     LOGGER.info("Got invalid usename and password");

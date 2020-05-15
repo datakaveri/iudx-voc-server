@@ -34,23 +34,61 @@ class DBServiceImpl implements DBService {
     private static final String QUERY_FIND_ALL_CLASS = 
         "[ {\"$unwind\": \"$@graph\"}," 
         + " { \"$match\": {\"@graph.@type\": { \"$in\": [\"rdfs:Class\"] }}}," 
-        + " { \"$project\": {\"_id\": 0, \"rdfs:label\": \"$@graph.rdfs:label\", \"rdfs:comment\": \"$@graph.rdfs:comment\" } } ])";
+        + " { \"$project\": {\"_id\": 0, \"rdfs:label\": \"$@graph.rdfs:label\","
+        + "\"rdfs:comment\": \"$@graph.rdfs:comment\" } } ])";
 
     // Find all properties
     // TODO: Temporary fix for searching all kinds of properties
     private static final String QUERY_FIND_ALL_PROPERTIES = 
         "[ {\"$unwind\": \"$@graph\"}," 
-        + " { \"$project\": {\"_id\": 0, \"rdfs:label\": \"$@graph.rdfs:label\", \"rdfs:comment\": \"$@graph.rdfs:comment\" } } ])";
+        + " { \"$project\": {\"_id\": 0, \"rdfs:label\": \"$@graph.rdfs:label\","
+        + "\"rdfs:comment\": \"$@graph.rdfs:comment\" } } ])";
 
-    // Find a class
+    // Find a class or property
     private static final String QUERY_MATCH_ID = 
         "{\"@graph\": {\"$elemMatch\": {\"@id\": \"$1\"}}}";
+
+    // TODO: Very inefficient. Consider making a service that 
+    //          inserts label and summary
+    private static final String QUERY_SUMMARIZE = 
+        "[{\"$unwind\": \"$@graph\"},"
+        + "{\"$group\": { \"_id\": \"$@graph.rdfs:label\","
+        + "\"rdfs:label\": {\"$first\": \"$@graph.rdfs:label\"},"
+        + "\"rdfs:comment\": { \"$first\": \"$@graph.rdfs:comment\"}}},"
+        + "{\"$out\": \"summary\"}]";
+
+
+    private static final String QUERY_FUZZY_SEARCH =
+        "{\"$or\": [{\"rdfs:comment\": {\"$regex\": \"(?i).*$1.*\"}},"
+                 + "{\"rdfs:label\": {\"$regex\": \"(?i).*$1.*\"}}]}";
+        
 
 
     DBServiceImpl(MongoClient dbClient, Handler<AsyncResult<DBService>> readyHandler) {
         this.dbClient = dbClient;
         readyHandler.handle(Future.succeededFuture(this));
     }
+
+    /**
+     * @{@inheritDoc}
+     * @TODO: Batch size issue. Need to iterate cursor or find alternative solution later.
+     */
+    @Override
+    public DBService makeSummary(Handler<AsyncResult<JsonObject>> resultHandler) {
+        JsonObject command = new JsonObject().put("aggregate", "classes")
+                                            .put("pipeline", new JsonArray(QUERY_SUMMARIZE))
+                                            .put("cursor",  new JsonObject().put("batchSize", 1000));
+        dbClient.runCommand("aggregate", command, res -> {
+            if (res.succeeded()) {
+                resultHandler.handle(Future.succeededFuture());
+            } else {
+                LOGGER.info(res.cause());
+                resultHandler.handle(Future.failedFuture(res.cause()));
+            }
+        });
+        return this;
+    }
+
 
     /**
      * @{@inheritDoc}
@@ -176,6 +214,25 @@ class DBServiceImpl implements DBService {
      * @{@inheritDoc}
      */
     @Override
+    public DBService fuzzySearch(String pattern, Handler<AsyncResult<JsonArray>> resultHandler) {
+        dbClient.findWithOptions("summary",
+                new JsonObject(QUERY_FUZZY_SEARCH.replace("$1", pattern)),
+                new FindOptions().setFields(new JsonObject().put("_id", false)),
+                res -> {
+                    if (res.succeeded()) {
+                        resultHandler.handle(Future.succeededFuture(new JsonArray(res.result())));
+                    } else {
+                        LOGGER.info("Fuzzy search for " + pattern + " failed");
+                        resultHandler.handle(Future.failedFuture(res.cause()));
+                    }
+                });
+        return this;
+    }
+
+    /**
+     * @{@inheritDoc}
+     */
+    @Override
     public DBService insertMasterContext(JsonObject context,
             Handler<AsyncResult<Boolean>> resultHandler) {
         dbClient.dropCollection("master",
@@ -246,10 +303,8 @@ class DBServiceImpl implements DBService {
      * @{@inheritDoc}
      */
     @Override
-    public DBService deleteClass(String name,
-            Handler<AsyncResult<Boolean>> resultHandler) {
-        dbClient.findOneAndDelete("classes",
-                new JsonObject(QUERY_MATCH_ID.replace("$1", "iudx:"+name)),
+    public DBService deleteMaster(Handler<AsyncResult<Void>> resultHandler) {
+        dbClient.dropCollection("master",
                 res -> {
                     if (res.succeeded()) {
                         resultHandler.handle(Future.succeededFuture());
@@ -265,9 +320,29 @@ class DBServiceImpl implements DBService {
      * @{@inheritDoc}
      */
     @Override
+    public DBService deleteClass(String name,
+            Handler<AsyncResult<Boolean>> resultHandler) {
+        LOGGER.info("Deleteing class " + name);
+        dbClient.findOneAndDelete("classes",
+                new JsonObject(QUERY_MATCH_ID.replace("$1", "iudx:"+name)),
+                res -> {
+                    if (res.succeeded()) {
+                        resultHandler.handle(Future.succeededFuture(true));
+                    } else {
+                        LOGGER.error("Failed deleting class, may not exist");
+                    }
+
+                });
+        return this;
+    }
+
+    /**
+     * @{@inheritDoc}
+     */
+    @Override
     public DBService deleteProperty(String name,
             Handler<AsyncResult<Boolean>> resultHandler) {
-        dbClient.findOneAndDelete("property",
+        dbClient.findOneAndDelete("properties",
                 new JsonObject(QUERY_MATCH_ID.replace("$1", "iudx:"+name)),
                 res -> {
                     if (res.succeeded()) {
