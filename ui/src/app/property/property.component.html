@@ -4,11 +4,16 @@
       <thead>
         <tr>
           <th>Property</th>
-          <!-- <th>Expected Type</th> -->
+          <th>&nbsp;</th>
           <th>Description</th>
         </tr>
       </thead>
       <tbody id="propertySchema" class="supertype"></tbody>
+      <tr *ngFor="let properties of propertyData; let i = index">
+        <th>{{ properties.label }}</th>
+        <td></td>
+        <td>{{ properties.comment }}/td></td>
+      </tr>
     </table>
   </div>
 </section>
