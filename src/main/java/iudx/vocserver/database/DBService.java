@@ -71,6 +71,21 @@ public interface DBService {
      */
     @Fluent
     DBService getClass(String name, Handler<AsyncResult<JsonObject>> resultHandler);
+        
+    /**
+     * incSearch - Incrementaly searches for a given pattern
+     * @param pattern pattern
+     * @return {@link DBServiceImpl}
+     */
+    @Fluent
+    DBService fuzzySearch(String pattern, Handler<AsyncResult<JsonArray>> resultHandler);
+
+    /**
+     * makeSummary - Make summary of class labels and comments 
+     * @return {@link DBServiceImpl}
+     */
+    @Fluent
+    DBService makeSummary(Handler<AsyncResult<JsonObject>> resultHandler);
 
     /**
      * insertProperty - Insert a property
@@ -89,6 +104,14 @@ public interface DBService {
      */
     @Fluent
     DBService insertClass(String name, JsonObject cls, Handler<AsyncResult<Boolean>> resultHandler);
+
+    /**
+     * deleteProperty - Delete a property
+     * @param name name of the property
+     * @return {@link DBServiceImpl}
+     */
+    @Fluent
+    DBService deleteMaster(Handler<AsyncResult<Void>> resultHandler);
 
     /**
      * deleteProperty - Delete a property
