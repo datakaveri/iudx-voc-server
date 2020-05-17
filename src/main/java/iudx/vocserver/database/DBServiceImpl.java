@@ -34,15 +34,15 @@ class DBServiceImpl implements DBService {
     private static final String QUERY_FIND_ALL_CLASS = 
         "[ {\"$unwind\": \"$@graph\"}," 
         + " { \"$match\": {\"@graph.@type\": { \"$in\": [\"rdfs:Class\"] }}}," 
-        + " { \"$project\": {\"_id\": 0, \"rdfs:label\": \"$@graph.rdfs:label\","
-        + "\"rdfs:comment\": \"$@graph.rdfs:comment\" } } ])";
+        + " { \"$project\": {\"_id\": 0, \"label\": \"$@graph.rdfs:label\","
+        + "\"comment\": \"$@graph.rdfs:comment\" } } ])";
 
     // Find all properties
     // TODO: Temporary fix for searching all kinds of properties
     private static final String QUERY_FIND_ALL_PROPERTIES = 
         "[ {\"$unwind\": \"$@graph\"}," 
-        + " { \"$project\": {\"_id\": 0, \"rdfs:label\": \"$@graph.rdfs:label\","
-        + "\"rdfs:comment\": \"$@graph.rdfs:comment\" } } ])";
+        + " { \"$project\": {\"_id\": 0, \"label\": \"$@graph.rdfs:label\","
+        + "\"comment\": \"$@graph.rdfs:comment\" } } ])";
 
     // Find a class or property
     private static final String QUERY_MATCH_ID = 
@@ -53,14 +53,14 @@ class DBServiceImpl implements DBService {
     private static final String QUERY_SUMMARIZE = 
         "[{\"$unwind\": \"$@graph\"},"
         + "{\"$group\": { \"_id\": \"$@graph.rdfs:label\","
-        + "\"rdfs:label\": {\"$first\": \"$@graph.rdfs:label\"},"
-        + "\"rdfs:comment\": { \"$first\": \"$@graph.rdfs:comment\"}}},"
+        + "\"label\": {\"$first\": \"$@graph.rdfs:label\"},"
+        + "\"comment\": { \"$first\": \"$@graph.rdfs:comment\"}}},"
         + "{\"$out\": \"summary\"}]";
 
 
     private static final String QUERY_FUZZY_SEARCH =
-        "{\"$or\": [{\"rdfs:comment\": {\"$regex\": \"(?i).*$1.*\"}},"
-                 + "{\"rdfs:label\": {\"$regex\": \"(?i).*$1.*\"}}]}";
+        "{\"$or\": [{\"comment\": {\"$regex\": \"(?i).*$1.*\"}},"
+                 + "{\"label\": {\"$regex\": \"(?i).*$1.*\"}}]}";
         
 
 
