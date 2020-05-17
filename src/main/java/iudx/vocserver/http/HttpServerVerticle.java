@@ -108,7 +108,7 @@ public class HttpServerVerticle extends AbstractVerticle {
         router.route().handler(CorsHandler.create("*").allowedHeaders(allowedHeaders).allowedMethods(allowedMethods));
         
         /** Get/Post master context */
-        router.get("/").consumes("application/ld+json").handler(this::getMasterHandler);
+        router.get("/").consumes("application/ld+json").produces("application/ld+json").handler(this::getMasterHandler);
         router.getWithRegex("\\/master.jsonld").handler(this::getMasterHandler);
         router.route("/").consumes("application/ld+json").handler(BodyHandler.create());
         router.post("/").consumes("application/ld+json").handler(this::insertMasterHandler);
@@ -132,11 +132,11 @@ public class HttpServerVerticle extends AbstractVerticle {
 
 
         /** Changes with angular refactoring */
-        router.route("/").consumes("text/html").handler(routingContext -> {
+        router.route("/").produces("text/html").handler(routingContext -> {
 			HttpServerResponse response = routingContext.response();
-			response.sendFile("");
+			response.sendFile("ui/dist/ui-vocab/index.html");
 		});
-        router.route("/assets/*").handler(StaticHandler.create("ui/assets"));
+        router.route("/static/*").consumes("*/*").handler(StaticHandler.create("ui/dist/ui-vocab/"));
 
         /** @TODO: Make port configureable */
         int portNumber = config().getInteger(CONFIG_HTTP_SERVER_PORT, 8080);
