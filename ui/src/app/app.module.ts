@@ -10,7 +10,6 @@ import { ClassesComponent } from './classes/classes.component';
 import { PropertyComponent } from './property/property.component';
 import { HttpClientModule } from '@angular/common/http';
 import { DataService } from './services/data.service';
-import { SearchService } from './services/search.service';
 import { SearchComponent } from './search/search.component';
 
 @NgModule({
@@ -24,7 +23,7 @@ import { SearchComponent } from './search/search.component';
     SearchComponent
   ],
   imports: [BrowserModule, AppRoutingModule, HttpClientModule],
-  providers: [DataService, SearchService],
+  providers: [DataService],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

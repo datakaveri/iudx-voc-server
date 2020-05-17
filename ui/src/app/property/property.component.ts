@@ -9,26 +9,14 @@ import { Observable } from 'rxjs';
   styleUrls: ['./property.component.css']
 })
 export class PropertyComponent implements OnInit {
+  properties: Observable<Property[]>;
+
   constructor(private backendservice: DataService) {}
 
-  propertyList = [];
-  public propertyData: Property[] = [];
   ngOnInit(): void {
-    this.populatePropertyTable();
+    return this.populatePropertyTable();
   }
   populatePropertyTable(): void {
-    this.backendservice.getAllProperties().subscribe(data => {
-      this.propertyList = Array.from(Object.keys(data), k => data[k]);
-      console.log(this.propertyList);
-      for (let pr in this.propertyList) {
-        this.propertyData.push({
-          label: this.propertyList[pr]['rdfs:label'],
-          comment: this.propertyList[pr]['rdfs:comment']
-        });
-      }
-    });
-  }
-  showPropertyDetail(event) {
-    console.log(event);
+    this.properties = this.backendservice.getAllProperties();
   }
 }
