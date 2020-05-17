@@ -9,10 +9,10 @@
         </tr>
       </thead>
       <tbody id="propertySchema" class="supertype"></tbody>
-      <tr *ngFor="let properties of propertyData; let i = index">
-        <th>{{ properties.label }}</th>
+      <tr *ngFor="let property of properties | async">
+        <th>{{ property.label }}</th>
         <td></td>
-        <td>{{ properties.comment }}/td></td>
+        <td>{{ property.comment }}</td>
       </tr>
     </table>
   </div>

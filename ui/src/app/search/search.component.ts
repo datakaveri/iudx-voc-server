@@ -8,22 +8,25 @@ import {
   switchMap
 } from 'rxjs/operators';
 import { SearchRes } from '../types/searchRes';
-import { SearchService } from '../services/search.service';
+import { DataService } from '../services/data.service';
+import { AppSettings } from '../appSettings';
 
 @Component({
   selector: 'app-search',
   templateUrl: './search.component.html',
   styleUrls: ['./search.component.css'],
-  providers: [SearchService]
+  providers: [DataService]
 })
 export class SearchComponent implements OnInit {
   searchRes: Observable<SearchRes[]>;
   private searchTerms = new Subject<string>();
 
   constructor(
-    private searchService: SearchService,
+    private dataService: DataService,
     private router: Router
-  ) { }
+  ) { 
+
+  }
 
   search(term: string): void {
     this.searchTerms.next(term);
@@ -34,7 +37,7 @@ export class SearchComponent implements OnInit {
       debounceTime(500),
       distinctUntilChanged(),
       switchMap(
-        term => term?this.searchService.search(term):of<SearchRes[]>([])
+        term => term?this.dataService.search(term):of<SearchRes[]>([])
       ),
       catchError(error => {
         console.log(`Error in component ... ${error}`);
@@ -44,8 +47,8 @@ export class SearchComponent implements OnInit {
   }
 
   gotoTerm(res: SearchRes): void {
-    console.log(`GOt results ${res}`);
-    const link = [ res.label];
+    const link = [ "/classes"];
+    console.log(link);
     this.router.navigate(link);
   }
 
