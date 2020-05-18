@@ -1,8 +1,11 @@
-#form-search {
-  position: absolute;
-  top: 25px;
-  left: 58%;
+/* -------------------------------------------------
+                  Header styles
+  --------------------------------------------------*/
+.btn {
+  color: pink;
+  border-color: #ad12c7;
 }
+
 .btn:hover {
   background-image: none;
   background-color: grey;
@@ -16,3 +19,44 @@
   color: black;
   text-decoration: none;
 } */
+a:link,
+a:visited {
+  /* color: #660000; */
+  color: #ffffff;
+  text-decoration: none;
+  /* border-bottom: dotted 1px #660000; */
+}
+a:hover {
+  border-bottom: none;
+
+  /* background-color: gray; */
+  color: black;
+  background-color: transparent;
+  text-decoration: none;
+}
+
+#menu-style a:link,
+#menu-style a:visited {
+  color: black;
+  /* color: white; */
+  text-decoration: none;
+  /* border-bottom: dotted 1px #660000; */
+}
+#menu-style a:hover {
+  border-bottom: none;
+
+  /* background-color: gray; */
+  color: #660000;
+  background-color: transparent;
+  text-decoration: none;
+}
+/* img */
+.img-style {
+  height: 5vh;
+  /* opacity: 2; */
+}
+#nav-style {
+  /* background-color: #005c99 !important; */
+  background-color: black !important;
+  padding: 10px 40px !important;
+}
