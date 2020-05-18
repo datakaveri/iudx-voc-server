@@ -10,6 +10,8 @@ import { ClassesComponent } from './classes/classes.component';
 import { PropertyComponent } from './property/property.component';
 import { HttpClientModule } from '@angular/common/http';
 import { DataService } from './services/data.service';
+import { PropertyDetailComponent } from './property-detail/property-detail.component';
+import { ClassDetailComponent } from './class-detail/class-detail.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +20,9 @@ import { DataService } from './services/data.service';
     FooterComponent,
     HeaderComponent,
     ClassesComponent,
-    PropertyComponent
+    PropertyComponent,
+    PropertyDetailComponent,
+    ClassDetailComponent
   ],
   imports: [BrowserModule, AppRoutingModule, HttpClientModule],
   providers: [DataService],
