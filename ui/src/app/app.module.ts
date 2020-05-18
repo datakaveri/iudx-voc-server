@@ -12,6 +12,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { DataService } from './services/data.service';
 import { PropertyDetailComponent } from './property-detail/property-detail.component';
 import { ClassDetailComponent } from './class-detail/class-detail.component';
+import { SearchComponent } from './search/search.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { ClassDetailComponent } from './class-detail/class-detail.component';
     ClassesComponent,
     PropertyComponent,
     PropertyDetailComponent,
-    ClassDetailComponent
+    ClassDetailComponent,
+    SearchComponent
   ],
   imports: [BrowserModule, AppRoutingModule, HttpClientModule],
   providers: [DataService],

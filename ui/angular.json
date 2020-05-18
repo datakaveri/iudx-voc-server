@@ -87,7 +87,11 @@
             "karmaConfig": "karma.conf.js",
             "assets": ["src/favicon.ico", "src/assets"],
             "styles": ["src/styles.css"],
-            "scripts": []
+            "scripts": [
+              "./node_modules/jquery/dist/jquery.min.js",
+              "./node_modules/popper.js/dist/umd/popper.min.js",
+              "./node_modules/bootstrap/dist/js/bootstrap.min.js"
+            ]
           }
         },
         "lint": {
@@ -116,5 +120,8 @@
       }
     }
   },
-  "defaultProject": "ui-vocab"
+  "defaultProject": "ui-vocab",
+  "cli": {
+    "analytics": "7269ecbf-219d-4895-8000-eea71a6fb99a"
+  }
 }
