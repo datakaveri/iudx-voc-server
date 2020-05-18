@@ -107,18 +107,29 @@ public class HttpServerVerticle extends AbstractVerticle {
         allowedMethods.add(HttpMethod.PUT);
         router.route().handler(CorsHandler.create("*").allowedHeaders(allowedHeaders).allowedMethods(allowedMethods));
         
-        /** Get/Post master context */
+        /** UI
+         *  Notes: This is the first registered route to prevent conflict with json-ld response
+         * */
+        router.route("/").produces("text/html").handler(routingContext -> {
+			HttpServerResponse response = routingContext.response();
+			response.sendFile("ui/dist/ui-vocab/index.html");
+		});
+        router.route("/static/*").consumes("*/*").handler(StaticHandler.create("ui/dist/ui-vocab/"));
+
+        /** Get/Post master context 
+         */
         router.get("/").produces("application/ld+json").handler(this::getMasterHandler);
-        router.get("/").produces("application/json").handler(this::getMasterHandler);
         router.getWithRegex("\\/master.jsonld").handler(this::getMasterHandler);
         router.route("/").consumes("application/ld+json").handler(BodyHandler.create());
         router.post("/").consumes("application/ld+json").handler(this::insertMasterHandler);
         router.delete("/").consumes("application/ld+json").handler(this::deleteMasterHandler);
 
-        /** Fuzzy Search */
+        /** Fuzzy Search 
+         */
         router.get("/search").consumes("application/json").handler(this::searchHandler);
 
-        /** Get/Post classes or properties by name (JSON-LD API) */
+        /** Get/Post classes or properties by name (JSON-LD API) 
+         **/
         router.get("/:name").consumes("application/ld+json").handler(this::getSchemaHandler);
         router.route("/:name").consumes("application/ld+json").handler(BodyHandler.create());
         router.post("/:name").consumes("application/ld+json").handler(this::insertSchemaHandler);
@@ -127,19 +138,13 @@ public class HttpServerVerticle extends AbstractVerticle {
         router.getWithRegex("\\/(?<name>[^\\/]+)\\.jsonld").handler(this::getSchemaHandler);
 
 
-        /** Get all classes  and properties*/
+        /** Get all classes  and properties
+         */
         router.get("/classes").consumes("application/json").handler(this::getClassesHandler);
         router.get("/properties").consumes("application/json").handler(this::getPropertiesHandler);
 
 
-        /** Changes with angular refactoring */
-        router.route("/").produces("text/html").handler(routingContext -> {
-			HttpServerResponse response = routingContext.response();
-			response.sendFile("ui/dist/ui-vocab/index.html");
-		});
-        router.route("/static/*").consumes("*/*").handler(StaticHandler.create("ui/dist/ui-vocab/"));
 
-        /** @TODO: Make port configureable */
         int portNumber = config().getInteger(CONFIG_HTTP_SERVER_PORT, 8080);
         server
             .requestHandler(router)
@@ -277,7 +282,6 @@ public class HttpServerVerticle extends AbstractVerticle {
 
     /**
      * insertMasterHandler - handler to insert master context
-     * @TODO: Check duplicates
      */
     // tag::db-service-calls[]
     private void insertMasterHandler(RoutingContext context) {
@@ -320,7 +324,6 @@ public class HttpServerVerticle extends AbstractVerticle {
 
     /**
      * insertSchemaHandler - handler to insert a class or property
-     * @TODO: Check duplicates
      */
     // tag::db-service-calls[]
     private void insertSchemaHandler(RoutingContext context) {
@@ -390,7 +393,6 @@ public class HttpServerVerticle extends AbstractVerticle {
 
     /**
      * deleteSchemaHandler - handler to delete a class or property
-     * @TODO: Check duplicates
      */
     // tag::db-service-calls[]
     private void deleteSchemaHandler(RoutingContext context) {
@@ -439,7 +441,6 @@ public class HttpServerVerticle extends AbstractVerticle {
 
     /**
      * deleteMaster - handler to delete the master context
-     * @TODO: Check duplicates
      */
     // tag::db-service-calls[]
     private void deleteMasterHandler(RoutingContext context) {
