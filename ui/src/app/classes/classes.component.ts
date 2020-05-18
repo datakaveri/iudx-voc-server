@@ -9,8 +9,7 @@ import { Observable } from 'rxjs';
   styleUrls: ['./classes.component.css']
 })
 export class ClassesComponent implements OnInit {
-  classList = [];
-  public classData: Class[] = [];
+  classes: Observable<Class[]>;
 
   constructor(private backendservice: DataService) {}
 
@@ -18,14 +17,6 @@ export class ClassesComponent implements OnInit {
     return this.populateClassTable();
   }
   populateClassTable(): void {
-    this.backendservice.getAllClasses().subscribe(data => {
-      this.classList = Array.from(Object.keys(data), k => data[k]);
-      for (let cl in this.classList) {
-        this.classData.push({
-          label: this.classList[cl]['rdfs:label'],
-          comment: this.classList[cl]['rdfs:comment']
-        });
-      }
-    });
+    this.classes = this.backendservice.getAllClasses();
   }
 }
