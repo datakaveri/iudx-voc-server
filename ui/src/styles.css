@@ -22,7 +22,6 @@ h1 {
   color: #0d1f50 !important;
   letter-spacing: -1px !important;
   margin: 0.25em 0 0 0 !important;
-
   padding-top: 30px;
 }
 
@@ -111,46 +110,6 @@ pre {
 }
 
 /* -------------------------------------------------
-                  Header/Title
-  --------------------------------------------------*/
-
-/* #pageHeader {
-  width: 100%;
-  height: 90px;
-  background: #005c99;
-}
-#pageHeader h1 {
-  color: #fff;
-  margin: 0;
-  padding-top: 25px;
-  font: bold Helvetica, Arial, sans-serif;
-  letter-spacing: -1px;
-  text-shadow: 0 2px 0 #001a51;
-}
-#pageHeader a:link,
-#pageHeader a:hover,
-#pageHeader a:visited {
-  color: #fff;
-  background-color: #005c99;
-  text-decoration: none;
-}
-
-#cse-search-form {
-  float: right;
-  margin-top: 20px;
-  width: 255px !important;
-}
-@media all and (max-width: 720px) {
-  #pageHeader {
-    height: 120px;
-  }
-  #cse-search-form {
-    margin-left: 15px;
-    margin-top: 20px;
-  }
-} */
-
-/* -------------------------------------------------
                   NavBar
   --------------------------------------------------*/
 /* #selectionbar {
@@ -224,19 +183,22 @@ pre {
   margin: 0;
 }
 a:link {
-  color: #660000;
+  /* color: #660000; */
+  color: white;
   text-decoration: none;
-  border-bottom: dotted 1px #660000;
+  /* border-bottom: dotted 1px #660000; */
 }
 a:visited {
   color: #990000;
   text-decoration: none;
-  border-bottom: dotted 1px #990000;
+  /* border-bottom: dotted 1px #990000; */
 }
 a:hover {
   border-bottom: none;
-  color: #fff;
-  background-color: #660000;
+
+  /* background-color: gray; */
+  color: #ffee99;
+  background-color: transparent;
   text-decoration: none;
 }
 #mainContent blockquote,
@@ -323,17 +285,4 @@ table.definition-table {
     max-width: 960px;
     padding: 0 1em 1em 1em;
   }
-}
-/* img */
-.img-style {
-  height: 5vh;
-}
-#nav-style {
-  background-color: #6638aa !important;
-  padding: 10px 40px !important;
-}
-
-.btn {
-  color: pink;
-  border-color: #ad12c7;
 }
