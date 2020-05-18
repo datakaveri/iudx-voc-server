@@ -38,7 +38,7 @@ export class DataService {
 
   search(term: string): Observable<SearchRes[]> {
     return this.http
-                .get<SearchRes[]>(`${this.baseURL}?search=${term}`,
+                .get<SearchRes[]>(`${this.baseURL}/search?q=${term}`,
                                   { headers: this.headers })
                 .pipe(catchError(this.handleError));
   }
