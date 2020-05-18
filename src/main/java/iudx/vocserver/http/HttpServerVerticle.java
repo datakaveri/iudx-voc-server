@@ -108,14 +108,15 @@ public class HttpServerVerticle extends AbstractVerticle {
         router.route().handler(CorsHandler.create("*").allowedHeaders(allowedHeaders).allowedMethods(allowedMethods));
         
         /** Get/Post master context */
-        router.get("/").consumes("application/ld+json").produces("application/ld+json").handler(this::getMasterHandler);
+        router.get("/").produces("application/ld+json").handler(this::getMasterHandler);
+        router.get("/").produces("application/json").handler(this::getMasterHandler);
         router.getWithRegex("\\/master.jsonld").handler(this::getMasterHandler);
         router.route("/").consumes("application/ld+json").handler(BodyHandler.create());
         router.post("/").consumes("application/ld+json").handler(this::insertMasterHandler);
         router.delete("/").consumes("application/ld+json").handler(this::deleteMasterHandler);
 
         /** Fuzzy Search */
-        router.get("/").consumes("application/json").handler(this::searchHandler);
+        router.get("/search").consumes("application/json").handler(this::searchHandler);
 
         /** Get/Post classes or properties by name (JSON-LD API) */
         router.get("/:name").consumes("application/ld+json").handler(this::getSchemaHandler);
@@ -216,7 +217,7 @@ public class HttpServerVerticle extends AbstractVerticle {
     private void searchHandler(RoutingContext context) {
         String pattern = "";
         try {
-            pattern = context.queryParams().get("search");
+            pattern = context.queryParams().get("q");
             if (pattern.length() == 0) {
                 context.response().setStatusCode(200).end();
                 return;
