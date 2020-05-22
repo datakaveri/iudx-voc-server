@@ -1,4 +1,4 @@
-export interface ClassDetail {
+export interface PropertyDetail {
   id: string;
   type: [];
   comment: string;

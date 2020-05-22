@@ -4,6 +4,7 @@ import { ClassesComponent } from './classes/classes.component';
 import { HomeComponent } from './home/home.component';
 import { PropertyComponent } from './property/property.component';
 import { ClassDetailComponent } from './class-detail/class-detail.component';
+import { PropertyDetailComponent } from './property-detail/property-detail.component';
 
 const routes: Routes = [
   {
@@ -19,8 +20,12 @@ const routes: Routes = [
     component: PropertyComponent
   },
   {
-    path: 'classes/:id',
+    path: 'classes/:name',
     component: ClassDetailComponent
+  },
+  {
+    path: 'property/:propname',
+    component: PropertyDetailComponent
   }
 ];
 

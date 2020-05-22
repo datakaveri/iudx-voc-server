@@ -1,5 +1,5 @@
 <section id="schema_property_section" class="container section">
-  <div id="mainContent">
+  <div id="mainContent1">
     <table id="schema_section" class="definition-table">
       <thead>
         <tr>
@@ -10,7 +10,11 @@
       </thead>
       <tbody id="propertySchema" class="supertype"></tbody>
       <tr *ngFor="let property of properties | async">
-        <th>{{ property.label }}</th>
+        <th>
+          <a [routerLink]="['/property', property.label]">{{
+            property.label
+          }}</a>
+        </th>
         <td></td>
         <td>{{ property.comment }}</td>
       </tr>
