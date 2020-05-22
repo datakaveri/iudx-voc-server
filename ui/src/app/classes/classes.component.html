@@ -9,35 +9,14 @@
         </tr>
       </thead>
       <tbody id="classSchema">
-        <tr
-          *ngFor="let class of classes | async"
-          (click)="showClassDetail(class)"
-        >
+        <tr *ngFor="let class of classes | async">
           <th>
             <a [routerLink]="['/classes', class.label]">{{ class.label }}</a>
-            <!-- {{ class.label }} -->
           </th>
           <td></td>
           <td>{{ class.comment }}</td>
         </tr>
       </tbody>
     </table>
-
-    <!-- <table id="" class="definition-table">
-      <thead>
-        <tr>
-          <th>Property</th>
-          <th>Expected Type</th>
-          <th>Description</th>
-        </tr>
-      </thead> -->
-    <!-- <tbody id="classSchema">
-        <tr *ngFor="let class of graph">
-          <th>{{ class.id }}</th>
-          <td></td>
-          <td>{{ class.type }}</td>
-        </tr>
-      </tbody> -->
-    <!-- </table> -->
   </div>
 </section>

@@ -17,6 +17,7 @@ import { ClassDetail } from '../types/classdetail';
   providedIn: 'root'
 })
 export class DataService {
+  [x: string]: any;
   private baseURL = AppSettings.BASE_URL;
   headers = new HttpHeaders();
   headers_new = new HttpHeaders();
@@ -51,8 +52,13 @@ export class DataService {
   //     })
   //     .pipe(catchError(this.handleError));
   // }
-  getClassDetail(class_type) {
-    return this.http.get(`${this.baseURL}/${class_type.label}`, {
+  getClassDetail(class_label) {
+    return this.http.get(`${this.baseURL}/${class_label}`, {
+      headers: this.headers_new
+    });
+  }
+  getPropertyDetail(name) {
+    return this.http.get(`${this.baseURL}/${name}`, {
       headers: this.headers_new
     });
   }
