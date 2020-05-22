@@ -1,4 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
+import { DataService } from '../services/data.service';
+import { ClassDetail } from '../types/classdetail';
+import { Observable } from 'rxjs';
+import { Class } from '../types/class';
 
 @Component({
   selector: 'app-class-detail',
@@ -6,10 +10,8 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./class-detail.component.css']
 })
 export class ClassDetailComponent implements OnInit {
-
-  constructor() { }
-
-  ngOnInit(): void {
-  }
-
+  constructor() {}
+  @Input() class: Class;
+  @Input() graphData: Object;
+  ngOnInit(): void {}
 }
