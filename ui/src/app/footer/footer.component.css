@@ -1,0 +1,7 @@
+#footer a:link,
+#footer a:visited {
+  color: #0d1f50;
+}
+#footer a:hover {
+  color: maroon;
+}
