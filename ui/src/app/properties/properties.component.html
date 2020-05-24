@@ -11,7 +11,7 @@
       <tbody id="propertySchema" class="supertype"></tbody>
       <tr *ngFor="let property of properties | async">
         <th>
-          <a [routerLink]="['/property', property.label]">{{
+          <a [routerLink]="['/', property.label]">{{
             property.label
           }}</a>
         </th>
