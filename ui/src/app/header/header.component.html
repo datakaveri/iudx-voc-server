@@ -2,8 +2,7 @@
   <div id="intro">
     <nav
       id="nav-style"
-      class="navbar navbar-expand-md navbar-dark fixed-top bg-dark"
-    >
+      class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
       <img
         style="padding-right:10px;"
         class="img-style"
@@ -18,15 +17,14 @@
         data-target="#navbarsExampleDefault"
         aria-controls="navbarsExampleDefault"
         aria-expanded="false"
-        aria-label="Toggle navigation"
-      >
+        aria-label="Toggle navigation" >
         <span class="navbar-toggler-icon"></span>
       </button>
 
       <div class="collapse navbar-collapse" id="navbarsExampleDefault">
         <ul class="navbar-nav mr-auto">
           <li class="nav-item">
-            <a class="nav-link" href="#">Data Models</a>
+            <a class="nav-link" href="#">data models</a>
           </li>
 
           <li class="nav-item dropdown">
@@ -36,26 +34,28 @@
               id="dropdown01"
               data-toggle="dropdown"
               aria-haspopup="true"
-              aria-expanded="false"
-              >Base Schemas</a
-            >
+              aria-expanded="false">
+              base schemas
+            </a>
             <div
               id="menu-style"
               class="dropdown-menu"
-              aria-labelledby="dropdown01"
-            >
-              <a class="dropdown-item" routerLink="/classes">Classes</a>
-              <a class="dropdown-item" routerLink="/property">Properties</a>
+              aria-labelledby="dropdown01">
+              <a class="dropdown-item" routerLink="/list/classes">Classes</a>
+              <a class="dropdown-item" routerLink="/list/properties">Properties</a>
             </div>
           </li>
         </ul>
         <form class="form-inline my-2 my-lg-0">
-          <input
-            class="form-control mr-sm-2"
-            type="text"
-            placeholder="Search"
-            aria-label="Search"
-          />
+          <input type="text"
+                 placeholder="search schema"
+                 [formControl]="control"
+                 [matAutocomplete]="auto">
+          <mat-autocomplete #auto="matAutocomplete">
+            <mat-option *ngFor="let res of searchRes | async">
+              <a style="color:black" routerLink="{{res.label}}"> {{res.label}} </a>
+            </mat-option>
+          </mat-autocomplete>
           <button class="btn my-2 my-sm-0" type="submit">
             Search
           </button>
