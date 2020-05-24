@@ -7,12 +7,15 @@ import { HomeComponent } from './home/home.component';
 import { FooterComponent } from './footer/footer.component';
 import { HeaderComponent } from './header/header.component';
 import { ClassesComponent } from './classes/classes.component';
-import { PropertyComponent } from './property/property.component';
+import { PropertiesComponent } from './properties/properties.component';
 import { HttpClientModule } from '@angular/common/http';
 import { DataService } from './services/data.service';
-import { PropertyDetailComponent } from './property-detail/property-detail.component';
-import { ClassDetailComponent } from './class-detail/class-detail.component';
-import { SearchComponent } from './search/search.component';
+import { SchemaDetailsComponent } from './schema-details/schema-details.component';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {MatAutocompleteModule} from '@angular/material/autocomplete'; 
+
+
 
 @NgModule({
   declarations: [
@@ -21,12 +24,11 @@ import { SearchComponent } from './search/search.component';
     FooterComponent,
     HeaderComponent,
     ClassesComponent,
-    PropertyComponent,
-    PropertyDetailComponent,
-    ClassDetailComponent,
-    SearchComponent
+    PropertiesComponent,
+    SchemaDetailsComponent
   ],
-  imports: [BrowserModule, AppRoutingModule, HttpClientModule],
+  imports: [BrowserModule, AppRoutingModule, HttpClientModule,
+            NgbModule, FormsModule, ReactiveFormsModule, MatAutocompleteModule],
   providers: [DataService],
   bootstrap: [AppComponent]
 })

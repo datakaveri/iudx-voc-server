@@ -1,0 +1,66 @@
+<section id="schema_class_section" class="container">
+
+  <!--
+    Render class table if class
+  -->
+    <div *ngIf="classView">
+    <h1>{{ (classDetail | async).baseClass.label }}</h1>
+    <p>
+    {{ (classDetail | async).baseClass.comment }}
+    </p>
+    <table id="" class="definition-table">
+      <thead>
+        <tr>
+          <th>Property</th>
+          <th>Expected Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+
+      <tbody id="classSchema">
+        <tr *ngFor="let property  of (classDetail | async).baseClass.properties">
+          <th>{{ property.label }}</th>
+          <td>{{ property.type }}</td>
+          <td>{{ property.comment }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+
+  <!--
+    Render property table if property
+  -->
+    <div *ngIf="propertyView">
+    <h1>{{ (propertyDetail | async).label }}</h1>
+    <p>
+    {{ (propertyDetail | async).comment }}
+    </p>
+    <table id="" class="definition-table">
+      <thead>
+        <tr>
+          <th>Values expected</th>
+        </tr>
+      </thead>
+      <tbody id="">
+        <tr>
+          <td>{{ (propertyDetail | async).type }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <table id="" class="definition-table">
+      <thead>
+        <tr>
+          <th>Used on these types</th>
+        </tr>
+      </thead>
+
+      <tbody id="classSchema">
+        <tr *ngFor="let class  of (propertyDetail | async).domains">
+          <td>{{ class }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
