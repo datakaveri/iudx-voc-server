@@ -115,6 +115,7 @@ public class HttpServerVerticle extends AbstractVerticle {
 			response.sendFile("ui/dist/ui-vocab/index.html");
 		});
         router.route("/static/*").consumes("*/*").handler(StaticHandler.create("ui/dist/ui-vocab/"));
+        router.route("/assets/*").consumes("*/*").handler(StaticHandler.create("ui/dist/ui-vocab/assets"));
 
         /** Get/Post master context 
          */
