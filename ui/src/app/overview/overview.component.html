@@ -1,6 +1,6 @@
-<section id="schema_class_section" class="container">
+<section id="overview" class="container section">
   <div id="mainContent">
-    <table id="schema_section" class="definition-table">
+    <table id="overviewList" class="definition-table">
       <thead>
         <tr>
           <th>Class</th>
@@ -9,10 +9,8 @@
         </tr>
       </thead>
       <tbody id="classSchema">
-        <tr *ngFor="let class of classes">
-          <th>
-            <a [routerLink]="['/', class.label]">{{ class.label }}</a>
-          </th>
+        <tr *ngFor="let class of classes | async">
+          <th>{{ class.label }}</th>
           <td></td>
           <td>{{ class.comment }}</td>
         </tr>
