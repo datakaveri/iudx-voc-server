@@ -27,9 +27,17 @@ export class DataService {
       'Content-Type',
       'application/json; charset=utf-8'
     );
+    this.headers = this.headers.append(
+      'Accept',
+      'application/json; charset=utr-8'
+    );
     this.headersLD = this.headers.set(
       'Content-Type',
       'application/ld+json; charset=utf-8'
+    );
+    this.headersLD = this.headersLD.append(
+      'Accept',
+      'application/ld+json; charset=utr-8'
     );
   }
 

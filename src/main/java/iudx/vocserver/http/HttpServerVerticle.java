@@ -110,16 +110,21 @@ public class HttpServerVerticle extends AbstractVerticle {
         /** UI
          *  Notes: This is the first registered route to prevent conflict with json-ld response
          * */
+        router.getWithRegex("^\\/(?!assets\\/)(?!static\\/)[A-Za-z0-9]+").produces("text/html").handler(routingContext -> {
+			HttpServerResponse response = routingContext.response();
+			response.sendFile("ui/dist/ui-vocab/index.html");
+		});
+	router.route("/static/*").produces("text/html").handler(StaticHandler.create("ui/dist/ui-vocab/"));
+	router.route("/assets/*").produces("*/*").handler(StaticHandler.create("ui/dist/ui-vocab/assets/"));
         router.route("/").produces("text/html").handler(routingContext -> {
 			HttpServerResponse response = routingContext.response();
 			response.sendFile("ui/dist/ui-vocab/index.html");
 		});
-        router.route("/static/*").consumes("*/*").handler(StaticHandler.create("ui/dist/ui-vocab/"));
-        router.route("/assets/*").consumes("*/*").handler(StaticHandler.create("ui/dist/ui-vocab/assets"));
+
 
         /** Get/Post master context 
          */
-        router.get("/").produces("application/ld+json").handler(this::getMasterHandler);
+        router.get("/").produces("application/ld+json").consumes("application/ld+json").handler(this::getMasterHandler);
         router.getWithRegex("\\/master.jsonld").handler(this::getMasterHandler);
         router.route("/").consumes("application/ld+json").handler(BodyHandler.create());
         router.post("/").consumes("application/ld+json").handler(this::insertMasterHandler);
@@ -127,11 +132,11 @@ public class HttpServerVerticle extends AbstractVerticle {
 
         /** Fuzzy Search 
          */
-        router.get("/search").consumes("application/json").handler(this::searchHandler);
+        router.get("/search").consumes("application/json").produces("application/json").handler(this::searchHandler);
 
         /** Get/Post classes or properties by name (JSON-LD API) 
          **/
-        router.get("/:name").consumes("application/ld+json").handler(this::getSchemaHandler);
+        router.get("/:name").consumes("application/ld+json").produces("application/ld+json").handler(this::getSchemaHandler);
         router.route("/:name").consumes("application/ld+json").handler(BodyHandler.create());
         router.post("/:name").consumes("application/ld+json").handler(this::insertSchemaHandler);
         router.delete("/:name").consumes("application/ld+json").handler(this::deleteSchemaHandler);
@@ -141,8 +146,8 @@ public class HttpServerVerticle extends AbstractVerticle {
 
         /** Get all classes  and properties
          */
-        router.get("/classes").consumes("application/json").handler(this::getClassesHandler);
-        router.get("/properties").consumes("application/json").handler(this::getPropertiesHandler);
+        router.get("/classes").consumes("application/json").produces("application/json").handler(this::getClassesHandler);
+        router.get("/properties").consumes("application/json").produces("application/json").handler(this::getPropertiesHandler);
 
 
 
