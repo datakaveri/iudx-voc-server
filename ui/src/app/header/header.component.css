@@ -2,13 +2,15 @@
                   Header styles
   --------------------------------------------------*/
 .btn {
-  color: pink;
+  color: black;
+  background-color: whitesmoke;
+
   border-color: #ad12c7;
 }
 
 .btn:hover {
   background-image: none;
-  background-color: grey;
+  background-color: #c0c0c0;
   /* border-color: 1px solid green !important; */
 }
 .btn:link,
@@ -34,6 +36,14 @@ a:hover {
   background-color: transparent;
   text-decoration: none;
 }
+a.nav-link {
+  color: whitesmoke !important;
+  transition: font-size 0.2s;
+}
+
+a.nav-link:hover {
+  font-size: 18px !important;
+}
 
 #menu-style a:link,
 #menu-style a:visited {
@@ -52,16 +62,23 @@ a:hover {
 }
 /* img */
 .img-style {
-  height: 5vh;
+  height: 9vh;
   /* opacity: 2; */
 }
 #nav-style {
-  /* background-color: #005c99 !important; */
-  background-color: black !important;
+  /* background-image: linear-gradient(to right, #12f3eb, #673dc7c2) !important; */
+  /* background-image: linear-gradient(to right, #8968cd, #7b68ee) !important; */
+  /* background-image: linear-gradient(to right, #006666, #009999) !important; */
+  background-image: linear-gradient(to right, #333399, #3399ff) !important;
+  /* background-color: black !important; */
+  /* background-image: linear-gradient(to right, #ffc1c1, #a02422) !important; */
+  /* background-image: linear-gradient(to right, #37fdfc, #f54d70) !important; */
   padding: 10px 40px !important;
 }
 
-.form-control { width: 300px; }
+.form-control {
+  width: 300px;
+}
 
 .example-form {
   min-width: 150px;
@@ -71,4 +88,16 @@ a:hover {
 
 .example-full-width {
   width: 100%;
+}
+a.navbar-brand {
+  font-size: 26px;
+}
+
+input.mat-autocomplete-trigger {
+  letter-spacing: 1px !important;
+  padding-left: 10px !important;
+  height: 4.5vh !important;
+  border-radius: 7px !important;
+  font-size: 15px !important;
+  border: none;
 }

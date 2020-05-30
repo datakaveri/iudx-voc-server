@@ -2,14 +2,15 @@
   <div id="intro">
     <nav
       id="nav-style"
-      class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+      class="navbar navbar-expand-md navbar-dark fixed-top bg-dark"
+    >
       <img
         style="padding-right:10px;"
         class="img-style"
         src="../../assets/iudx_logo.png"
       />
 
-      <a class="navbar-brand" routerLink="/">Vocabulary</a>
+      <a class="navbar-brand" routerLink="/">IUDX Vocabulary</a>
       <button
         class="navbar-toggler"
         type="button"
@@ -17,7 +18,8 @@
         data-target="#navbarsExampleDefault"
         aria-controls="navbarsExampleDefault"
         aria-expanded="false"
-        aria-label="Toggle navigation" >
+        aria-label="Toggle navigation"
+      >
         <span class="navbar-toggler-icon"></span>
       </button>
 
@@ -34,28 +36,37 @@
               id="dropdown01"
               data-toggle="dropdown"
               aria-haspopup="true"
-              aria-expanded="false">
+              aria-expanded="false"
+            >
               base schemas
             </a>
             <div
               id="menu-style"
               class="dropdown-menu"
-              aria-labelledby="dropdown01">
+              aria-labelledby="dropdown01"
+            >
               <a class="dropdown-item" routerLink="/list/classes">Classes</a>
-              <a class="dropdown-item" routerLink="/list/properties">Properties</a>
+              <a class="dropdown-item" routerLink="/list/properties"
+                >Properties</a
+              >
             </div>
           </li>
         </ul>
         <form class="form-inline my-2 my-lg-0">
-          <input type="text"
-                 placeholder="search schema"
-                 [formControl]="control"
-                 [matAutocomplete]="auto">
+          <input
+            type="text"
+            placeholder="search schema"
+            [formControl]="control"
+            [matAutocomplete]="auto"
+          />
           <mat-autocomplete #auto="matAutocomplete">
             <mat-option *ngFor="let res of searchRes | async">
-              <a style="color:black" routerLink="{{res.label}}"> {{res.label}} </a>
+              <a style="color:black" routerLink="{{ res.label }}">
+                {{ res.label }}
+              </a>
             </mat-option>
           </mat-autocomplete>
+          &nbsp;
           <button class="btn my-2 my-sm-0" type="submit">
             Search
           </button>
