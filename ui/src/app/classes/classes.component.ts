@@ -3,10 +3,9 @@ import { DataService } from '../services/data.service';
 import { Class } from '../types/class';
 import { Observable } from 'rxjs';
 
-
 interface DynamicRoute {
-  path: string,
-  component: ClassesComponent
+  path: string;
+  component: ClassesComponent;
 }
 
 @Component({
@@ -24,10 +23,8 @@ export class ClassesComponent implements OnInit {
     this.populateClassTable();
   }
   populateClassTable(): void {
-    this.backendService.getAllClasses().subscribe(
-      classes => {
-        this.classes = classes;
-      }
-    );
+    this.backendService.getAllClasses().subscribe(classes => {
+      this.classes = classes;
+    });
   }
 }

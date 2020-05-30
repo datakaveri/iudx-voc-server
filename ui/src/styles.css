@@ -17,7 +17,7 @@ code {
   font-family: Courier, monospace;
 }
 h1 {
-  font: bold 24px Helvetica, Arial, sans-serif !important;
+  font: bold 28px Helvetica, Arial, sans-serif !important;
   /* color: #990000 !important; */
   color: #0d1f50 !important;
   letter-spacing: -1px !important;
@@ -173,7 +173,8 @@ pre {
 #mainContent2 {
   font-size: 100%;
   position: absolute;
-  top: 10%;
+  top: 15%;
+  /* border-bottom: solid 1px #cccccc; */
 }
 #mainContent ul li,
 #mainContent1 ul li,
@@ -201,7 +202,7 @@ a:hover {
   background-color: transparent;
   text-decoration: none;
 }
-#mainContent blockquote,
+/* #mainContent blockquote,
 #mainContent1 blockquote,
 #mainContent2 blockquote {
   padding: 0 0 0 15px;
@@ -209,7 +210,7 @@ a:hover {
   width: auto;
   float: right;
   border-left: thin dotted #000;
-}
+} */
 
 /* -- types -- */
 table.definition-table {
