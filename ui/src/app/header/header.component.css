@@ -36,10 +36,10 @@ a:hover {
   background-color: transparent;
   text-decoration: none;
 }
-a.nav-link {
+/* a.nav-link {
   color: whitesmoke !important;
   transition: font-size 0.2s;
-}
+} */
 
 a.nav-link:hover {
   font-size: 18px !important;
@@ -69,11 +69,18 @@ a.nav-link:hover {
   /* background-image: linear-gradient(to right, #12f3eb, #673dc7c2) !important; */
   /* background-image: linear-gradient(to right, #8968cd, #7b68ee) !important; */
   /* background-image: linear-gradient(to right, #006666, #009999) !important; */
-  background-image: linear-gradient(to right, #333399, #3399ff) !important;
+  /* background-image: linear-gradient(to right, #333399, #3399ff) !important; */
   /* background-color: black !important; */
   /* background-image: linear-gradient(to right, #ffc1c1, #a02422) !important; */
-  /* background-image: linear-gradient(to right, #37fdfc, #f54d70) !important; */
+  background-image: linear-gradient(to right, #37fdfc, #f54d70) !important;
   padding: 10px 40px !important;
+}
+a.nav-link {
+  color: black !important;
+  transition: font-size 0.2s;
+}
+a.navbar-brand {
+  color: black;
 }
 
 .form-control {
