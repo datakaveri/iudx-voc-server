@@ -18,3 +18,6 @@ a:hover {
 .table {
   width: 80%;
 }
+table thead {
+  background-color: #c7cbce;
+}
