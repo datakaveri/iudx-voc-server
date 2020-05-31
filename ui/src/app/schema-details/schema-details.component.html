@@ -8,7 +8,7 @@
       <p>
         {{ (classDetail | async).baseClass.comment }}
       </p>
-
+      <br />
       <table class="table table-striped">
         <thead>
           <tr>
@@ -22,9 +22,18 @@
           <tr
             *ngFor="let property of (classDetail | async).baseClass.properties"
           >
-            <th>{{ property.label }}</th>
-            <td>{{ property.type }}</td>
-            <td>{{ property.comment }}</td>
+            <td>
+              <a [routerLink]="['/', property.label]"
+                ><ngb-highlight [result]="property.label"></ngb-highlight>
+              </a>
+            </td>
+            <td>
+              <a><ngb-highlight [result]="property.type"></ngb-highlight> </a>
+            </td>
+
+            <td>
+              <ngb-highlight [result]="property.comment"></ngb-highlight>
+            </td>
           </tr>
         </tbody>
       </table>
@@ -58,9 +67,13 @@
           </tr>
         </thead>
 
-        <tbody id="classSchema">
+        <tbody>
           <tr *ngFor="let class of (propertyDetail | async).domains">
-            <td>{{ class }}</td>
+            <td>
+              <a [routerLink]="['/', class]"
+                ><ngb-highlight [result]="class"></ngb-highlight>
+              </a>
+            </td>
           </tr>
         </tbody>
       </table>
