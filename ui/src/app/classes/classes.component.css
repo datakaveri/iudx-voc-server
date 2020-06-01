@@ -15,3 +15,9 @@ a:hover {
   background-color: transparent;
   text-decoration: none;
 }
+table thead {
+  background-color: #c7cbce;
+}
+.table {
+  width: 115%;
+}
