@@ -13,9 +13,8 @@ import { DataService } from './services/data.service';
 import { SchemaDetailsComponent } from './schema-details/schema-details.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import {MatAutocompleteModule} from '@angular/material/autocomplete'; 
-
-
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { SearchResultComponent } from './search-result/search-result.component';
 
 @NgModule({
   declarations: [
@@ -25,10 +24,18 @@ import {MatAutocompleteModule} from '@angular/material/autocomplete';
     HeaderComponent,
     ClassesComponent,
     PropertiesComponent,
-    SchemaDetailsComponent
+    SchemaDetailsComponent,
+    SearchResultComponent
   ],
-  imports: [BrowserModule, AppRoutingModule, HttpClientModule,
-            NgbModule, FormsModule, ReactiveFormsModule, MatAutocompleteModule],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    HttpClientModule,
+    NgbModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatAutocompleteModule
+  ],
   providers: [DataService],
   bootstrap: [AppComponent]
 })

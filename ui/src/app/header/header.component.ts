@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import {FormControl} from '@angular/forms';
+import { FormControl } from '@angular/forms';
 import { Observable, Subject, of } from 'rxjs';
 import {
   catchError,
@@ -23,12 +23,7 @@ export class HeaderComponent implements OnInit {
   control = new FormControl();
   private searchTerms = new Subject<string>();
 
-  constructor(
-    private dataService: DataService,
-    private router: Router
-  ) { 
-
-  }
+  constructor(private dataService: DataService, private router: Router) {}
 
   search(term: string): void {
     this.searchTerms.next(term);
@@ -38,8 +33,8 @@ export class HeaderComponent implements OnInit {
     this.searchRes = this.control.valueChanges.pipe(
       debounceTime(500),
       distinctUntilChanged(),
-      switchMap(
-        term => term?this.dataService.search(term):of<SearchRes[]>([])
+      switchMap(term =>
+        term ? this.dataService.search(term) : of<SearchRes[]>([])
       ),
       catchError(error => {
         console.log(`Error in component ... ${error}`);
@@ -49,8 +44,11 @@ export class HeaderComponent implements OnInit {
   }
 
   gotoTerm(res: SearchRes): void {
-    const link = [ "/classes"];
+    const link = ['/classes'];
     console.log(link);
     this.router.navigate(link);
+  }
+  onSubmit(data) {
+    console.warn(data);
   }
 }
