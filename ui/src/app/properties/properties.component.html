@@ -1,6 +1,28 @@
 <section id="schema_property_section" class="container section">
   <div id="mainContent1">
-    <table id="schema_section" class="definition-table">
+    <br />
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th scope="col">Property</th>
+          <th scope="col">Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let property of properties | async; index as i">
+          <td>
+            <a [routerLink]="['/', property.label]"
+              ><ngb-highlight [result]="property.label"></ngb-highlight>
+            </a>
+          </td>
+
+          <td>
+            <ngb-highlight [result]="property.comment"></ngb-highlight>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <!-- <table id="schema_section" class="definition-table">
       <thead>
         <tr>
           <th>Property</th>
@@ -18,6 +40,6 @@
         <td></td>
         <td>{{ property.comment }}</td>
       </tr>
-    </table>
+    </table> -->
   </div>
 </section>

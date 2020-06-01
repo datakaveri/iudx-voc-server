@@ -5,3 +5,6 @@
 #footer a:hover {
   color: maroon;
 }
+#footer {
+  font-size: small;
+}

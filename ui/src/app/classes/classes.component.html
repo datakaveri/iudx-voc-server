@@ -1,22 +1,49 @@
 <section id="schema_class_section" class="container">
   <div id="mainContent">
-    <table id="schema_section" class="definition-table">
+    <br />
+    <table class="table table-striped">
       <thead>
         <tr>
-          <th>Class</th>
-          <th>&nbsp;</th>
-          <th>Description</th>
+          <th scope="col">Class</th>
+          <th scope="col">Description</th>
         </tr>
       </thead>
-      <tbody id="classSchema">
-        <tr *ngFor="let class of classes">
-          <th>
-            <a [routerLink]="['/', class.label]">{{ class.label }}</a>
-          </th>
-          <td></td>
-          <td>{{ class.comment }}</td>
+      <tbody>
+        <tr *ngFor="let class of classes; index as i">
+          <td>
+            <a [routerLink]="['/', class.label]"
+              ><ngb-highlight [result]="class.label"></ngb-highlight>
+            </a>
+          </td>
+
+          <td>
+            <ngb-highlight [result]="class.comment"></ngb-highlight>
+          </td>
         </tr>
       </tbody>
     </table>
   </div>
 </section>
+
+<!-- <section id="schema_class_section" class="container">
+  <div id="mainContent"> -->
+<!-- <table id="schema_section" class="definition-table">
+  <thead>
+    <tr>
+      <th>Class</th>
+      <th>&nbsp;</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody id="classSchema">
+    <tr *ngFor="let class of classes">
+      <th>
+        <a [routerLink]="['/', class.label]">{{ class.label }}</a>
+      </th>
+      <td></td>
+      <td>{{ class.comment }}</td>
+    </tr>
+  </tbody>
+</table> -->
+<!-- </div>
+</section> -->

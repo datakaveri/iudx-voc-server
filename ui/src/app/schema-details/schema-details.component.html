@@ -1,66 +1,83 @@
 <section id="schema_class_section" class="container">
-
-  <!--
+  <div id="mainContent">
+    <!--
     Render class table if class
   -->
     <div *ngIf="classView">
-    <h1>{{ (classDetail | async).baseClass.label }}</h1>
-    <p>
-    {{ (classDetail | async).baseClass.comment }}
-    </p>
-    <table id="" class="definition-table">
-      <thead>
-        <tr>
-          <th>Property</th>
-          <th>Expected Type</th>
-          <th>Description</th>
-        </tr>
-      </thead>
+      <h1>{{ (classDetail | async).baseClass.label }}</h1>
+      <p>
+        {{ (classDetail | async).baseClass.comment }}
+      </p>
+      <br />
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col">Property</th>
+            <th scope="col">Expected Type</th>
+            <th scope="col">Description</th>
+          </tr>
+        </thead>
 
-      <tbody id="classSchema">
-        <tr *ngFor="let property  of (classDetail | async).baseClass.properties">
-          <th>{{ property.label }}</th>
-          <td>{{ property.type }}</td>
-          <td>{{ property.comment }}</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+        <tbody>
+          <tr
+            *ngFor="let property of (classDetail | async).baseClass.properties"
+          >
+            <td>
+              <a [routerLink]="['/', property.label]"
+                ><ngb-highlight [result]="property.label"></ngb-highlight>
+              </a>
+            </td>
+            <td>
+              <a><ngb-highlight [result]="property.type"></ngb-highlight> </a>
+            </td>
 
+            <td>
+              <ngb-highlight [result]="property.comment"></ngb-highlight>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
-  <!--
+    <!--
     Render property table if property
   -->
     <div *ngIf="propertyView">
-    <h1>{{ (propertyDetail | async).label }}</h1>
-    <p>
-    {{ (propertyDetail | async).comment }}
-    </p>
-    <table id="" class="definition-table">
-      <thead>
-        <tr>
-          <th>Values expected</th>
-        </tr>
-      </thead>
-      <tbody id="">
-        <tr>
-          <td>{{ (propertyDetail | async).type }}</td>
-        </tr>
-      </tbody>
-    </table>
+      <h1>{{ (propertyDetail | async).label }}</h1>
+      <p>
+        {{ (propertyDetail | async).comment }}
+      </p>
+      <br />
+      <table class="table">
+        <thead>
+          <tr>
+            <th class="th-style" scope="col">Values expected</th>
+          </tr>
+        </thead>
+        <tbody id="">
+          <tr>
+            <td>{{ (propertyDetail | async).type }}</td>
+          </tr>
+        </tbody>
+      </table>
 
-    <table id="" class="definition-table">
-      <thead>
-        <tr>
-          <th>Used on these types</th>
-        </tr>
-      </thead>
+      <table class="table">
+        <thead>
+          <tr>
+            <th class="th-style" scope="col">Used on these types</th>
+          </tr>
+        </thead>
 
-      <tbody id="classSchema">
-        <tr *ngFor="let class  of (propertyDetail | async).domains">
-          <td>{{ class }}</td>
-        </tr>
-      </tbody>
-    </table>
+        <tbody>
+          <tr *ngFor="let class of (propertyDetail | async).domains">
+            <td>
+              <a [routerLink]="['/', class]"
+                ><ngb-highlight [result]="class"></ngb-highlight>
+              </a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </section>
