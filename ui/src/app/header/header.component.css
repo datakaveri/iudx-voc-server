@@ -1,11 +1,12 @@
 /* -------------------------------------------------
-                  Header styles
+                  Button styles
   --------------------------------------------------*/
 .btn {
   color: black;
   background-color: whitesmoke;
 
   border-color: #ad12c7;
+  border-radius: 7px;
 }
 
 .btn:hover {
@@ -21,6 +22,11 @@
   color: black;
   text-decoration: none;
 } */
+
+/* -------------------------------------------------
+                  Link styles
+  --------------------------------------------------*/
+
 a:link,
 a:visited {
   /* color: #660000; */
@@ -42,15 +48,19 @@ a:hover {
 } */
 
 a.nav-link:hover {
-  font-size: 18px !important;
+  font-size: 20px !important;
 }
 
+/* -------------------------------------------------
+                  Menu Link styles
+  --------------------------------------------------*/
 #menu-style a:link,
 #menu-style a:visited {
   color: black;
   /* color: white; */
   text-decoration: none;
   /* border-bottom: dotted 1px #660000; */
+  transition: color 0.2s;
 }
 #menu-style a:hover {
   border-bottom: none;
@@ -72,17 +82,27 @@ a.nav-link:hover {
   /* background-image: linear-gradient(to right, #333399, #3399ff) !important; */
   /* background-color: black !important; */
   /* background-image: linear-gradient(to right, #ffc1c1, #a02422) !important; */
-  background-image: linear-gradient(to right, #37fdfc, #f54d70) !important;
+  /* background-image: linear-gradient(to right, #37fdfc, #f54d70) !important; */
+  background-image: linear-gradient(to right, #37fdfc, #f523d9) !important;
+
   padding: 10px 40px !important;
 }
 a.nav-link {
   color: black !important;
+  /* color: darkslategray !important; */
+  font-size: 18px;
   transition: font-size 0.2s;
 }
 a.navbar-brand {
-  color: black;
+  /* color: black; */
+  color: white;
+  font-size: 28px;
+  font-weight: 600;
+  transition: color 0.2s;
 }
-
+a.navbar-brand:hover {
+  color: dimgray;
+}
 .form-control {
   width: 300px;
 }
@@ -95,9 +115,6 @@ a.navbar-brand {
 
 .example-full-width {
   width: 100%;
-}
-a.navbar-brand {
-  font-size: 26px;
 }
 
 input.mat-autocomplete-trigger {

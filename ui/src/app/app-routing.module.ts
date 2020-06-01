@@ -21,6 +21,10 @@ const routes: Routes = [
   {
     path: ':schemaName',
     component: SchemaDetailsComponent
+  },
+  {
+    path: 'search/:schemaName',
+    component: SchemaDetailsComponent
   }
 ];
 
