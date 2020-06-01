@@ -28,6 +28,7 @@ import java.util.HashSet;
 import iudx.vocserver.database.DBService;
 import iudx.vocserver.auth.AuthService;
 import iudx.vocserver.utils.Validator;
+import iudx.vocserver.http.VocApis;
 
 public class HttpServerVerticle extends AbstractVerticle {
     /**
@@ -53,6 +54,9 @@ public class HttpServerVerticle extends AbstractVerticle {
     private AuthService authService;
     private String serverId ;
 
+    // APIS
+    private VocApisInterface vocApis;
+
     // Validator objects
     private boolean isValidSchema;
     private Validator masterValidator;
@@ -73,9 +77,6 @@ public class HttpServerVerticle extends AbstractVerticle {
         dbService = DBService.createProxy(vertx, dbQueue);
         authService = AuthService.createProxy(vertx, authQueue);
 
-        masterValidator = new Validator("/masterSchema.json");
-        classValidator = new Validator("/classSchema.json");
-        propertyValidator = new Validator("/propertySchema.json");
 
         HttpServerOptions options = new HttpServerOptions()
                                     .setSsl(true)
@@ -83,6 +84,11 @@ public class HttpServerVerticle extends AbstractVerticle {
                                         .setPath(config().getString(JKS_FILE))
                                         .setPassword(config().getString(JKS_PASSWD)));
         HttpServer server = vertx.createHttpServer(options);
+
+        /** Load the APIs class */
+        vocApis = new VocApis(dbService, authService, serverId);
+
+
 
         /** ROUTES */
         Router router = Router.router(vertx);
@@ -105,50 +111,106 @@ public class HttpServerVerticle extends AbstractVerticle {
         allowedMethods.add(HttpMethod.DELETE);
         allowedMethods.add(HttpMethod.PATCH);
         allowedMethods.add(HttpMethod.PUT);
-        router.route().handler(CorsHandler.create("*").allowedHeaders(allowedHeaders).allowedMethods(allowedMethods));
-        
+        router.route()
+            .handler(CorsHandler.create("*")
+                    .allowedHeaders(allowedHeaders)
+                    .allowedMethods(allowedMethods));
+
         /** UI
          *  Notes: This is the first registered route to prevent conflict with json-ld response
          * */
-        router.getWithRegex("^\\/(?!assets\\/)(?!static\\/)[A-Za-z0-9]+").produces("text/html").handler(routingContext -> {
-			HttpServerResponse response = routingContext.response();
-			response.sendFile("ui/dist/ui-vocab/index.html");
-		});
-	router.route("/static/*").produces("text/html").handler(StaticHandler.create("ui/dist/ui-vocab/"));
-	router.route("/assets/*").produces("*/*").handler(StaticHandler.create("ui/dist/ui-vocab/assets/"));
-        router.route("/").produces("text/html").handler(routingContext -> {
-			HttpServerResponse response = routingContext.response();
-			response.sendFile("ui/dist/ui-vocab/index.html");
-		});
+        router.getWithRegex("^\\/(?!assets\\/)(?!static\\/)[A-Za-z0-9]+")
+            .produces("text/html")
+            .handler(
+                    routingContext -> {
+                        HttpServerResponse response = routingContext.response();
+                        response.sendFile("ui/dist/ui-vocab/index.html");
+        });
+
+        router.route("/static/*").produces("text/html")
+            .handler(StaticHandler.create("ui/dist/ui-vocab/"));
+
+        router.route("/assets/*").produces("*/*")
+            .handler(StaticHandler.create("ui/dist/ui-vocab/assets/"));
+
+        router.route("/").produces("text/html")
+            .handler(routingContext -> {
+                HttpServerResponse response = routingContext.response();
+                response.sendFile("ui/dist/ui-vocab/index.html");
+        });
 
 
         /** Get/Post master context 
-         */
-        router.get("/").produces("application/ld+json").consumes("application/ld+json").handler(this::getMasterHandler);
-        router.getWithRegex("\\/master.jsonld").handler(this::getMasterHandler);
-        router.route("/").consumes("application/ld+json").handler(BodyHandler.create());
-        router.post("/").consumes("application/ld+json").handler(this::insertMasterHandler);
-        router.delete("/").consumes("application/ld+json").handler(this::deleteMasterHandler);
+        */
+        router.get("/").produces("application/ld+json")
+            .consumes("application/ld+json")
+            .handler( routingContext -> {
+                vocApis.getClassesHandler(routingContext);
+            });
+
+        router.getWithRegex("\\/master.jsonld")
+            .handler( routingContext -> {
+                vocApis.getMasterHandler(routingContext);
+            });
+
+        router.route("/").consumes("application/ld+json")
+            .handler(BodyHandler.create());
+        router.post("/").consumes("application/ld+json")
+            .handler( routingContext -> {
+                vocApis.insertMasterHandler(routingContext);
+            });
+        router.delete("/").consumes("application/ld+json")
+            .handler( routingContext -> {
+                vocApis.deleteMasterHandler(routingContext);
+            });
 
         /** Fuzzy Search 
          */
-        router.get("/search").consumes("application/json").produces("application/json").handler(this::searchHandler);
+        router.get("/search").consumes("application/json")
+            .produces("application/json")
+            .handler( routingContext -> {
+                vocApis.searchHandler(routingContext);
+            });
 
         /** Get/Post classes or properties by name (JSON-LD API) 
          **/
-        router.get("/:name").consumes("application/ld+json").produces("application/ld+json").handler(this::getSchemaHandler);
-        router.route("/:name").consumes("application/ld+json").handler(BodyHandler.create());
-        router.post("/:name").consumes("application/ld+json").handler(this::insertSchemaHandler);
-        router.delete("/:name").consumes("application/ld+json").handler(this::deleteSchemaHandler);
+        router.get("/:name").consumes("application/ld+json")
+            .produces("application/ld+json")
+            .handler( routingContext -> {
+                vocApis.getSchemaHandler(routingContext);
+            });
 
-        router.getWithRegex("\\/(?<name>[^\\/]+)\\.jsonld").handler(this::getSchemaHandler);
+        router.route("/:name").consumes("application/ld+json")
+            .handler(BodyHandler.create());
+        router.post("/:name").consumes("application/ld+json")
+            .handler( routingContext -> {
+                vocApis.insertSchemaHandler(routingContext);
+            });
+        router.delete("/:name").consumes("application/ld+json")
+            .handler( routingContext -> {
+                vocApis.deleteSchemaHandler(routingContext);
+            });
+
+        /** Get jsonld from browser */
+        router.getWithRegex("\\/(?<name>[^\\/]+)\\.jsonld")
+            .handler( routingContext -> {
+                vocApis.getSchemaHandler(routingContext);
+            });
 
 
         /** Get all classes  and properties
          */
-        router.get("/classes").consumes("application/json").produces("application/json").handler(this::getClassesHandler);
-        router.get("/properties").consumes("application/json").produces("application/json").handler(this::getPropertiesHandler);
+        router.get("/classes").consumes("application/json")
+            .produces("application/json")
+            .handler( routingContext -> {
+                vocApis.getClassesHandler(routingContext);
+            });
 
+        router.get("/properties").consumes("application/json")
+            .produces("application/json")
+            .handler( routingContext -> {
+                vocApis.getPropertiesHandler(routingContext);
+            });
 
 
         int portNumber = config().getInteger(CONFIG_HTTP_SERVER_PORT, 8080);
@@ -166,310 +228,4 @@ public class HttpServerVerticle extends AbstractVerticle {
     }
 
 
-    /**
-     * getClassesHandler - handler to get all classes 
-     */
-    // tag::db-service-calls[]
-    private void getClassesHandler(RoutingContext context) {
-            dbService.getAllClasses(reply -> {
-                if (reply.succeeded()) {
-                    context.response().putHeader("content-type", "application/json");
-                    context.response().setStatusCode(200)
-                                        .end(reply.result().encode());
-                }
-                else {
-                    context.response().putHeader("content-type", "application/json");
-                    context.response().setStatusCode(404).end();
-                }
-            });
-    }
-
-    /**
-     * getPropertiesHandler - handler to get all properties 
-     */
-    // tag::db-service-calls[]
-    private void getPropertiesHandler(RoutingContext context) {
-            dbService.getAllProperties(reply -> {
-                if (reply.succeeded()) {
-                    context.response().putHeader("content-type", "application/json");
-                    context.response().setStatusCode(200)
-                                        .end(reply.result().encode());
-                }
-                else {
-                    context.response().putHeader("content-type", "application/json");
-                    context.response().setStatusCode(404).end();
-                }
-            });
-    }
-
-
-    /**
-     * getMasterHandler - handler to get master context
-     */
-    // tag::db-service-calls[]
-    private void getMasterHandler(RoutingContext context) {
-        dbService.getMasterContext(reply -> {
-            if (reply.succeeded()) {
-                context.response().putHeader("content-type", "application/json");
-                context.response().setStatusCode(200)
-                    .end(reply.result().encode());
-            } else {
-                LOGGER.info("Failed getting master context");
-                context.response().putHeader("content-type", "application/json");
-                context.response().setStatusCode(404).end();
-            }
-        });
-    }
-
-    /**
-     * searchHandler - handler to perform fuzzy schema search
-     */
-    // tag::db-service-calls[]
-    private void searchHandler(RoutingContext context) {
-        String pattern = "";
-        try {
-            pattern = context.queryParams().get("q");
-            if (pattern.length() == 0) {
-                context.response().setStatusCode(200).end();
-                return;
-            }
-        } catch (Exception e) {
-            context.response().setStatusCode(404).end();
-            return;
-        }
-        dbService.fuzzySearch(pattern, reply -> {
-            if (reply.succeeded()) {
-                context.response().putHeader("content-type", "application/json");
-                context.response().setStatusCode(200)
-                    .end(reply.result().encode());
-            } else {
-                LOGGER.info("Failed searching, query params not found");
-                context.response().putHeader("content-type", "application/json");
-                context.response().setStatusCode(404).end();
-            }
-        });
-    }
-
-    
-    /**
-     * getSchemaHandler - handler to get classes or properties by name
-     */
-    // tag::db-service-calls[]
-    private void getSchemaHandler(RoutingContext context) {
-        String name = context.request().getParam("name").replace(".jsonld", "");
-        /** Check if provided param is class or property */
-        boolean isClass = Character.isUpperCase(name.charAt(0));
-        /** This can be simplified by setting a flag, leaving it expanded for future use. */
-        if (isClass == true) {
-            dbService.getClass(name, reply -> {
-                if (reply.succeeded()) {
-                    context.response().putHeader("content-type", "application/json");
-                    context.response().setStatusCode(200)
-                                        .end(reply.result().encode());
-                } else {
-                    LOGGER.info("Failed getting class " + name);
-                    context.response().putHeader("content-type", "application/json");
-                    context.response().setStatusCode(404).end();
-                }
-            });
-        } else if (isClass == false) {
-            dbService.getProperty(name, reply -> {
-                if (reply.succeeded()) {
-                    context.response().putHeader("content-type", "application/json");
-                    context.response().setStatusCode(200)
-                                        .end(reply.result().encode());
-                } else {
-                    context.response().putHeader("content-type", "application/json");
-                    context.response().setStatusCode(404).end();
-                }
-            });
-        }
-    }
-
-    /**
-     * insertMasterHandler - handler to insert master context
-     */
-    // tag::db-service-calls[]
-    private void insertMasterHandler(RoutingContext context) {
-        String body = context.getBodyAsString();
-        /** This can be simplified by setting a flag, leaving it expanded for future use. */
-        context.response().putHeader("content-type", "application/json");
-        /** Validate token */
-        String token = context.request().getHeader("token");
-        /** Sever ID is the vocab server domain name*/
-        authService.validateToken(token, this.serverId,
-            authreply -> {
-                if (authreply.succeeded()) {
-                    try {
-                        isValidSchema = masterValidator.validate(body);
-                    }
-                    catch (Exception e) {
-                        isValidSchema = false;
-                        LOGGER.info(e);
-                    }
-                    if (isValidSchema == false) {
-                        LOGGER.info("Failed inserting master context, invalid schema ");
-                        context.response().setStatusCode(404).end();
-                    } else {
-                        dbService.insertMasterContext(context.getBodyAsJson(), reply -> {
-                            if (reply.succeeded()) {
-                                LOGGER.info("Inserted master");
-                                context.response().setStatusCode(201).end();
-                            } else {
-                                context.response().setStatusCode(404).end();
-                            }
-                        });
-                    }
-                }
-                if (authreply.failed()) {
-                    LOGGER.info("Got invalid usename and password");
-                    context.response().setStatusCode(401).end();
-                }
-        });
-    }
-
-    /**
-     * insertSchemaHandler - handler to insert a class or property
-     */
-    // tag::db-service-calls[]
-    private void insertSchemaHandler(RoutingContext context) {
-        String name = context.request().getParam("name");
-        String body = context.getBodyAsString();
-        /** Check if provided param is class or property */
-        boolean isClass = Character.isUpperCase(name.charAt(0));
-        /** This can be simplified by setting a flag, leaving it expanded for future use. */
-        context.response().putHeader("content-type", "application/json");
-        /** Validate token */
-        String token = context.request().getHeader("token");
-        /** Sever ID is the vocab server domain name*/
-        authService.validateToken(token, this.serverId,
-            authreply -> {
-                if (authreply.succeeded()) {
-                    if (isClass == true) {
-                        try {
-                            isValidSchema = classValidator.validate(body);
-                        }
-                        catch (Exception e) {
-                            isValidSchema = false;
-                        }
-                        if (isValidSchema == false) {
-                            LOGGER.info("Failed inserting, invalid schema " + name);
-                            context.response().setStatusCode(404).end();
-                        } else {
-                            dbService.insertClass(name, context.getBodyAsJson(), reply -> {
-                                if (reply.succeeded()) {
-                                    LOGGER.info("Inserted " + name);
-                                    // TODO: Very inefficient. Consider making a service that 
-                                    //          inserts label and summary
-                                    dbService.makeSummary( res -> {} );
-                                    context.response().setStatusCode(201).end();
-                                } else {
-                                    context.response().setStatusCode(404).end();
-                                }
-                            });
-                        }
-                    } else if (isClass == false) {
-                        try {
-                            isValidSchema = propertyValidator.validate(body);
-                        }
-                        catch (Exception e) {
-                            isValidSchema = false;
-                        }
-                        if (isValidSchema == false) {
-                            LOGGER.info("Failed inserting, invalid schema " + name);
-                            context.response().setStatusCode(404).end();
-                        } else {
-                            dbService.insertProperty(name, context.getBodyAsJson(), reply -> {
-                                if (reply.succeeded()) {
-                                    LOGGER.info("Insertion success");
-                                    context.response().setStatusCode(201).end();
-                                } else {
-                                    context.response().setStatusCode(404).end();
-                                }
-                            });
-                        }
-                    }
-                }
-                if (authreply.failed()) {
-                    LOGGER.info("Got invalid usename and password");
-                    context.response().setStatusCode(401).end();
-                }
-        });
-    }
-
-    /**
-     * deleteSchemaHandler - handler to delete a class or property
-     */
-    // tag::db-service-calls[]
-    private void deleteSchemaHandler(RoutingContext context) {
-        String name = context.request().getParam("name");
-        LOGGER.info("Hit deleteSchemaHandler with name " + name);
-        LOGGER.info(this.serverId);
-        /** Check if provided param is class or property */
-        boolean isClass = Character.isUpperCase(name.charAt(0));
-        /** This can be simplified by setting a flag, leaving it expanded for future use. */
-        context.response().putHeader("content-type", "application/json");
-        /** Validate token */
-        String token = context.request().getHeader("token");
-        /** Sever ID is the vocab server domain name*/
-        authService.validateToken(token, this.serverId,
-            authreply -> {
-                if (authreply.succeeded()) {
-                    if (isClass == true) {
-                        dbService.deleteClass(name, reply -> {
-                            if (reply.succeeded()) {
-                                LOGGER.info("Deleted " + name);
-                                // TODO: Very inefficient. Consider making a service that 
-                                //          inserts label and summary
-                                dbService.makeSummary( res -> {} );
-                                context.response().setStatusCode(204).end();
-                            } else {
-                                context.response().setStatusCode(404).end();
-                            }
-                        });
-                    } else if (isClass == false) {
-                        dbService.deleteProperty(name, reply -> {
-                            if (reply.succeeded()) {
-                                LOGGER.info("Deleted " + name);
-                                context.response().setStatusCode(204).end();
-                            } else {
-                                context.response().setStatusCode(404).end();
-                            }
-                        });
-                    }
-                }
-                if (authreply.failed()) {
-                    LOGGER.info("Got invalid usename and password");
-                    context.response().setStatusCode(401).end();
-                }
-        });
-    }
-
-    /**
-     * deleteMaster - handler to delete the master context
-     */
-    // tag::db-service-calls[]
-    private void deleteMasterHandler(RoutingContext context) {
-        context.response().putHeader("content-type", "application/json");
-        /** Validate token */
-        String token = context.request().getHeader("token");
-        /** Sever ID is the vocab server domain name*/
-        authService.validateToken(token, this.serverId,
-            authreply -> {
-                if (authreply.succeeded()) {
-                        dbService.deleteMaster(reply -> {
-                            if (reply.succeeded()) {
-                                LOGGER.info("Deleted master");
-                                context.response().setStatusCode(204).end();
-                            } else {
-                                context.response().setStatusCode(404).end();
-                            }
-                        });
-                }
-                if (authreply.failed()) {
-                    LOGGER.info("Got invalid usename and password");
-                    context.response().setStatusCode(401).end();
-                }
-        });
-    }
 }
