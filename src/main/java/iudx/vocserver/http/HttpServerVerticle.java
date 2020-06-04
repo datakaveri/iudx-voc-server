@@ -143,9 +143,8 @@ public class HttpServerVerticle extends AbstractVerticle {
         /** Get/Post master context 
         */
         router.get("/").produces("application/ld+json")
-            .consumes("application/ld+json")
             .handler( routingContext -> {
-                vocApis.getClassesHandler(routingContext);
+                vocApis.getMasterHandler(routingContext);
             });
 
         router.getWithRegex("\\/master.jsonld")
