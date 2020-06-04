@@ -10,7 +10,13 @@
         src="../../assets/iudx_logo.png"
       />
 
-      <a class="navbar-brand" routerLink="/">IUDX Vocabulary</a>
+      <a
+        class="navbar-brand"
+        routerLinkActive="brand-active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        routerLink="/"
+        >IUDX Vocabulary</a
+      >
       <button
         class="navbar-toggler"
         type="button"
@@ -26,10 +32,22 @@
       <div class="collapse navbar-collapse" id="navbarsExampleDefault">
         <ul class="navbar-nav mr-auto">
           <li class="nav-item">
-            <a class="nav-link" href="#">data models</a>
+            <a
+              class="nav-link"
+              routerLinkActive="active"
+              routerLink="/datamodels"
+              >data-models</a
+            >
           </li>
-
-          <li class="nav-item dropdown">
+          <li class="nav-item">
+            <a class="nav-link" routerLinkActive="active" routerLink="/entities"
+              >entities</a
+            >
+          </li>
+          <!-- <li class="nav-item">
+            <a class="nav-link">IUDX properties</a>
+          </li> -->
+          <!-- <li class="nav-item dropdown">
             <a
               class="nav-link dropdown-toggle"
               href="#"
@@ -50,7 +68,7 @@
                 >Properties</a
               >
             </div>
-          </li>
+          </li> -->
         </ul>
         <form class="form-inline my-2 my-lg-0">
           <input
