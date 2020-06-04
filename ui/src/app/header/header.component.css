@@ -47,10 +47,6 @@ a:hover {
   transition: font-size 0.2s;
 } */
 
-a.nav-link:hover {
-  font-size: 20px !important;
-}
-
 /* -------------------------------------------------
                   Menu Link styles
   --------------------------------------------------*/
@@ -88,20 +84,26 @@ a.nav-link:hover {
   padding: 10px 40px !important;
 }
 a.nav-link {
-  color: black !important;
+  color: darkslategray !important;
   /* color: darkslategray !important; */
-  font-size: 18px;
+  font-size: 20px;
   transition: font-size 0.2s;
+}
+.active,
+a.nav-link:hover {
+  font-size: 23px !important;
+  /* color: black; */
 }
 a.navbar-brand {
   /* color: black; */
-  color: white;
+  color: dimgray;
   font-size: 28px;
   font-weight: 600;
   transition: color 0.2s;
 }
+.brand-active,
 a.navbar-brand:hover {
-  color: dimgray;
+  color: white !important;
 }
 .form-control {
   width: 300px;
