@@ -72,13 +72,16 @@ public final class VocApis implements VocApisInterface {
     public void getClassesHandler(RoutingContext context) {
             dbService.getAllClasses(reply -> {
                 if (reply.succeeded()) {
-                    context.response().putHeader("content-type", "application/json");
-                    context.response().setStatusCode(200)
-                                        .end(reply.result().encode());
+                    context.response()
+                    .putHeader("content-type", "application/json")
+                    .setStatusCode(200)
+                    .end(reply.result().encode());
                 }
                 else {
-                    context.response().putHeader("content-type", "application/json");
-                    context.response().setStatusCode(404).end();
+                    context.response()
+                        .putHeader("content-type", "application/json")
+                        .setStatusCode(404)
+                        .end();
                 }
             });
     }
@@ -94,13 +97,16 @@ public final class VocApis implements VocApisInterface {
     public void getPropertiesHandler(RoutingContext context) {
             dbService.getAllProperties(reply -> {
                 if (reply.succeeded()) {
-                    context.response().putHeader("content-type", "application/json");
-                    context.response().setStatusCode(200)
-                                        .end(reply.result().encode());
+                    context.response()
+                        .putHeader("content-type", "application/json")
+                        .setStatusCode(200)
+                        .end(reply.result().encode());
                 }
                 else {
-                    context.response().putHeader("content-type", "application/json");
-                    context.response().setStatusCode(404).end();
+                    context.response()
+                        .putHeader("content-type", "application/json")
+                        .setStatusCode(404)
+                        .end();
                 }
             });
     }
@@ -117,13 +123,15 @@ public final class VocApis implements VocApisInterface {
     public void getMasterHandler(RoutingContext context) {
         dbService.getMasterContext(reply -> {
             if (reply.succeeded()) {
-                context.response().putHeader("content-type", "application/json");
-                context.response().setStatusCode(200)
-                    .end(reply.result().encode());
+                context.response().putHeader("content-type", "application/json")
+                .setStatusCode(200)
+                .end(reply.result().encode());
             } else {
                 LOGGER.info("Failed getting master context");
-                context.response().putHeader("content-type", "application/json");
-                context.response().setStatusCode(404).end();
+                context.response()
+                    .putHeader("content-type", "application/json")
+                    .setStatusCode(404)
+                    .end();
             }
         });
     }
@@ -150,13 +158,15 @@ public final class VocApis implements VocApisInterface {
         }
         dbService.fuzzySearch(pattern, reply -> {
             if (reply.succeeded()) {
-                context.response().putHeader("content-type", "application/json");
-                context.response().setStatusCode(200)
-                    .end(reply.result().encode());
+                context.response().putHeader("content-type", "application/json")
+                .setStatusCode(200)
+                .end(reply.result().encode());
             } else {
                 LOGGER.info("Failed searching, query params not found");
-                context.response().putHeader("content-type", "application/json");
-                context.response().setStatusCode(404).end();
+                context.response()
+                    .putHeader("content-type", "application/json")
+                    .setStatusCode(404)
+                    .end();
             }
         });
     }
@@ -178,24 +188,28 @@ public final class VocApis implements VocApisInterface {
         if (isClass == true) {
             dbService.getClass(name, reply -> {
                 if (reply.succeeded()) {
-                    context.response().putHeader("content-type", "application/json");
-                    context.response().setStatusCode(200)
-                                        .end(reply.result().encode());
+                    context.response().putHeader("content-type", "application/json")
+                    .setStatusCode(200)
+                                    .end(reply.result().encode());
                 } else {
                     LOGGER.info("Failed getting class " + name);
-                    context.response().putHeader("content-type", "application/json");
-                    context.response().setStatusCode(404).end();
+                    context.response()
+                        .putHeader("content-type", "application/json")
+                        .setStatusCode(404)
+                        .end();
                 }
             });
         } else if (isClass == false) {
             dbService.getProperty(name, reply -> {
                 if (reply.succeeded()) {
-                    context.response().putHeader("content-type", "application/json");
-                    context.response().setStatusCode(200)
-                                        .end(reply.result().encode());
+                    context.response().putHeader("content-type", "application/json")
+                    .setStatusCode(200)
+                    .end(reply.result().encode());
                 } else {
-                    context.response().putHeader("content-type", "application/json");
-                    context.response().setStatusCode(404).end();
+                    context.response()
+                        .putHeader("content-type", "application/json")
+                        .setStatusCode(404)
+                        .end();
                 }
             });
         }
