@@ -86,12 +86,15 @@ a:hover {
 a.nav-link {
   color: darkslategray !important;
   /* color: darkslategray !important; */
-  font-size: 20px;
-  transition: font-size 0.2s;
+  font-size: 18px;
+  transition: font-size 0.2s background-color 0.2s border-radius 0.2s;
 }
-.active,
+
 a.nav-link:hover {
-  font-size: 23px !important;
+  /* font-size: 23px !important; */
+  background-color: whitesmoke;
+  border-radius: 5px;
+
   /* color: black; */
 }
 a.navbar-brand {
