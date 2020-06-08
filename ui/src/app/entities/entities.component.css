@@ -14,6 +14,10 @@
   font-size: 26px;
   font-weight: 600;
 }
+.h-heading {
+  /* font-size: 24px; */
+  font-weight: 600;
+}
 
 button {
   margin-left: 35%;
@@ -29,4 +33,12 @@ p a:visited {
 }
 p a:hover {
   text-decoration: underline;
+}
+
+.border-bottom {
+  border-bottom: 1px solid lightgrey;
+}
+ul > a {
+  cursor: pointer;
+  color: maroon;
 }

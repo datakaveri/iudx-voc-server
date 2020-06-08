@@ -18,6 +18,7 @@ import {
   Properties
 } from '../types/classDetail';
 import { PropertyDetail } from '../types/propertyDetail';
+import { DataModel } from '../types/dataModel';
 
 @Injectable({
   providedIn: 'root'
@@ -97,7 +98,7 @@ export class DataService {
               }
             }
           }
-          console.log(flattened);
+          // console.log(flattened);
           return flattened;
         }),
         catchError(this.handleError)
@@ -105,7 +106,7 @@ export class DataService {
   }
 
   getProperty(propertyName: string) {
-    console.log('Getting property ' + propertyName);
+    // console.log('Getting property ' + propertyName);
     return this.http
       .get(`${this.baseURL}/${propertyName}`, { headers: this.headersLD })
       .pipe(
@@ -137,6 +138,12 @@ export class DataService {
       );
   }
 
+  getModels() {
+    return this.http
+      .get<DataModel[]>(`${this.baseURL}/classes`, { headers: this.headers })
+      .pipe(catchError(this.handleError));
+  }
+
   search(term: string): Observable<SearchRes[]> {
     return this.http
       .get<SearchRes[]>(`${this.baseURL}/search?q=${term}`, {
@@ -146,7 +153,7 @@ export class DataService {
   }
 
   private handleError(res: HttpErrorResponse) {
-    console.error(res.error);
+    // console.error(res.error);
     return observableThrowError(res.error || 'Server error');
   }
 }

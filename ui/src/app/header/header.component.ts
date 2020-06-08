@@ -37,7 +37,7 @@ export class HeaderComponent implements OnInit {
         term ? this.dataService.search(term) : of<SearchRes[]>([])
       ),
       catchError(error => {
-        console.log(`Error in component ... ${error}`);
+        // console.log(`Error in component ... ${error}`);
         return of<SearchRes[]>([]);
       })
     );
@@ -45,10 +45,10 @@ export class HeaderComponent implements OnInit {
 
   gotoTerm(res: SearchRes): void {
     const link = ['/classes'];
-    console.log(link);
+    // console.log(link);
     this.router.navigate(link);
   }
   onSubmit(data) {
-    console.warn(data);
+    // console.warn(data);
   }
 }
