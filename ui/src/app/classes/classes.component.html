@@ -11,7 +11,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let class of classes; index as i">
+        <tr *ngFor="let class of classes | async; index as i">
           <td>
             <a [routerLink]="['/', class.label]"
               ><ngb-highlight [result]="class.label"></ngb-highlight>
