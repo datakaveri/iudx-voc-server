@@ -14,7 +14,7 @@ interface DynamicRoute {
   styleUrls: ['./classes.component.css']
 })
 export class ClassesComponent implements OnInit {
-  classes: Class[];
+  classes: Observable<Class[]>;
   clsRoutes: DynamicRoute[];
 
   constructor(private backendService: DataService) {}
@@ -23,8 +23,6 @@ export class ClassesComponent implements OnInit {
     this.populateClassTable();
   }
   populateClassTable(): void {
-    this.backendService.getAllClasses().subscribe(classes => {
-      this.classes = classes;
-    });
+    this.classes = this.backendService.getAllClasses();
   }
 }
