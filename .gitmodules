@@ -1,0 +1,3 @@
+[submodule "iudx-voc"]
+	path = iudx-voc
+	url = https://github.com/datakaveri/iudx-voc.git

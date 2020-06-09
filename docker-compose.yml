@@ -10,7 +10,9 @@ networks:
 services:
 
   server:
-    image: vertx/vertx3
+    build:
+      dockerfile: ./Dockerfile
+      context: .
     depends_on:
       - "db"
     ports:
