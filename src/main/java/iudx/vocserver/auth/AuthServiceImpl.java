@@ -54,21 +54,22 @@ class AuthServiceImpl implements AuthService {
                         if (ar.result().statusCode() == 200) {
                             JsonArray validPatterns = ar.result().bodyAsJsonObject()
                                 .getJsonArray("request");
-                            LOGGER.info("Got valid ids " + validPatterns.encode());
                             int validToken = 0;
                             for (int i = 0; i<validPatterns.size(); i++) {
                                 Pattern patObj = Pattern.compile(validPatterns
                                         .getJsonObject(i)
                                         .getString("id")
-                                        .split("/")[2]
                                         .replace("/", "\\/")
                                         .replace(".", "\\.")
-                                        .replace("*", ".*"));
+                                        .replace("*", ""));
 
-                                if (patObj.matcher(serverId).matches()) validToken = 1;
+                                try {
+                                    if (patObj.matcher(serverId).matches()) validToken = 1;
+                                } catch (Exception e) {
+                                    validToken = 0;
+                                }
                             }
                             if (validToken == 1 ){
-                                LOGGER.info("Obtained valid token");
                                 resultHandler.handle(Future.succeededFuture(true));
                             } else {
                                 resultHandler.handle(Future.failedFuture(new Throwable("Invalid token")));

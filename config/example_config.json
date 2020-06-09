@@ -6,7 +6,7 @@
   "vocserver.jksfile": "JKS file",
   "vocserver.jkspasswd": "Some password",
   "vocserver.http.port": 8080,
-  "vocserver.http.cname": "example.com",
+  "vocserver.id": "org/sha1/example.com/",
   "vocserver.http.instances": 2,
   "vocserver.database.queue": "vocserver.database.queue",
   "vocserver.database.url": "mongodb://localhost:27017",

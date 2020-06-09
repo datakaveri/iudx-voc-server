@@ -20,6 +20,9 @@ import io.vertx.ext.web.handler.CorsHandler;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.ext.web.handler.StaticHandler;
 import io.vertx.core.http.HttpMethod;
+import java.security.MessageDigest;
+
+import org.apache.commons.codec.digest.HmacUtils;
 
 import java.util.Set;
 import java.util.HashSet;
@@ -27,8 +30,6 @@ import java.util.HashSet;
 
 import iudx.vocserver.database.DBService;
 import iudx.vocserver.auth.AuthService;
-import iudx.vocserver.utils.Validator;
-import iudx.vocserver.http.VocApis;
 
 public class HttpServerVerticle extends AbstractVerticle {
     /**
@@ -38,11 +39,12 @@ public class HttpServerVerticle extends AbstractVerticle {
      */
 
     // Config variables
-    public static final String CONFIG_HTTP_CNAME = "vocserver.http.cname";
+    public static final String CONFIG_SERVER_ID = "vocserver.id";
     public static final String CONFIG_HTTP_SERVER_PORT = "vocserver.http.port";
     public static final String CONFIG_DB_QUEUE = "vocserver.database.queue";
     public static final String CONFIG_AUTH_QUEUE = "vocserver.auth.queue";
     public static final String JKS_FILE = "vocserver.jksfile";
+    // NOTE: We use the same JKS_PASSWD for the keystore and the github webhook
     public static final String JKS_PASSWD = "vocserver.jkspasswd";
 
     // Default logger
@@ -57,11 +59,6 @@ public class HttpServerVerticle extends AbstractVerticle {
     // APIS
     private VocApisInterface vocApis;
 
-    // Validator objects
-    private boolean isValidSchema;
-    private Validator masterValidator;
-    private Validator classValidator;
-    private Validator propertyValidator;
 
     /**
      * AbstractVerticle start
@@ -71,14 +68,17 @@ public class HttpServerVerticle extends AbstractVerticle {
 
         String dbQueue = config().getString(CONFIG_DB_QUEUE);
         String authQueue = config().getString(CONFIG_AUTH_QUEUE);
-
-        serverId = config().getString(CONFIG_HTTP_CNAME);
+        serverId = config().getString(CONFIG_SERVER_ID);
 
         dbService = DBService.createProxy(vertx, dbQueue);
         authService = AuthService.createProxy(vertx, authQueue);
 
+        String webhookPasswd = config().getString(JKS_PASSWD);
+
 
         HttpServerOptions options = new HttpServerOptions()
+                                    .setCompressionSupported(true)
+                                    .setCompressionLevel(5)
                                     .setSsl(true)
                                     .setKeyStoreOptions(new JksOptions()
                                         .setPath(config().getString(JKS_FILE))
@@ -86,7 +86,7 @@ public class HttpServerVerticle extends AbstractVerticle {
         HttpServer server = vertx.createHttpServer(options);
 
         /** Load the APIs class */
-        vocApis = new VocApis(dbService, authService, serverId);
+        vocApis = new VocApis(dbService);
 
 
 
@@ -152,16 +152,30 @@ public class HttpServerVerticle extends AbstractVerticle {
                 vocApis.getMasterHandler(routingContext);
             });
 
-        router.route("/").consumes("application/ld+json")
+
+        router.route("/").consumes("application/ld+json").produces("application/ld+json")
             .handler(BodyHandler.create());
-        router.post("/").consumes("application/ld+json")
+
+        router.post("/").consumes("application/ld+json").produces("application/ld+json")
             .handler( routingContext -> {
-                vocApis.insertMasterHandler(routingContext);
+                String token = routingContext.request().getHeader("token");
+                authService.validateToken(token, serverId, authReply -> {
+                    if (authReply.succeeded()) {
+                        vocApis.insertMasterHandler(routingContext);
+                    }
+                });
             });
-        router.delete("/").consumes("application/ld+json")
+
+        router.delete("/").consumes("application/ld+json").produces("application/ld+json")
             .handler( routingContext -> {
-                vocApis.deleteMasterHandler(routingContext);
+                String token = routingContext.request().getHeader("token");
+                authService.validateToken(token, serverId, authReply -> {
+                    if (authReply.succeeded()) {
+                        vocApis.deleteMasterHandler(routingContext);
+                    }
+                });
             });
+
 
         /** Fuzzy Search 
          */
@@ -179,15 +193,28 @@ public class HttpServerVerticle extends AbstractVerticle {
                 vocApis.getSchemaHandler(routingContext);
             });
 
+
         router.route("/:name").consumes("application/ld+json")
             .handler(BodyHandler.create());
+
         router.post("/:name").consumes("application/ld+json")
             .handler( routingContext -> {
-                vocApis.insertSchemaHandler(routingContext);
+                String token = routingContext.request().getHeader("token");
+                authService.validateToken(token, serverId, authReply -> {
+                    if (authReply.succeeded()) {
+                        vocApis.insertSchemaHandler(routingContext);
+                    }
+                });
             });
+
         router.delete("/:name").consumes("application/ld+json")
             .handler( routingContext -> {
-                vocApis.deleteSchemaHandler(routingContext);
+                String token = routingContext.request().getHeader("token");
+                authService.validateToken(token, serverId, authReply -> {
+                    if (authReply.succeeded()) {
+                        vocApis.deleteSchemaHandler(routingContext);
+                    }
+                });
             });
 
         /** Get jsonld from browser */
@@ -211,6 +238,26 @@ public class HttpServerVerticle extends AbstractVerticle {
                 vocApis.getPropertiesHandler(routingContext);
             });
 
+        /**  Webhook trigger
+         */
+        router.route("/webhook").consumes("application/json")
+            .handler(BodyHandler.create());
+        router.post("/webhook").consumes("application/json")
+            .handler( routingContext -> {
+                String gitHmac = routingContext.request().headers().get("X-Hub-Signature");
+                String computedHmac =  String.format("sha1=%s",
+                                        HmacUtils.hmacSha1Hex(webhookPasswd,
+                                        routingContext.getBodyAsString()));
+                if (!MessageDigest.isEqual(gitHmac.getBytes(), computedHmac.getBytes())) {
+                    routingContext.response()
+                        .putHeader("content-type", "application/json")
+                        .setStatusCode(401)
+                        .end();
+                } else {
+                    vocApis.webhookHandler(routingContext);
+                }
+            });
+
 
         int portNumber = config().getInteger(CONFIG_HTTP_SERVER_PORT, 8080);
         server
@@ -225,6 +272,5 @@ public class HttpServerVerticle extends AbstractVerticle {
                 }
             });
     }
-
 
 }

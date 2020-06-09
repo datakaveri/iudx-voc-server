@@ -129,6 +129,15 @@ public interface DBService {
     @Fluent
     DBService deleteClass(String name, Handler<AsyncResult<Boolean>> resultHandler);
 
+    /**
+     * clearDB - Clear all classees, properties, master and summaries
+     * @param name name of the class
+     * @return {@link DBServiceImpl}
+     */
+    @Fluent
+    DBService clearDB(Handler<AsyncResult<Boolean>> resultHandler);
+
+
     @GenIgnore
     static DBService create(MongoClient dbClient,  Handler<AsyncResult<DBService>> readyHandler) {
         return new DBServiceImpl(dbClient, readyHandler);
