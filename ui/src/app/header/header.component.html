@@ -7,10 +7,17 @@
       <img
         style="padding-right:10px;"
         class="img-style"
+        alt="IUDX-Logo"
         src="../../assets/iudx_logo.png"
       />
 
-      <a class="navbar-brand" routerLink="/">IUDX Vocabulary</a>
+      <a
+        class="navbar-brand"
+        routerLinkActive="brand-active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        routerLink="/"
+        >IUDX Vocabulary</a
+      >
       <button
         class="navbar-toggler"
         type="button"
@@ -26,10 +33,22 @@
       <div class="collapse navbar-collapse" id="navbarsExampleDefault">
         <ul class="navbar-nav mr-auto">
           <li class="nav-item">
-            <a class="nav-link" href="#">data models</a>
+            <a
+              class="nav-link"
+              routerLinkActive="active"
+              routerLink="/datamodels"
+              >DataModels</a
+            >
           </li>
-
-          <li class="nav-item dropdown">
+          <li class="nav-item">
+            <a class="nav-link" routerLinkActive="active" routerLink="/entities"
+              >Types</a
+            >
+          </li>
+          <!-- <li class="nav-item">
+            <a class="nav-link">IUDX properties</a>
+          </li> -->
+          <!-- <li class="nav-item dropdown">
             <a
               class="nav-link dropdown-toggle"
               href="#"
@@ -50,11 +69,13 @@
                 >Properties</a
               >
             </div>
-          </li>
+          </li> -->
         </ul>
         <form class="form-inline my-2 my-lg-0">
           <input
             type="text"
+            name="search"
+            aria-label="Search"
             placeholder="search schema"
             [formControl]="control"
             [matAutocomplete]="auto"
@@ -67,8 +88,12 @@
             </mat-option>
           </mat-autocomplete>
           &nbsp;
-          <button class="btn my-2 my-sm-0" type="submit">
-            Search
+          <button
+            class="btn my-2 my-sm-0"
+            aria-label="Center Align"
+            type="submit"
+          >
+            <i class="fas fa-search"></i>
           </button>
         </form>
       </div>

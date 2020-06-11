@@ -1,5 +1,7 @@
 <section id="schema_class_section" class="container">
   <div id="mainContent">
+    <h1>List of Classes</h1>
+    <p>The table here shows the list of classes available with description</p>
     <br />
     <table class="table table-striped">
       <thead>
@@ -9,7 +11,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let class of classes; index as i">
+        <tr *ngFor="let class of classes | async; index as i">
           <td>
             <a [routerLink]="['/', class.label]"
               ><ngb-highlight [result]="class.label"></ngb-highlight>

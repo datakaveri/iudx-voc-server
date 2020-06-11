@@ -4,6 +4,8 @@ import { ClassesComponent } from './classes/classes.component';
 import { HomeComponent } from './home/home.component';
 import { PropertiesComponent } from './properties/properties.component';
 import { SchemaDetailsComponent } from './schema-details/schema-details.component';
+import { DataModelsComponent } from './data-models/data-models.component';
+import { EntitiesComponent } from './entities/entities.component';
 
 const routes: Routes = [
   {
@@ -19,7 +21,19 @@ const routes: Routes = [
     component: PropertiesComponent
   },
   {
+    path: 'datamodels',
+    component: DataModelsComponent
+  },
+  {
+    path: 'entities',
+    component: EntitiesComponent
+  },
+  {
     path: ':schemaName',
+    component: SchemaDetailsComponent
+  },
+  {
+    path: 'search/:schemaName',
     component: SchemaDetailsComponent
   }
 ];
