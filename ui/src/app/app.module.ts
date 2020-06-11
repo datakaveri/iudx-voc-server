@@ -9,13 +9,17 @@ import { HeaderComponent } from './header/header.component';
 import { ClassesComponent } from './classes/classes.component';
 import { PropertiesComponent } from './properties/properties.component';
 import { HttpClientModule } from '@angular/common/http';
-import { DataService } from './services/data.service';
 import { SchemaDetailsComponent } from './schema-details/schema-details.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import {MatAutocompleteModule} from '@angular/material/autocomplete'; 
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatCardModule } from '@angular/material/card';
 
-
+import { SearchResultComponent } from './search-result/search-result.component';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment';
+import { DataModelsComponent } from './data-models/data-models.component';
+import { EntitiesComponent } from './entities/entities.component';
 
 @NgModule({
   declarations: [
@@ -25,11 +29,25 @@ import {MatAutocompleteModule} from '@angular/material/autocomplete';
     HeaderComponent,
     ClassesComponent,
     PropertiesComponent,
-    SchemaDetailsComponent
+    SchemaDetailsComponent,
+    SearchResultComponent,
+    DataModelsComponent,
+    EntitiesComponent
   ],
-  imports: [BrowserModule, AppRoutingModule, HttpClientModule,
-            NgbModule, FormsModule, ReactiveFormsModule, MatAutocompleteModule],
-  providers: [DataService],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    HttpClientModule,
+    NgbModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatAutocompleteModule,
+    MatCardModule,
+    ServiceWorkerModule.register('ngsw-worker.js', {
+      enabled: environment.production
+    })
+  ],
+  providers: [],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

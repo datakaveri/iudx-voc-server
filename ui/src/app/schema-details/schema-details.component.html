@@ -28,7 +28,9 @@
               </a>
             </td>
             <td>
-              <a><ngb-highlight [result]="property.type"></ngb-highlight> </a>
+              <a [routerLink]="[]"
+                ><ngb-highlight [result]="property.type"></ngb-highlight>
+              </a>
             </td>
 
             <td>
@@ -51,7 +53,7 @@
       <table class="table">
         <thead>
           <tr>
-            <th class="th-style" scope="col">Values expected</th>
+            <th class="th-style" scope="col">Expected values</th>
           </tr>
         </thead>
         <tbody id="">
