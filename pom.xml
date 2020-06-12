@@ -59,14 +59,26 @@
      <version>3.9.0</version>
     </dependency>
     <dependency>
-     <groupId>io.vertx</groupId>
-     <artifactId>vertx-web-client</artifactId>
-     <version>3.8.2</version>
+        <groupId>io.vertx</groupId>
+        <artifactId>vertx-web-client</artifactId>
+        <version>3.8.2</version>
     </dependency>
-
-
-
-
+    <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-lang3</artifactId>
+        <version>3.10</version>
+    </dependency>
+    <dependency>
+        <groupId>commons-codec</groupId>
+        <artifactId>commons-codec</artifactId>
+        <version>1.14</version>
+    </dependency>
+    <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-core</artifactId>
+        <version>3.3.3</version>
+        <scope>test</scope>
+    </dependency>
 
     <!-- tag::codegen-dep[] -->
     <dependency>

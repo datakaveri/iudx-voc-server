@@ -310,6 +310,7 @@ class DBServiceImpl implements DBService {
                         resultHandler.handle(Future.succeededFuture());
                     } else {
                         LOGGER.error("Failed deleting class, may not exist");
+                        resultHandler.handle(Future.failedFuture(res.cause()));
                     }
 
                 });
@@ -330,6 +331,7 @@ class DBServiceImpl implements DBService {
                         resultHandler.handle(Future.succeededFuture(true));
                     } else {
                         LOGGER.error("Failed deleting class, may not exist");
+                        resultHandler.handle(Future.failedFuture(res.cause()));
                     }
 
                 });
@@ -351,6 +353,46 @@ class DBServiceImpl implements DBService {
                         LOGGER.error("Failed deleting property, may not exist");
                     }
 
+                });
+        return this;
+    }
+
+    /**
+     * @{@inheritDoc}
+     */
+    @Override
+    public DBService clearDB(Handler<AsyncResult<Boolean>> resultHandler) {
+        dbClient.removeDocuments("classes",
+                new JsonObject(),
+                res -> {
+                    if (res.succeeded()) {
+                    } else {
+                        resultHandler.handle(Future.failedFuture(res.cause()));
+                    }
+                });
+        dbClient.removeDocuments("properties",
+                new JsonObject(),
+                res -> {
+                    if (res.succeeded()) {
+                    } else {
+                        resultHandler.handle(Future.failedFuture(res.cause()));
+                    }
+                });
+        dbClient.removeDocuments("master",
+                new JsonObject(),
+                res -> {
+                    if (res.succeeded()) {
+                    } else {
+                        resultHandler.handle(Future.failedFuture(res.cause()));
+                    }
+                });
+        dbClient.removeDocuments("summary",
+                new JsonObject(),
+                res -> {
+                    if (res.succeeded()) {
+                    } else {
+                        resultHandler.handle(Future.failedFuture(res.cause()));
+                    }
                 });
         return this;
     }

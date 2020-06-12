@@ -4,18 +4,24 @@
 
 ## Prerequisites 
 1. Ensure you have mvn locally installed for building the backend
-1. Ensure you have angular and npm locally installed for building the UI
+2. Ensure you have angular and npm locally installed for building the UI
+3. Clone this repo and update submodule 
+   `git submodule update --init --recursive` 
+   `git pull --recurse-submodules` 
+4. Build the image 
+   `docker build ./`
 
 ## Instructions to run 
 
 1. Modify the configuration options in `./config/vocserver.json`. This will need jks files for server TLS.
-2. Modify src/app/appSettings.ts and add appropriate BASE_URL corresponding to your domain name.
-3. Install ui dependencies and build
+2. Ensure `CONFIG_SERVER_ID` is a valid server ID conforming with IUDX.
+3. Modify src/app/appSettings.ts and add appropriate BASE_URL corresponding to your domain name.
+4. Install ui dependencies and build
    ` cd ui/` 
    `npm install` 
    `ng build --deploy-url /static/` 
    
-4. Turn on the mongodb docker 
+5. Turn on the mongodb docker 
 For local
 ` docker-compose up -d db-local` 
 or
