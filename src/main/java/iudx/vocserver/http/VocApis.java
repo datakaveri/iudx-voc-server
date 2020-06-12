@@ -93,7 +93,7 @@ public final class VocApis implements VocApisInterface {
         context.response()
             .putHeader("content-type", "application/json")
             .setStatusCode(200)
-            .end();
+            .end(new JsonObject().put("status", "success").encode());
     }
 
     /**
