@@ -1,0 +1,10 @@
+[
+    {
+        "label": "Organization",
+        "comment": "Information about a given organization (contact info, email, urls etc.)"
+    },
+    {
+        "label": "QuantitativeValue",
+        "comment": "Describes the value of a Quantitative Property"
+    }
+]
