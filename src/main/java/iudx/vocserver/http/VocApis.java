@@ -1,3 +1,8 @@
+/**
+ * <h1>VocApis.java</h1>
+ * Callback handlers for the voc-server api routes
+ */
+
 package iudx.vocserver.http;
 
 import io.vertx.core.logging.Logger;
@@ -17,6 +22,7 @@ interface VocApisInterface {
     void getPropertiesHandler(RoutingContext context);
     void getMasterHandler(RoutingContext context);
     void searchHandler(RoutingContext context);
+    void relationshipSearchHandler(RoutingContext context);
     void getSchemaHandler(RoutingContext context);
     void insertMasterHandler(RoutingContext context);
     void insertSchemaHandler(RoutingContext context);
@@ -175,31 +181,18 @@ public final class VocApis implements VocApisInterface {
     // tag::db-service-calls[]
     public void searchHandler(RoutingContext context) {
         String pattern = "";
-        String subClassOf = "";
-        String dataModelDomain = "";
         try {
             if (context.queryParams().contains("q")) {
                 pattern = context.queryParams().get("q");
             }
-            if (context.queryParams().contains("subClassOf")) {
-                subClassOf = context.queryParams().get("subClassOf");
-            }
-            if (context.queryParams().contains("dataModelDomain")) {
-                dataModelDomain = context.queryParams().get("dataModelDomain");
-            }
-            if ((pattern.length() == 0)
-                    && (subClassOf.length() == 0)
-                    && (dataModelDomain.length() == 0) ) {
-                context.response().setStatusCode(200).end();
+            if (pattern.length() == 0){
+                context.response().setStatusCode(404).end();
                 return;
             }
         } catch (Exception e) {
             context.response().setStatusCode(404).end();
             return;
         }
-        JsonObject queryObj = new JsonObject().put("pattern", pattern)
-                                                .put("subClassOf", subClassOf)
-                                                .put("dataModelDomain", dataModelDomain);
         dbService.fuzzySearch(pattern, reply -> {
             if (reply.succeeded()) {
                 context.response().putHeader("content-type", "application/json")
@@ -215,6 +208,46 @@ public final class VocApis implements VocApisInterface {
         });
     }
 
+    /**
+     * Search for schemas through a relationship
+     *
+     * @param context {@link RoutingContext}
+     * @return void
+     * @TODO Throw error if load failed
+     */
+    // tag::db-service-calls[]
+    public void relationshipSearchHandler(RoutingContext context) {
+        String rel = "";
+        String val = "";
+        try {
+            if (context.queryParams().contains("rel")) {
+                rel = context.queryParams().get("rel");
+            }
+            if (context.queryParams().contains("val")) {
+                val = context.queryParams().get("val");
+            }
+            if (rel.length() == 0 || val.length() == 0){
+                context.response().setStatusCode(404).end();
+                return;
+            }
+        } catch (Exception e) {
+            context.response().setStatusCode(404).end();
+            return;
+        }
+        dbService.relationshipSearch(rel, val, reply -> {
+            if (reply.succeeded()) {
+                context.response().putHeader("content-type", "application/json")
+                .setStatusCode(200)
+                .end(reply.result().encode());
+            } else {
+                LOGGER.info("Failed searching, query params not found");
+                context.response()
+                    .putHeader("content-type", "application/json")
+                    .setStatusCode(404)
+                    .end();
+            }
+        });
+    }
     
     /**
      * Get a particular schema from a name

@@ -51,17 +51,22 @@ class DBServiceImpl implements DBService {
     // TODO: Very inefficient. Consider making a service that 
     //          inserts label and summary
     private static final String QUERY_SUMMARIZE = 
-        "[{\"$unwind\": \"$@graph\"},"
-        + "{\"$group\": { \"_id\": \"$@graph.rdfs:label\","
-        + "\"label\": {\"$first\": \"$@graph.rdfs:label\"},"
-        + "\"comment\": { \"$first\": \"$@graph.rdfs:comment\"}}},"
-        + "{\"$out\": \"summary\"}]";
+        "[{ \"$unwind\": \"$@graph\" },"
+         + "{ \"$group\": "
+         + "{ \"_id\": \"$@graph.rdfs:label\","
+         + "\"label\": { \"$first\": \"$@graph.rdfs:label\" },"
+         + "\"comment\": { \"$first\": \"$@graph.rdfs:comment\" },"
+         + "\"subClassOf\": { \"$first\": \"$@graph.rdfs:subClassOf.@id\" },"
+         + "\"dataModelDomain\": { \"$first\": \"$@graph.rdfs:dataModelDomain.@id\" } } },"
+         + "{ \"$out\": \"summary\" }]";
 
 
     private static final String QUERY_FUZZY_SEARCH =
         "{\"$or\": [{\"comment\": {\"$regex\": \"(?i).*$1.*\"}},"
                  + "{\"label\": {\"$regex\": \"(?i).*$1.*\"}}]}";
         
+    private static final String QUERY_RELATIONSHIP_SEARCH =
+        "{\"$1\": \"$2\"}";
 
 
     DBServiceImpl(MongoClient dbClient, Handler<AsyncResult<DBService>> readyHandler) {
@@ -223,6 +228,25 @@ class DBServiceImpl implements DBService {
                         resultHandler.handle(Future.succeededFuture(new JsonArray(res.result())));
                     } else {
                         LOGGER.info("Fuzzy search for " + pattern + " failed");
+                        resultHandler.handle(Future.failedFuture(res.cause()));
+                    }
+                });
+        return this;
+    }
+
+    /**
+     * @{@inheritDoc}
+     */
+    @Override
+    public DBService relationshipSearch(String key, String value, Handler<AsyncResult<JsonArray>> resultHandler) {
+        dbClient.findWithOptions("summary",
+                new JsonObject(QUERY_RELATIONSHIP_SEARCH.replace("$1", key).replace("$2", "iudx:" + value)),
+                new FindOptions().setFields(new JsonObject().put("_id", false)),
+                res -> {
+                    if (res.succeeded()) {
+                        resultHandler.handle(Future.succeededFuture(new JsonArray(res.result())));
+                    } else {
+                        LOGGER.info("Relationship search for " + key + " and value " + value);
                         resultHandler.handle(Future.failedFuture(res.cause()));
                     }
                 });
