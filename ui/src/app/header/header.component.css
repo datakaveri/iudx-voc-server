@@ -72,13 +72,6 @@ a:hover {
   /* opacity: 2; */
 }
 #nav-style {
-  /* background-image: linear-gradient(to right, #12f3eb, #673dc7c2) !important; */
-  /* background-image: linear-gradient(to right, #8968cd, #7b68ee) !important; */
-  /* background-image: linear-gradient(to right, #006666, #009999) !important; */
-  /* background-image: linear-gradient(to right, #333399, #3399ff) !important; */
-  /* background-color: black !important; */
-  /* background-image: linear-gradient(to right, #ffc1c1, #a02422) !important; */
-  /* background-image: linear-gradient(to right, #37fdfc, #f54d70) !important; */
   background-image: linear-gradient(to right, #37fdfc, #f523d9) !important;
 
   padding: 10px 40px !important;
@@ -108,19 +101,10 @@ a.navbar-brand {
 a.navbar-brand:hover {
   color: white !important;
 }
-.form-control {
-  width: 300px;
-}
 
-.example-form {
-  min-width: 150px;
-  max-width: 500px;
-  width: 100%;
-}
-
-.example-full-width {
-  width: 100%;
-}
+/* -------------------------------------------------
+                  Input Autocomplete styles
+  --------------------------------------------------*/
 
 input.mat-autocomplete-trigger {
   letter-spacing: 1px !important;
