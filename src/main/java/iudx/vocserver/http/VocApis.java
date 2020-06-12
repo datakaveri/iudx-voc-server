@@ -4,6 +4,7 @@ import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.core.VertxException;
+import io.vertx.core.json.JsonObject;
 
 import iudx.vocserver.database.DBService;
 import iudx.vocserver.auth.AuthService;
@@ -41,6 +42,7 @@ public final class VocApis implements VocApisInterface {
     private static final Logger LOGGER = LoggerFactory.getLogger(HttpServerVerticle.class);
 
     private static String VOC_REPO = "iudx-voc/";
+    private static String UPDATE_REPO_CMD = "nohup git pull origin master &";
     private static String PUSH_SCHEMAS_CMD = "nohup python3 utils/push/hookTriggeredInsert.py &";
 
     /**
@@ -73,20 +75,19 @@ public final class VocApis implements VocApisInterface {
     public void webhookHandler(RoutingContext context) {
         LOGGER.info("Received webhook trigger ");
         dbService.clearDB(reply -> {
-            if (reply.succeeded()) {
-                context.response()
-                    .putHeader("content-type", "application/json")
-                    .setStatusCode(200)
-                    .end();
-            }
-            else {
+            if (reply.failed()) {
                 context.response()
                     .putHeader("content-type", "application/json")
                     .setStatusCode(404)
                     .end();
             }
         });
+        Proc.execCommand("cd " + VOC_REPO + " && " + UPDATE_REPO_CMD);
         Proc.execCommand("cd " + VOC_REPO + " && " + PUSH_SCHEMAS_CMD);
+        context.response()
+            .putHeader("content-type", "application/json")
+            .setStatusCode(200)
+            .end();
     }
 
     /**
@@ -174,9 +175,21 @@ public final class VocApis implements VocApisInterface {
     // tag::db-service-calls[]
     public void searchHandler(RoutingContext context) {
         String pattern = "";
+        String subClassOf = "";
+        String dataModelDomain = "";
         try {
-            pattern = context.queryParams().get("q");
-            if (pattern.length() == 0) {
+            if (context.queryParams().contains("q")) {
+                pattern = context.queryParams().get("q");
+            }
+            if (context.queryParams().contains("subClassOf")) {
+                subClassOf = context.queryParams().get("subClassOf");
+            }
+            if (context.queryParams().contains("dataModelDomain")) {
+                dataModelDomain = context.queryParams().get("dataModelDomain");
+            }
+            if ((pattern.length() == 0)
+                    && (subClassOf.length() == 0)
+                    && (dataModelDomain.length() == 0) ) {
                 context.response().setStatusCode(200).end();
                 return;
             }
@@ -184,6 +197,9 @@ public final class VocApis implements VocApisInterface {
             context.response().setStatusCode(404).end();
             return;
         }
+        JsonObject queryObj = new JsonObject().put("pattern", pattern)
+                                                .put("subClassOf", subClassOf)
+                                                .put("dataModelDomain", dataModelDomain);
         dbService.fuzzySearch(pattern, reply -> {
             if (reply.succeeded()) {
                 context.response().putHeader("content-type", "application/json")
@@ -330,7 +346,7 @@ public final class VocApis implements VocApisInterface {
             } else {
                 dbService.insertProperty(name, context.getBodyAsJson(), reply -> {
                     if (reply.succeeded()) {
-                        LOGGER.info("Insertion success");
+                        LOGGER.info("Inserted " + name);
                         context.response().setStatusCode(201).end();
                     } else {
                         context.response().setStatusCode(404).end();
