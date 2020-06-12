@@ -1,4 +1,7 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { DataService } from '../services/data.service';
+import { Observable } from 'rxjs';
+import { Class } from '../types/class';
 
 @Component({
   selector: 'app-entities',
@@ -7,10 +10,16 @@ import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EntitiesComponent implements OnInit {
+  entities: Observable<Class[]>;
 
-  constructor() { }
+  constructor(private backendService: DataService) { }
 
   ngOnInit(): void {
+    this.getEntities();
+  }
+
+  getEntities(): void {
+    this.entities = this.backendService.searchRelationship("subClassOf", "IUDXEntity");
   }
 
 }

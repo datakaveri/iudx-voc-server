@@ -21,17 +21,17 @@ export class HeaderComponent implements OnInit {
   model: string;
   searchRes: Observable<SearchRes[]>;
   control = new FormControl();
-  private searchTerms = new Subject<string>();
+  // private searchTerms = new Subject<string>();
 
   constructor(private dataService: DataService, private router: Router) {}
 
-  search(term: string): void {
-    this.searchTerms.next(term);
-  }
+  // search(term: string): void {
+  //   this.searchTerms.next(term);
+  // }
 
   ngOnInit(): void {
     this.searchRes = this.control.valueChanges.pipe(
-      debounceTime(500),
+      debounceTime(200),
       distinctUntilChanged(),
       switchMap(term =>
         term ? this.dataService.search(term) : of<SearchRes[]>([])
@@ -43,11 +43,6 @@ export class HeaderComponent implements OnInit {
     );
   }
 
-  gotoTerm(res: SearchRes): void {
-    const link = ['/classes'];
-    // console.log(link);
-    this.router.navigate(link);
-  }
   onSubmit(data) {
     // console.warn(data);
   }
