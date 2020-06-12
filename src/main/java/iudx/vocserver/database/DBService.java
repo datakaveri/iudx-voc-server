@@ -73,12 +73,20 @@ public interface DBService {
     DBService getClass(String name, Handler<AsyncResult<JsonObject>> resultHandler);
         
     /**
-     * incSearch - Incrementaly searches for a given pattern
+     * fuzzySearch - Search for a schema either through name or description
      * @param pattern pattern
      * @return {@link DBServiceImpl}
      */
     @Fluent
     DBService fuzzySearch(String pattern, Handler<AsyncResult<JsonArray>> resultHandler);
+
+    /**
+     * relationshipSearch - Search for a schema either through a relationship
+     * @param pattern pattern
+     * @return {@link DBServiceImpl}
+     */
+    @Fluent
+    DBService relationshipSearch(String key, String value, Handler<AsyncResult<JsonArray>> resultHandler);
 
     /**
      * makeSummary - Make summary of class labels and comments 
