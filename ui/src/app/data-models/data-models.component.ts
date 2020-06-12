@@ -19,6 +19,6 @@ export class DataModelsComponent implements OnInit {
   }
 
   getDataModels() {
-    this.datamodels = this.backendService.getModels();
+    this.datamodels = this.backendService.searchRelationship("subClassOf", "DataModel");
   }
 }
