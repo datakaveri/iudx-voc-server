@@ -6,6 +6,7 @@ import { PropertiesComponent } from './properties/properties.component';
 import { SchemaDetailsComponent } from './schema-details/schema-details.component';
 import { DataModelsComponent } from './data-models/data-models.component';
 import { EntitiesComponent } from './entities/entities.component';
+import { SearchResultComponent } from './search-result/search-result.component';
 
 const routes: Routes = [
   {
@@ -32,9 +33,13 @@ const routes: Routes = [
     path: ':schemaName',
     component: SchemaDetailsComponent
   },
+  // {
+  //   path: 'search/:schemaName',
+  //   component: SchemaDetailsComponent
+  // },
   {
-    path: 'search/:schemaName',
-    component: SchemaDetailsComponent
+    path: 'search/searchTerm',
+    component: SearchResultComponent
   }
 ];
 

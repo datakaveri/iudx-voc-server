@@ -70,12 +70,14 @@
         </ul>
         <form class="form-inline my-2 my-lg-0">
           <input
+            #searchBtn
             type="text"
             name="search"
             aria-label="Search"
             placeholder="search schema"
             [formControl]="control"
             [matAutocomplete]="auto"
+            [(ngModel)]="searchTerm"
             autofocus
           />
           <mat-autocomplete #auto="matAutocomplete">
@@ -90,6 +92,7 @@
             class="btn my-2 my-sm-0"
             aria-label="Center Align"
             type="submit"
+            (click)="onSearch(searchBtn.value)"
           >
             <i class="fas fa-search"></i>
           </button>
