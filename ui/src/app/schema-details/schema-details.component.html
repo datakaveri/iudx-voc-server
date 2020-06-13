@@ -4,9 +4,9 @@
     Render class table if class
   -->
     <div *ngIf="classView">
-      <h1>{{ (classDetail | async).baseClass.label }}</h1>
+      <h1>{{ (classDetail | async)?.baseClass.label }}</h1>
       <p>
-        {{ (classDetail | async).baseClass.comment }}
+        {{ (classDetail | async)?.baseClass.comment }}
       </p>
       <br />
       <table class="table table-striped">
@@ -20,7 +20,7 @@
 
         <tbody>
           <tr
-            *ngFor="let property of (classDetail | async).baseClass.properties"
+            *ngFor="let property of (classDetail | async)?.baseClass.properties"
           >
             <td>
               <a [routerLink]="['/', property.label]"
@@ -45,9 +45,9 @@
     Render property table if property
   -->
     <div *ngIf="propertyView">
-      <h1>{{ (propertyDetail | async).label }}</h1>
+      <h1>{{ (propertyDetail | async)?.label }}</h1>
       <p>
-        {{ (propertyDetail | async).comment }}
+        {{ (propertyDetail | async)?.comment }}
       </p>
       <br />
       <table class="table">
@@ -58,7 +58,7 @@
         </thead>
         <tbody id="">
           <tr>
-            <td>{{ (propertyDetail | async).type }}</td>
+            <td>{{ (propertyDetail | async)?.type }}</td>
           </tr>
         </tbody>
       </table>
@@ -71,7 +71,7 @@
         </thead>
 
         <tbody>
-          <tr *ngFor="let class of (propertyDetail | async).domains">
+          <tr *ngFor="let class of (propertyDetail | async)?.domains">
             <td>
               <a [routerLink]="['/', class]"
                 ><ngb-highlight [result]="class"></ngb-highlight>
