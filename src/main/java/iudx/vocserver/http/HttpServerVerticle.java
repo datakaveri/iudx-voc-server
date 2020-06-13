@@ -185,6 +185,14 @@ public class HttpServerVerticle extends AbstractVerticle {
                 vocApis.searchHandler(routingContext);
             });
 
+        /** Relationship Search 
+         */
+        router.get("/relationship").consumes("application/json")
+            .produces("application/json")
+            .handler( routingContext -> {
+                vocApis.relationshipSearchHandler(routingContext);
+            });
+
         /** Get/Post classes or properties by name (JSON-LD API) 
          **/
         router.get("/:name").consumes("application/ld+json")

@@ -11,11 +11,8 @@
     <h6 style="margin-top: 0px;">These are the types for catalogue items.</h6>
 
     <div style="align-items: center;">
-      <ul>
-        <a [routerLink]="['/Resource']"><li>Resource</li></a>
-        <a [routerLink]="['/ResourceGroup']"><li>Resource Group</li></a>
-        <a [routerLink]="['/ResourceServer']"><li>ResourceServer</li></a>
-        <a [routerLink]="['/Provider']"><li>Provider</li></a>
+      <ul *ngFor="let entity of entities | async">
+        <a [routerLink]="['/', entity.label]"><li>{{entity.label}}</li></a>
       </ul>
 
       <!-- <a style="cursor: pointer;">
