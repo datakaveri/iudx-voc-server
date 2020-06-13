@@ -138,15 +138,17 @@ export class DataService {
       );
   }
 
-  getModels() {
-    return this.http
-      .get<DataModel[]>(`${this.baseURL}/classes`, { headers: this.headers })
-      .pipe(catchError(this.handleError));
-  }
-
   search(term: string): Observable<SearchRes[]> {
     return this.http
       .get<SearchRes[]>(`${this.baseURL}/search?q=${term}`, {
+        headers: this.headers
+      })
+      .pipe(catchError(this.handleError));
+  }
+
+  searchRelationship(rel: string, val: string): Observable<SearchRes[]> {
+    return this.http
+      .get<SearchRes[]>(`${this.baseURL}/relationship?rel=${rel}&val=${val}`, {
         headers: this.headers
       })
       .pipe(catchError(this.handleError));
