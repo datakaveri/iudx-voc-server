@@ -3,13 +3,22 @@
     <!--
     Render class table if class
   -->
+
     <div *ngIf="classView">
-      <h1>{{ (classDetail | async)?.baseClass.label }}</h1>
+      <h1>
+        {{ (classDetail | async)?.subclasses?.label }}
+        <span *ngIf="(classDetail | async)?.subclasses?.label">&gt; </span>
+
+        {{ (classDetail | async)?.baseClass.label }}
+      </h1>
       <p>
         {{ (classDetail | async)?.baseClass.comment }}
       </p>
       <br />
-      <table class="table table-striped">
+      <table
+        *ngIf="(classDetail | async)?.baseClass.properties.length != 0"
+        class="table table-striped"
+      >
         <thead>
           <tr>
             <th scope="col">Property</th>
@@ -28,8 +37,12 @@
               </a>
             </td>
             <td>
-              <a [routerLink]="[]"
-                ><ngb-highlight [result]="property.type"></ngb-highlight>
+              <a [routerLink]="['/', property.type[0]]"
+                ><ngb-highlight [result]="property.type[0]"></ngb-highlight>
+              </a>
+              <br />
+              <a [routerLink]="['/', property.type[1]]"
+                ><ngb-highlight [result]="property.type[1]"></ngb-highlight>
               </a>
             </td>
 
@@ -40,6 +53,11 @@
         </tbody>
       </table>
     </div>
+    <!-- <div *ngIf="classWithoutProperty">
+      <h1>{{ (classDetail | async)?.baseClass.label }}</h1>
+      <p>{{ (classDetail | async)?.baseClass.comment }}</p>
+      <p>No Properties to show</p>
+    </div> -->
 
     <!--
     Render property table if property
@@ -56,9 +74,23 @@
             <th class="th-style" scope="col">Expected values</th>
           </tr>
         </thead>
-        <tbody id="">
+        <tbody>
           <tr>
-            <td>{{ (propertyDetail | async)?.type }}</td>
+            <!-- <td>{{ (propertyDetail | async)?.type }}</td> -->
+            <td>
+              <a [routerLink]="['/', ((propertyDetail | async)?.type)[0]]"
+                ><ngb-highlight
+                  class="table-margin"
+                  [result]="((propertyDetail | async)?.type)[0]"
+                ></ngb-highlight>
+              </a>
+              <br />
+              <a [routerLink]="['/', ((propertyDetail | async)?.type)[1]]"
+                ><ngb-highlight
+                  [result]="((propertyDetail | async)?.type)[1]"
+                ></ngb-highlight>
+              </a>
+            </td>
           </tr>
         </tbody>
       </table>

@@ -18,3 +18,14 @@ a:hover {
 .th-style {
   background-color: #c7cbce;
 }
+span {
+  font-size: 20px;
+}
+
+.table td,
+.table th {
+  border-top: none;
+}
+/* h1 {
+  font-size: 22px !important;
+} */
