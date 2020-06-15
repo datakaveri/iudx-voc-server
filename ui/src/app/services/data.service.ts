@@ -67,9 +67,13 @@ export class DataService {
         map(resp => {
           var flattened = <ClassDetail>{};
           flattened.superClasses = <Classes>[];
+          console.log(resp['@graph']);
           for (var node of resp['@graph']) {
+            // console.log(node);
             var nodeId = node['@id'].split(':')[1];
+            // console.log(nodeId);
             var nodeComment = node['rdfs:comment'];
+            // console.log(nodeComment);
             if (node['@type'].includes('rdfs:Class')) {
               if (nodeId == className) {
                 flattened.baseClass = {
@@ -77,6 +81,13 @@ export class DataService {
                   comment: nodeComment,
                   properties: <Properties>[]
                 };
+                if (node.hasOwnProperty('rdfs:subClassOf')) {
+                  var nodename = node['rdfs:subClassOf']['@id'].split(':')[1];
+                  flattened.subclasses = {
+                    label: nodename,
+                    comment: ''
+                  };
+                }
               } else {
                 //TODO: Implementation with superclass
               }
@@ -84,8 +95,9 @@ export class DataService {
               var ranges = <string[]>[];
               for (var range of node['iudx:rangeIncludes']) {
                 ranges.push(range['@id'].split(':')[1]);
-                this.ranges = ranges.join(', ');
-                // console.warn(this.ranges);
+                this.ranges = ranges;
+                //console.warn(this.ranges);
+                // this.ranges = ranges;
               }
               for (var domain of node['iudx:domainIncludes']) {
                 if (domain['@id'] == 'iudx:' + className) {
@@ -98,7 +110,7 @@ export class DataService {
               }
             }
           }
-          // console.log(flattened);
+          console.log(flattened);
           return flattened;
         }),
         catchError(this.handleError)
