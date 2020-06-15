@@ -48,7 +48,7 @@ public final class VocApis implements VocApisInterface {
     private static final Logger LOGGER = LoggerFactory.getLogger(HttpServerVerticle.class);
 
     private static String VOC_REPO = "iudx-voc/";
-    private static String UPDATE_REPO_CMD = "nohup git pull origin master &";
+    private static String UPDATE_REPO_CMD = "git fetch && git reset --hard origin/master";
     private static String PUSH_SCHEMAS_CMD = "nohup python3 utils/push/hookTriggeredInsert.py &";
 
     /**
@@ -88,6 +88,7 @@ public final class VocApis implements VocApisInterface {
                     .end();
             }
         });
+        Proc.execCommand("cd " + VOC_REPO + " && " + UPDATE_REPO_CMD);
         Proc.execCommand("cd " + VOC_REPO + " && " + PUSH_SCHEMAS_CMD);
         context.response()
             .putHeader("content-type", "application/json")
