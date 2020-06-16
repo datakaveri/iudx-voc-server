@@ -131,20 +131,10 @@ export class DataService {
               }
             }
           }
-          flattened.superClasses.forEach(function (prev, i) {
-            flattened.superClasses.forEach(function (next, j) {
-              if (flattened.superClasses[i].label == flattened.superClasses[j].subClassOf) {
-                var temp = flattened.superClasses[i];
-                flattened.superClasses[i] = flattened.superClasses[j];
-                flattened.superClasses[j] = temp;
-              }
-          });
-          });
-
-          flattened.superClasses.forEach(function (node) {
+          flattened.superClasses.forEach(function (node, i) {
             flattened.heirarchy.push(node.label);
           });
-
+          flattened.heirarchy = flattened.heirarchy.reverse();
           console.log(flattened);
           return flattened;
         }),
