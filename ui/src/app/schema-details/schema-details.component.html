@@ -1,24 +1,19 @@
 <section id="schema_class_section" class="container">
   <div id="mainContent">
     <!--
-    Render class table if class
-  -->
-
+      Render class table if class
+    -->
     <div *ngIf="classView">
-      <h1>
-        {{ (classDetail | async)?.subclasses?.label }}
-        <span *ngIf="(classDetail | async)?.subclasses?.label">&gt; </span>
-
-        {{ (classDetail | async)?.baseClass.label }}
-      </h1>
+      <b *ngFor="let cls of (classDetail | async).heirarchy; let i = index">
+        <a *ngIf="i < (classDetail | async)?.heirarchy.length - 1" [routerLink]="['/', cls]">  {{cls}} &#8658;  </a>
+        <a *ngIf="i >= (classDetail | async)?.heirarchy.length - 1" [routerLink]="['/', cls]">  {{cls}} </a>
+      </b>
       <p>
-        {{ (classDetail | async)?.baseClass.comment }}
+      {{ (classDetail | async).baseClass.comment }}
       </p>
       <br />
-      <table
-        *ngIf="(classDetail | async)?.baseClass.properties.length != 0"
-        class="table table-striped"
-      >
+      <h2> Class properties </h2>
+      <table class="table table-striped">
         <thead>
           <tr>
             <th scope="col">Property</th>
@@ -29,43 +24,58 @@
 
         <tbody>
           <tr
-            *ngFor="let property of (classDetail | async)?.baseClass.properties"
-          >
+            *ngFor="let property of (classDetail | async).baseClass.properties"
+            >
             <td>
               <a [routerLink]="['/', property.label]"
-                ><ngb-highlight [result]="property.label"></ngb-highlight>
+            ><ngb-highlight [result]="property.label"></ngb-highlight>
               </a>
             </td>
             <td>
-              <a [routerLink]="['/', property.type[0]]"
-                ><ngb-highlight [result]="property.type[0]"></ngb-highlight>
-              </a>
-              <br />
-              <a [routerLink]="['/', property.type[1]]"
-                ><ngb-highlight [result]="property.type[1]"></ngb-highlight>
+              <a [routerLink]="[]"
+            ><ngb-highlight [result]="property.type"></ngb-highlight>
               </a>
             </td>
-
             <td>
               <ngb-highlight [result]="property.comment"></ngb-highlight>
             </td>
           </tr>
         </tbody>
-      </table>
+        <tbody *ngFor="let supClass of (classDetail | async).superClasses">
+          <h2> Propeties inherited from
+            <a [routerLink]="[supClass.label]"
+            ><ngb-highlight [result]="supClass.label"></ngb-highlight>
+            </a>
+          </h2>
+            <tr
+              *ngFor="let property of supClass.properties"
+              >
+              <td>
+                <a [routerLink]="['/', property.label]"
+              ><ngb-highlight [result]="property.label"></ngb-highlight>
+                </a>
+              </td>
+              <td>
+                <a [routerLink]="[]"
+              ><ngb-highlight [result]="property.type"></ngb-highlight>
+                </a>
+              </td>
+
+              <td>
+                <ngb-highlight [result]="property.comment"></ngb-highlight>
+              </td>
+            </tr>
+          </tbody>
+        </table>
     </div>
-    <!-- <div *ngIf="classWithoutProperty">
-      <h1>{{ (classDetail | async)?.baseClass.label }}</h1>
-      <p>{{ (classDetail | async)?.baseClass.comment }}</p>
-      <p>No Properties to show</p>
-    </div> -->
 
     <!--
-    Render property table if property
-  -->
+      Render property table if property
+    -->
     <div *ngIf="propertyView">
-      <h1>{{ (propertyDetail | async)?.label }}</h1>
+      <h1>{{ (propertyDetail | async).label }}</h1>
       <p>
-        {{ (propertyDetail | async)?.comment }}
+      {{ (propertyDetail | async).comment }}
       </p>
       <br />
       <table class="table">
@@ -74,23 +84,9 @@
             <th class="th-style" scope="col">Expected values</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody id="">
           <tr>
-            <!-- <td>{{ (propertyDetail | async)?.type }}</td> -->
-            <td>
-              <a [routerLink]="['/', ((propertyDetail | async)?.type)[0]]"
-                ><ngb-highlight
-                  class="table-margin"
-                  [result]="((propertyDetail | async)?.type)[0]"
-                ></ngb-highlight>
-              </a>
-              <br />
-              <a [routerLink]="['/', ((propertyDetail | async)?.type)[1]]"
-                ><ngb-highlight
-                  [result]="((propertyDetail | async)?.type)[1]"
-                ></ngb-highlight>
-              </a>
-            </td>
+            <td>{{ (propertyDetail | async).type }}</td>
           </tr>
         </tbody>
       </table>
@@ -103,10 +99,10 @@
         </thead>
 
         <tbody>
-          <tr *ngFor="let class of (propertyDetail | async)?.domains">
+          <tr *ngFor="let class of (propertyDetail | async).domains">
             <td>
               <a [routerLink]="['/', class]"
-                ><ngb-highlight [result]="class"></ngb-highlight>
+                                 ><ngb-highlight [result]="class"></ngb-highlight>
               </a>
             </td>
           </tr>
