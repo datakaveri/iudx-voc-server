@@ -1,14 +1,15 @@
 <section id="schema_class_section" class="container">
   <div id="mainContent">
     <!--
-    Render class table if class
-  -->
+      Render class table if class
+    -->
     <div *ngIf="classView">
       <h1>{{ (classDetail | async).baseClass.label }}</h1>
       <p>
-        {{ (classDetail | async).baseClass.comment }}
+      {{ (classDetail | async).baseClass.comment }}
       </p>
       <br />
+      <h2> Class properties </h2>
       <table class="table table-striped">
         <thead>
           <tr>
@@ -21,33 +22,57 @@
         <tbody>
           <tr
             *ngFor="let property of (classDetail | async).baseClass.properties"
-          >
+            >
             <td>
               <a [routerLink]="['/', property.label]"
-                ><ngb-highlight [result]="property.label"></ngb-highlight>
+            ><ngb-highlight [result]="property.label"></ngb-highlight>
               </a>
             </td>
             <td>
               <a [routerLink]="[]"
-                ><ngb-highlight [result]="property.type"></ngb-highlight>
+            ><ngb-highlight [result]="property.type"></ngb-highlight>
               </a>
             </td>
-
             <td>
               <ngb-highlight [result]="property.comment"></ngb-highlight>
             </td>
           </tr>
         </tbody>
-      </table>
+        <tbody *ngFor="let supClass of (classDetail | async).superClasses">
+          <h2> Propeties inherited from
+            <a [routerLink]="[supClass.label]"
+            ><ngb-highlight [result]="supClass.label"></ngb-highlight>
+            </a>
+          </h2>
+            <tr
+              *ngFor="let property of supClass.properties"
+              >
+              <td>
+                <a [routerLink]="['/', property.label]"
+              ><ngb-highlight [result]="property.label"></ngb-highlight>
+                </a>
+              </td>
+              <td>
+                <a [routerLink]="[]"
+              ><ngb-highlight [result]="property.type"></ngb-highlight>
+                </a>
+              </td>
+
+              <td>
+                <ngb-highlight [result]="property.comment"></ngb-highlight>
+              </td>
+            </tr>
+          </tbody>
+        </table>
     </div>
 
     <!--
-    Render property table if property
-  -->
+      Render property table if property
+    -->
     <div *ngIf="propertyView">
       <h1>{{ (propertyDetail | async).label }}</h1>
       <p>
-        {{ (propertyDetail | async).comment }}
+      {{ (propertyDetail | async).comment }}
       </p>
       <br />
       <table class="table">
@@ -74,7 +99,7 @@
           <tr *ngFor="let class of (propertyDetail | async).domains">
             <td>
               <a [routerLink]="['/', class]"
-                ><ngb-highlight [result]="class"></ngb-highlight>
+                                 ><ngb-highlight [result]="class"></ngb-highlight>
               </a>
             </td>
           </tr>
