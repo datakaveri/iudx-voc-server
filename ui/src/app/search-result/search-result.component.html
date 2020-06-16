@@ -1,5 +1,20 @@
 <section id="search-result-section" class="container">
   <div id="mainContent">
-    <div id="search-results"></div>
+    <div
+      *ngFor="let data of searchDetail | async"
+      ngHoverClass="hover"
+      id="search-results"
+      class="box-style"
+    >
+      <a [routerLink]="['/', data.label]"
+        ><h3>{{ _url }}{{ data.label }}</h3></a
+      >
+
+      <a [routerLink]="['/', data.label]"
+        ><h2>{{ data.label }}</h2></a
+      >
+      <p>{{ data.comment }}</p>
+      <br />
+    </div>
   </div>
 </section>
