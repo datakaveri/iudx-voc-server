@@ -1,0 +1,17 @@
+h3 {
+  margin-bottom: -18px;
+}
+p {
+  font-size: 15px;
+}
+
+.box-style {
+  box-shadow: 1px -1px 12px 0px #c9c9c9;
+  padding-left: 25px;
+  padding-top: 2px;
+  transition: background-color 0.2s;
+}
+
+.box-style:hover {
+  background-color: #ebebeb;
+}

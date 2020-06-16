@@ -14,14 +14,21 @@ import { DataService } from '../services/data.service';
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
-  styleUrls: ['./header.component.css'],
-  providers: [DataService]
+  styleUrls: ['./header.component.css']
 })
 export class HeaderComponent implements OnInit {
   model: string;
   searchRes: Observable<SearchRes[]>;
   control = new FormControl();
+  private _searchTerm: string;
   // private searchTerms = new Subject<string>();
+  get searchTerm(): string {
+    return this._searchTerm;
+  }
+
+  set searchTerm(value: string) {
+    this._searchTerm = value;
+  }
 
   constructor(private dataService: DataService, private router: Router) {}
 
@@ -43,7 +50,13 @@ export class HeaderComponent implements OnInit {
     );
   }
 
-  onSubmit(data) {
-    // console.warn(data);
+  onSearch(text: string) {
+    console.log(text);
+    // this.searchRes = this.dataService.search(text);
+    // console.log(this.searchRes);
+    console.log(this._searchTerm);
+    this.router.navigate(['/search/searchTerm'], {
+      queryParams: { q: this._searchTerm }
+    });
   }
 }

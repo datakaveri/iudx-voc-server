@@ -1,4 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { SearchRes } from '../types/searchRes';
+import { Observable } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
+import { DataService } from '../services/data.service';
+import { AppSettings } from '../appSettings';
 
 @Component({
   selector: 'app-search-result',
@@ -6,10 +11,29 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./search-result.component.css']
 })
 export class SearchResultComponent implements OnInit {
-
-  constructor() { }
+  searchDetail: Observable<SearchRes[]>;
+  term: any;
+  _url: string = AppSettings.BASE_URL + '/';
+  constructor(
+    private route: ActivatedRoute,
+    private backendService: DataService
+  ) {}
 
   ngOnInit(): void {
+    this.route.queryParams.subscribe(params => {
+      // console.log(params);
+      this.term = params.q;
+      // console.log(this.term);
+      this.searchTerm(this.term);
+      // this.getUrl(this.term);
+    });
   }
-
+  searchTerm(value: string) {
+    this.searchDetail = this.backendService.search(value);
+  }
+  //can be used in production
+  getUrl(value: string) {
+    this._url = document.location.origin + '/';
+    console.log(this._url);
+  }
 }
