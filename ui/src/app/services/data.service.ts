@@ -67,49 +67,74 @@ export class DataService {
         map(resp => {
           var flattened = <ClassDetail>{};
           flattened.superClasses = <Classes>[];
-          console.log(resp['@graph']);
+
+          flattened.heirarchy = [];
+          flattened.heirarchy.push(className);
+
+          // loop for classes
           for (var node of resp['@graph']) {
-            // console.log(node);
             var nodeId = node['@id'].split(':')[1];
-            // console.log(nodeId);
             var nodeComment = node['rdfs:comment'];
-            // console.log(nodeComment);
+            var subClassOf = ""
+            if ('rdfs:subClassOf' in node) {
+              subClassOf = node['rdfs:subClassOf']['@id'].split(':')[1];
+            }
             if (node['@type'].includes('rdfs:Class')) {
               if (nodeId == className) {
                 flattened.baseClass = {
                   label: className,
                   comment: nodeComment,
-                  properties: <Properties>[]
+                  properties: <Properties>[],
+                  subClassOf: subClassOf
                 };
-                if (node.hasOwnProperty('rdfs:subClassOf')) {
-                  var nodename = node['rdfs:subClassOf']['@id'].split(':')[1];
-                  flattened.subclasses = {
-                    label: nodename,
-                    comment: ''
-                  };
-                }
               } else {
-                //TODO: Implementation with superclass
+                flattened.superClasses.push(<Class>{
+                  label: nodeId,
+                  comment: nodeComment,
+                  properties: <Properties>[],
+                  subClassOf: subClassOf
+                });
               }
-            } else {
+            }
+          }
+          // loop for properties
+          for (var node of resp['@graph']) {
+            var nodeId = node['@id'].split(':')[1];
+            var nodeComment = node['rdfs:comment'];
+            if (!node['@type'].includes('rdfs:Class')) {
               var ranges = <string[]>[];
               for (var range of node['iudx:rangeIncludes']) {
                 ranges.push(range['@id'].split(':')[1]);
-                this.ranges = ranges;
-                //console.warn(this.ranges);
-                // this.ranges = ranges;
+                this.ranges = ranges.join(', ');
+                // console.warn(this.ranges);
               }
               for (var domain of node['iudx:domainIncludes']) {
-                if (domain['@id'] == 'iudx:' + className) {
+                var domainLabel = domain['@id'].split(':')[1];
+                if (domainLabel ==  className) {
                   flattened.baseClass.properties.push(<Property>{
                     label: nodeId,
                     comment: nodeComment,
                     type: this.ranges
                   });
+                } else {
+                  for (var supClass of flattened.superClasses) {
+                    if (domainLabel == supClass.label) {
+                      supClass.label = domainLabel;
+                      supClass.properties.push(<Property>{
+                        label: nodeId,
+                        comment: nodeComment,
+                        type: this.ranges
+                      });
+                    }
+                  }
                 }
               }
             }
           }
+          flattened.superClasses.forEach(function (node, i) {
+            flattened.heirarchy.push(node.label);
+          });
+          flattened.heirarchy = flattened.heirarchy.reverse();
           console.log(flattened);
           return flattened;
         }),
