@@ -4,18 +4,14 @@ import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
   selector: 'app-page-not-found',
   template: `
     <h1>
-      page-not-found works!
+      page-not-found
     </h1>
   `,
-  styles: [
-  ],
+  styles: [],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PageNotFoundComponent implements OnInit {
+  constructor() {}
 
-  constructor() { }
-
-  ngOnInit(): void {
-  }
-
+  ngOnInit(): void {}
 }
