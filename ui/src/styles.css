@@ -76,7 +76,7 @@ pre {
   --------------------------------------------------*/
 
 #mainContent {
-  border-bottom: solid 1px #cccccc;
+  /* border-bottom: solid 1px #cccccc; */
   text-align: left;
 }
 #footer {
