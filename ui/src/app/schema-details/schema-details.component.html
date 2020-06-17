@@ -101,28 +101,28 @@
         </tbody>
       </table>
       <table
-        *ngIf="
-          (classDetail | async)?.baseClass.properties.length == 0 &&
-          (classDetail | async)?.superClasses.length != 0
-        "
+        *ngIf="(classDetail | async)?.baseClass.properties.length == 0"
         class="table table-striped"
       >
-        <thead>
+        <thead
+          [ngClass]="{
+            'display-none':
+              ((classDetail | async)?.baseClass.properties.length == 0 &&
+                (classDetail | async)?.superClasses.length) == 0
+          }"
+        >
           <tr class="th-style">
             <th scope="col">Property</th>
 
             <th scope="col">Expected Type</th>
             <th scope="col">Description</th>
           </tr>
-          <!-- <tr class="th-style tbody-style">
-                Properties of
-                {{
-                  (classDetail | async)?.baseClass.label
-                }}
-              </tr> -->
         </thead>
         <tbody *ngFor="let supClass of (classDetail | async)?.superClasses">
-          <tr class="th-style tbody-style">
+          <tr
+            class="th-style tbody-style"
+            *ngIf="supClass.properties.length != 0"
+          >
             Properties inherited from
             <a [routerLink]="['/', supClass.label]">{{ supClass.label }} </a>
           </tr>
