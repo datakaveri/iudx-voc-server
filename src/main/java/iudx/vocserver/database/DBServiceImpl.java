@@ -31,34 +31,29 @@ class DBServiceImpl implements DBService {
     /** Queries */ 
 
     // Find all class
-    private static final String QUERY_FIND_ALL_CLASS = 
-        "[ {\"$unwind\": \"$@graph\"}," 
-        + " { \"$match\": {\"@graph.@type\": { \"$in\": [\"rdfs:Class\"] }}}," 
-        + " { \"$project\": {\"_id\": 0, \"label\": \"$@graph.rdfs:label\","
-        + "\"comment\": \"$@graph.rdfs:comment\" } } ])";
+    private static final String QUERY_FIND_ALL_CLASSES = "{\"type\": \"class\"}";
+    private static final String QUERY_FIND_ALL_PROPERTIES = "{\"type\": \"property\"}";
 
-    // Find all properties
-    // TODO: Temporary fix for searching all kinds of properties
-    private static final String QUERY_FIND_ALL_PROPERTIES = 
-        "[ {\"$unwind\": \"$@graph\"}," 
-        + " { \"$project\": {\"_id\": 0, \"label\": \"$@graph.rdfs:label\","
-        + "\"comment\": \"$@graph.rdfs:comment\" } } ])";
 
     // Find a class or property
     private static final String QUERY_MATCH_ID = 
-        "{\"@graph\": {\"$elemMatch\": {\"@id\": \"$1\"}}}";
+        "{\"_id\": \"$1\"}";
 
-    // TODO: Very inefficient. Consider making a service that 
-    //          inserts label and summary
+
     private static final String QUERY_SUMMARIZE = 
-        "[{ \"$unwind\": \"$@graph\" },"
-         + "{ \"$group\": "
-         + "{ \"_id\": \"$@graph.rdfs:label\","
-         + "\"label\": { \"$first\": \"$@graph.rdfs:label\" },"
-         + "\"comment\": { \"$first\": \"$@graph.rdfs:comment\" },"
-         + "\"subClassOf\": { \"$first\": \"$@graph.rdfs:subClassOf.@id\" },"
-         + "\"dataModelDomain\": { \"$first\": \"$@graph.rdfs:dataModelDomain.@id\" } } },"
-         + "{ \"$out\": \"summary\" }]";
+        "[ { \"$match\": { \"_id\": \"iudx:$1\" } },"
+        +    "{ \"$unwind\": \"$@graph\" },"
+        +    "{ \"$match\": { \"@graph.rdfs:label\": \"$1\" } },"
+        +    "{ \"$project\": { \"_id\": \"$@graph.rdfs:label\","
+        +            "\"type\": \"$2\","
+        +            "\"label\": \"$@graph.rdfs:label\","
+        +            "\"comment\": \"$@graph.rdfs:comment\","
+        +            "\"subClassOf\": \"$@graph.rdfs:subClassOf.@id\","
+        +            "\"dataModelDomain\": \"$@graph.iudx:dataModelDomain.@id\""
+        +     "}}, {\"$merge\": \"summary\"}]";
+
+ 
+
 
 
     private static final String QUERY_FUZZY_SEARCH =
@@ -79,10 +74,17 @@ class DBServiceImpl implements DBService {
      * @TODO: Batch size issue. Need to iterate cursor or find alternative solution later.
      */
     @Override
-    public DBService makeSummary(Handler<AsyncResult<JsonObject>> resultHandler) {
-        JsonObject command = new JsonObject().put("aggregate", "classes")
-                                            .put("pipeline", new JsonArray(QUERY_SUMMARIZE))
-                                            .put("cursor",  new JsonObject().put("batchSize", 1000));
+    public DBService makeSummary(String name, Handler<AsyncResult<JsonObject>> resultHandler) {
+        boolean isClass = Character.isUpperCase(name.charAt(0));
+        String collectionName = isClass?"classes":"properties";
+        String type = isClass?"class":"property";
+        JsonObject command = new JsonObject()
+                                .put("aggregate", collectionName)
+                                .put("pipeline",
+                                        new JsonArray(QUERY_SUMMARIZE
+                                                        .replace("$1", name)
+                                                        .replace("$2", type)))
+                                .put("cursor",  new JsonObject().put("batchSize", 1000));
         dbClient.runCommand("aggregate", command, res -> {
             if (res.succeeded()) {
                 resultHandler.handle(Future.succeededFuture());
@@ -123,15 +125,14 @@ class DBServiceImpl implements DBService {
      */
     @Override
     public DBService getAllClasses(Handler<AsyncResult<JsonArray>> resultHandler) {
-        JsonObject command = new JsonObject().put("aggregate", "classes")
-            .put("pipeline", new JsonArray(QUERY_FIND_ALL_CLASS))
-            .put("cursor",  new JsonObject().put("batchSize", 1000));
-        dbClient.runCommand("aggregate", command, res -> {
+        dbClient.findWithOptions("summary",
+                new JsonObject(QUERY_FIND_ALL_CLASSES),
+                new FindOptions().setFields(new JsonObject().put("_id", false)
+                    .put("@id", false)),
+            res -> {
             if (res.succeeded()) {
-                resultHandler.handle(Future.succeededFuture(res.result()
-                            .getJsonObject("cursor")
-                            .getJsonArray("firstBatch")));
-            } else {
+                resultHandler.handle(Future.succeededFuture(new JsonArray(res.result())));
+        } else {
                 LOGGER.info(res.cause());
                 resultHandler.handle(Future.failedFuture(res.cause()));
             }
@@ -145,15 +146,14 @@ class DBServiceImpl implements DBService {
      */
     @Override
     public DBService getAllProperties(Handler<AsyncResult<JsonArray>> resultHandler) {
-        JsonObject command = new JsonObject().put("aggregate", "properties")
-            .put("pipeline", new JsonArray(QUERY_FIND_ALL_PROPERTIES))
-            .put("cursor",  new JsonObject().put("batchSize", 10000));
-        dbClient.runCommand("aggregate", command, res -> {
+        dbClient.findWithOptions("summary",
+                new JsonObject(QUERY_FIND_ALL_PROPERTIES),
+                new FindOptions().setFields(new JsonObject().put("_id", false)
+                    .put("@id", false)),
+            res -> {
             if (res.succeeded()) {
-                resultHandler.handle(Future.succeededFuture(res.result()
-                            .getJsonObject("cursor")
-                            .getJsonArray("firstBatch")));
-            } else {
+                resultHandler.handle(Future.succeededFuture(new JsonArray(res.result())));
+        } else {
                 LOGGER.info(res.cause());
                 resultHandler.handle(Future.failedFuture(res.cause()));
             }
@@ -284,10 +284,9 @@ class DBServiceImpl implements DBService {
     @Override
     public DBService insertProperty(String name, JsonObject prop,
             Handler<AsyncResult<Boolean>> resultHandler) {
-        dbClient.updateCollectionWithOptions("properties",
-                new JsonObject(QUERY_MATCH_ID.replace("$1", "iudx:"+name)),
-                new JsonObject().put("$set", prop),
-                new UpdateOptions().setUpsert(true),
+        prop = prop.put("_id", "iudx:"+name);
+        dbClient.save("properties",
+                prop,
                 res -> {
                     if (res.succeeded()) {
                         resultHandler.handle(Future.succeededFuture());
@@ -306,10 +305,9 @@ class DBServiceImpl implements DBService {
     @Override
     public DBService insertClass(String name, JsonObject cls,
             Handler<AsyncResult<Boolean>> resultHandler) {
-        dbClient.updateCollectionWithOptions("classes",
-                new JsonObject(QUERY_MATCH_ID.replace("$1", "iudx:"+name)),
-                new JsonObject().put("$set", cls),
-                new UpdateOptions().setUpsert(true),
+        cls = cls.put("_id", "iudx:"+name);
+        dbClient.save("classes",
+                cls,
                 res -> {
                     if (res.succeeded()) {
                         resultHandler.handle(Future.succeededFuture());
@@ -355,6 +353,27 @@ class DBServiceImpl implements DBService {
                         resultHandler.handle(Future.succeededFuture(true));
                     } else {
                         LOGGER.error("Failed deleting class, may not exist");
+                        resultHandler.handle(Future.failedFuture(res.cause()));
+                    }
+
+                });
+        return this;
+    }
+
+    /**
+     * @{@inheritDoc}
+     */
+    @Override
+    public DBService deleteFromSummary(String name,
+            Handler<AsyncResult<Boolean>> resultHandler) {
+        LOGGER.info("Deleteing class " + name);
+        dbClient.findOneAndDelete("summary",
+                new JsonObject(QUERY_MATCH_ID.replace("$1", name)),
+                res -> {
+                    if (res.succeeded()) {
+                        resultHandler.handle(Future.succeededFuture(true));
+                    } else {
+                        LOGGER.error("Failed deleting from summary");
                         resultHandler.handle(Future.failedFuture(res.cause()));
                     }
 
