@@ -90,10 +90,19 @@ public interface DBService {
 
     /**
      * makeSummary - Make summary of class labels and comments 
+     * @param name name of the property or class
      * @return {@link DBServiceImpl}
      */
     @Fluent
-    DBService makeSummary(Handler<AsyncResult<JsonObject>> resultHandler);
+    DBService makeSummary(String name, Handler<AsyncResult<JsonObject>> resultHandler);
+
+    /**
+     * deleteFromSummary - Delete from summary a class or property 
+     * @param name name of the property or class
+     * @return {@link DBServiceImpl}
+     */
+    @Fluent
+    DBService deleteFromSummary(String name, Handler<AsyncResult<Boolean>> resultHandler);
 
     /**
      * insertProperty - Insert a property

@@ -359,7 +359,7 @@ public final class VocApis implements VocApisInterface {
                         LOGGER.info("Inserted " + name);
                         // TODO: Very inefficient. Consider making a service that 
                         //          inserts label and summary
-                        dbService.makeSummary( res -> {} );
+                        dbService.makeSummary(name, res -> {} );
                         context.response().setStatusCode(201).end();
                     } else {
                         context.response().setStatusCode(404).end();
@@ -380,6 +380,7 @@ public final class VocApis implements VocApisInterface {
                 dbService.insertProperty(name, context.getBodyAsJson(), reply -> {
                     if (reply.succeeded()) {
                         LOGGER.info("Inserted " + name);
+                        dbService.makeSummary(name, res -> {} );
                         context.response().setStatusCode(201).end();
                     } else {
                         context.response().setStatusCode(404).end();
@@ -432,7 +433,7 @@ public final class VocApis implements VocApisInterface {
                     LOGGER.info("Deleted " + name);
                     // TODO: Very inefficient. Consider making a service that 
                     //          inserts label and summary
-                    dbService.makeSummary( res -> {} );
+                    dbService.deleteFromSummary(name, res -> {} );
                     context.response().setStatusCode(204).end();
                 } else {
                     context.response().setStatusCode(404).end();
@@ -441,6 +442,7 @@ public final class VocApis implements VocApisInterface {
         } else if (isClass == false) {
             dbService.deleteProperty(name, reply -> {
                 if (reply.succeeded()) {
+                    dbService.deleteFromSummary(name, res -> {} );
                     LOGGER.info("Deleted " + name);
                     context.response().setStatusCode(204).end();
                 } else {
