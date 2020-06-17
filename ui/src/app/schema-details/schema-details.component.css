@@ -37,3 +37,7 @@ span {
   display: table-cell;
   font-weight: bold;
 }
+
+.display-none {
+  display: none !important;
+}
