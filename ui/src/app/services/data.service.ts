@@ -105,7 +105,8 @@ export class DataService {
               var ranges = <string[]>[];
               for (var range of node['iudx:rangeIncludes']) {
                 ranges.push(range['@id'].split(':')[1]);
-                this.ranges = ranges.join(', ');
+                this.ranges = ranges;
+                //this.ranges = ranges.join(', ');
                 // console.warn(this.ranges);
               }
               for (var domain of node['iudx:domainIncludes']) {
