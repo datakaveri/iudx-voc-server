@@ -4,7 +4,9 @@
       Render class table if class
     -->
     <div *ngIf="classView">
-      <b *ngFor="let cls of (classDetail | async)?.heirarchy; let i = index">
+      <strong
+        *ngFor="let cls of (classDetail | async)?.heirarchy; let i = index"
+      >
         <a
           *ngIf="i < (classDetail | async)?.heirarchy.length - 1"
           [routerLink]="['/', cls]"
@@ -17,7 +19,7 @@
         >
           {{ cls }}
         </a>
-      </b>
+      </strong>
       <p>
         {{ (classDetail | async)?.baseClass.comment }}
       </p>

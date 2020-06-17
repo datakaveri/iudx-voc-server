@@ -14,6 +14,8 @@ export class SearchResultComponent implements OnInit {
   searchDetail: Observable<SearchRes[]>;
   term: any;
   _url: string = AppSettings.BASE_URL + '/';
+  error: boolean = false;
+  results: boolean = true;
   constructor(
     private route: ActivatedRoute,
     private backendService: DataService
@@ -30,6 +32,16 @@ export class SearchResultComponent implements OnInit {
   }
   searchTerm(value: string) {
     this.searchDetail = this.backendService.search(value);
+    this.searchDetail.subscribe(resp => {
+      console.log(resp);
+      if (resp.length == 0) {
+        this.error = true;
+        this.results = false;
+      } else {
+        this.results = true;
+        this.error = false;
+      }
+    });
   }
   //can be used in production
   getUrl(value: string) {

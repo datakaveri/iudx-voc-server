@@ -1,20 +1,30 @@
 <section id="search-result-section" class="container">
   <div id="mainContent">
-    <div
-      *ngFor="let data of searchDetail | async"
-      ngHoverClass="hover"
-      id="search-results"
-      class="box-style"
-    >
-      <a [routerLink]="['/', data.label]"
-        ><h3>{{ _url }}{{ data.label }}</h3></a
+    <div *ngIf="results">
+      <div
+        *ngFor="let data of searchDetail | async"
+        ngHoverClass="hover"
+        id="search-results"
+        class="box-style"
       >
+        <a [routerLink]="['/', data.label]"
+          ><h3>{{ _url }}{{ data.label }}</h3></a
+        >
 
-      <a [routerLink]="['/', data.label]"
-        ><h2>{{ data.label }}</h2></a
-      >
-      <p>{{ data.comment }}</p>
-      <br />
+        <a [routerLink]="['/', data.label]"
+          ><h2>{{ data.label }}</h2></a
+        >
+        <p>{{ data.comment }}</p>
+        <br />
+      </div>
     </div>
+  </div>
+  <div class="error-style" *ngIf="error">
+    <br />
+    <h1>Oops!</h1>
+    <h2>404 Not Found</h2>
+    <p>Sorry, an error has occured, Requested page not found!</p>
+
+    <br />
   </div>
 </section>
