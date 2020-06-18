@@ -27,7 +27,7 @@
 
       <table
         *ngIf="(classDetail | async)?.baseClass.properties.length != 0"
-        class="table table-striped"
+        class="table"
       >
         <br />
         <thead>
@@ -102,7 +102,7 @@
       </table>
       <table
         *ngIf="(classDetail | async)?.baseClass.properties.length == 0"
-        class="table table-striped"
+        class="table"
       >
         <thead
           [ngClass]="{

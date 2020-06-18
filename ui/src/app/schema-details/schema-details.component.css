@@ -25,7 +25,7 @@ span {
 .table td,
 .table th {
   /* border-top: none; */
-  border-bottom: 1px solid #dee2e6;
+  /* border-bottom: 1px solid #dee2e6; */
 }
 /* h1 {
   font-size: 22px !important;
@@ -40,4 +40,8 @@ span {
 
 .display-none {
   display: none !important;
+}
+
+tr:nth-child(even) {
+  background-color: #f2f2f2;
 }
