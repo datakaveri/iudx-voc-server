@@ -20,6 +20,7 @@ import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 import { DataModelsComponent } from './data-models/data-models.component';
 import { EntitiesComponent } from './entities/entities.component';
+import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import { EntitiesComponent } from './entities/entities.component';
     SchemaDetailsComponent,
     SearchResultComponent,
     DataModelsComponent,
-    EntitiesComponent
+    EntitiesComponent,
+    PageNotFoundComponent
   ],
   imports: [
     BrowserModule,

@@ -7,6 +7,7 @@ import { SchemaDetailsComponent } from './schema-details/schema-details.componen
 import { DataModelsComponent } from './data-models/data-models.component';
 import { EntitiesComponent } from './entities/entities.component';
 import { SearchResultComponent } from './search-result/search-result.component';
+import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 
 const routes: Routes = [
   {
@@ -40,6 +41,10 @@ const routes: Routes = [
   {
     path: 'search/searchTerm',
     component: SearchResultComponent
+  },
+  {
+    path: '**',
+    component: PageNotFoundComponent
   }
 ];
 

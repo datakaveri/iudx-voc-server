@@ -1,3 +1,6 @@
+#mainContent {
+  border-bottom: solid 1px #cccccc;
+}
 .example-card {
   max-width: 400px;
   display: inline-block;
