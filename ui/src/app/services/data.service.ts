@@ -75,7 +75,7 @@ export class DataService {
           for (var node of resp['@graph']) {
             var nodeId = node['@id'].split(':')[1];
             var nodeComment = node['rdfs:comment'];
-            var subClassOf = ""
+            var subClassOf = '';
             if ('rdfs:subClassOf' in node) {
               subClassOf = node['rdfs:subClassOf']['@id'].split(':')[1];
             }
@@ -111,7 +111,7 @@ export class DataService {
               }
               for (var domain of node['iudx:domainIncludes']) {
                 var domainLabel = domain['@id'].split(':')[1];
-                if (domainLabel ==  className) {
+                if (domainLabel == className) {
                   flattened.baseClass.properties.push(<Property>{
                     label: nodeId,
                     comment: nodeComment,
@@ -132,7 +132,7 @@ export class DataService {
               }
             }
           }
-          flattened.superClasses.forEach(function (node, i) {
+          flattened.superClasses.forEach(function(node, i) {
             flattened.heirarchy.push(node.label);
           });
           flattened.heirarchy = flattened.heirarchy.reverse();

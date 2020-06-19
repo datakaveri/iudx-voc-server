@@ -16,7 +16,7 @@ a:hover {
   text-decoration: none;
 }
 .th-style {
-  background-color: #c7cbce;
+  background-color: #c7cbce !important;
 }
 span {
   font-size: 20px;
@@ -24,8 +24,24 @@ span {
 
 .table td,
 .table th {
-  border-top: none;
+  /* border-top: none; */
+  /* border-bottom: 1px solid #dee2e6; */
 }
 /* h1 {
   font-size: 22px !important;
 } */
+
+.tbody-style {
+  font-size: 16px;
+  color: #0d1f50;
+  display: table-cell;
+  font-weight: bold;
+}
+
+.display-none {
+  display: none !important;
+}
+
+tr:nth-child(even) {
+  background-color: #f2f2f2;
+}

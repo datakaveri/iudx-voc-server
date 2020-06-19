@@ -52,7 +52,7 @@ h4 {
 }
 */ hr {
   border: none;
-  height: 1px;
+  min-height: 1px;
   background: #ccc;
   margin: 2em 0 4em 0;
 }
@@ -76,7 +76,7 @@ pre {
   --------------------------------------------------*/
 
 #mainContent {
-  border-bottom: solid 1px #cccccc;
+  /* border-bottom: solid 1px #cccccc; */
   text-align: left;
 }
 #footer {
@@ -154,4 +154,7 @@ thead {
 }
 .table {
   border-collapse: separate !important;
+}
+html {
+  overflow-y: scroll;
 }
