@@ -1,0 +1,30 @@
+<section id="domain_name_section" class="container">
+  <div id="mainContent">
+    <h1>List of Domain Names</h1>
+    <p>
+      The table here shows the list of domainNames available with description
+    </p>
+    <br />
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th scope="col">Value</th>
+          <th scope="col">Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let value of domains | async; index as i">
+          <td>
+            <a [routerLink]="['/', value.label]"
+              ><ngb-highlight [result]="value.label"></ngb-highlight>
+            </a>
+          </td>
+
+          <td>
+            <ngb-highlight [result]="value.comment"></ngb-highlight>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>

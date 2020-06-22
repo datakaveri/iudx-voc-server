@@ -38,10 +38,20 @@ p a:hover {
   text-decoration: underline;
 }
 
-.border-bottom {
+/* .border-bottom {
   border-bottom: 1px solid lightgrey;
-}
+} */
 ul > a {
   cursor: pointer;
   color: maroon;
+}
+li.nav-item {
+  border: 1px solid maroon !important;
+}
+
+a:hover {
+  color: maroon;
+}
+.ngb-style {
+  background-color: white !important;
 }

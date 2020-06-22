@@ -27,3 +27,8 @@ button {
 i {
   color: green;
 }
+
+mat-card {
+  margin-bottom: 50px;
+  margin-right: 50px;
+}
