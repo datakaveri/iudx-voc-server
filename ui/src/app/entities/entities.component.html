@@ -1,7 +1,7 @@
 <section id="category_section" class="container">
   <div id="mainContent">
     A Type specifies the data type for a schema. Each
-    <strong style="color:maroon">Type</strong> is associated with a set of
+    <strong style="color:#003f87">Type</strong> is associated with a set of
     properties.<br />
     <br />
     <h4>Some important Types in IUDX Vocabulary:</h4>
@@ -12,78 +12,11 @@
 
     <div style="align-items: center;">
       <ul *ngFor="let entity of entities | async">
-        <a [routerLink]="['/', entity.label]"><li>{{entity.label}}</li></a>
+        <a [routerLink]="['/', entity.label]"
+          ><li>{{ entity.label }}</li></a
+        >
       </ul>
 
-      <!-- <a style="cursor: pointer;">
-        <mat-card class="example-card">
-          <mat-card-header class="border-bottom">
-            <div mat-card-avatar class="example-header-image">
-              <i style="color: greenyellow;" class=""></i>
-            </div>
-            <mat-card-title>ResourceGroup</mat-card-title>
-          </mat-card-header>
-          <mat-card-content>
-            <p>
-              Describes the Resource Group entry in the IUDX catalogue.
-            </p>
-          </mat-card-content>
-        </mat-card>
-      </a>
-
-      <a style="cursor: pointer;">
-        <mat-card class="example-card">
-          <mat-card-header class="border-bottom">
-            <div mat-card-avatar class="example-header-image">
-              <i style="color: greenyellow;" class=""></i>
-            </div>
-            <mat-card-title>Resource</mat-card-title>
-
-          </mat-card-header>
-
-          <mat-card-content>
-            <p>
-              Describes the Resource entry in the IUDX catalogue.
-            </p>
-          </mat-card-content>
-         
-        </mat-card>
-      </a>
-
-      <a style="cursor: pointer;">
-        <mat-card class="example-card">
-          <mat-card-header class="border-bottom">
-            <div mat-card-avatar class="example-header-image">
-              <i style="color: blue;" class=""></i>
-            </div>
-            <mat-card-title>Thing</mat-card-title>
-            
-          </mat-card-header>
-
-          <mat-card-content>
-            <p>
-              Most generic IUDX object.
-            </p>
-          </mat-card-content>
-         
-        <mat-card class="example-card">
-          <mat-card-header class="border-bottom">
-            <div mat-card-avatar class="example-header-image">
-              <i style="color: green;" class=""></i>
-            </div>
-            <mat-card-title>IUDXEntity</mat-card-title>
-           
-          </mat-card-header>
-      
-          <mat-card-content>
-            <p>
-              Class of all IUDX Entities (Resource, ResourceServer, Provider
-              etc.)
-            </p>
-          </mat-card-content>
-          
-        </mat-card>
-      </a> -->
       <h4>Value Object types</h4>
       <p>
         These are used to describe JSON objects that are values of certain

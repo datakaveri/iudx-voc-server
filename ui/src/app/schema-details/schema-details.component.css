@@ -1,13 +1,21 @@
-a:link,
-a:visited {
+tbody > tr > td > a:link,
+tbody > tr > td > a:visited {
   /* color: #660000; */
   /* color: black; */
   /* color: #104e8b; */
   color: #0d1f50;
-  text-decoration: none;
-  /* border-bottom: dotted 1px #660000; */
+  /* text-decoration: none; */
+  border-bottom: dotted 1px #0d1f50;
 }
-a:hover {
+
+a:link,
+a:visited {
+  color: #0d1f50;
+}
+
+a:hover,
+tbody > tr > td > a:hover,
+tbody > tr > a:hover {
   border-bottom: none;
 
   /* background-color: gray; */
@@ -15,6 +23,11 @@ a:hover {
   background-color: transparent;
   text-decoration: none;
 }
+tbody > tr > a:link,
+tbody > tr > a:visited {
+  border-bottom: dotted 2px #0d1f50;
+}
+
 .th-style {
   background-color: #c7cbce !important;
 }

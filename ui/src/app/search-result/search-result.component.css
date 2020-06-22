@@ -27,3 +27,6 @@ h1 {
   margin-top: 60px;
   padding-top: 2px;
 }
+a:hover {
+  text-decoration: none;
+}
