@@ -51,10 +51,10 @@ export class HeaderComponent implements OnInit {
   }
 
   onSearch(text: string) {
-    console.log(text);
+    // console.log(text);
     // this.searchRes = this.dataService.search(text);
     // console.log(this.searchRes);
-    console.log(this._searchTerm);
+    // console.log(this._searchTerm);
     this.router.navigate(['/search/searchTerm'], {
       queryParams: { q: this._searchTerm }
     });

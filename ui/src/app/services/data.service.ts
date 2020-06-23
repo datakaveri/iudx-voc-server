@@ -136,7 +136,7 @@ export class DataService {
             flattened.heirarchy.push(node.label);
           });
           flattened.heirarchy = flattened.heirarchy.reverse();
-          console.log(flattened);
+          // console.log(flattened);
           return flattened;
         }),
         catchError(this.handleError)

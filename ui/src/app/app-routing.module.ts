@@ -8,6 +8,7 @@ import { DataModelsComponent } from './data-models/data-models.component';
 import { EntitiesComponent } from './entities/entities.component';
 import { SearchResultComponent } from './search-result/search-result.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+import { DataModelDomainComponent } from './data-models/data-model-domain/data-model-domain.component';
 
 const routes: Routes = [
   {
@@ -34,13 +35,14 @@ const routes: Routes = [
     path: ':schemaName',
     component: SchemaDetailsComponent
   },
-  // {
-  //   path: 'search/:schemaName',
-  //   component: SchemaDetailsComponent
-  // },
+
   {
     path: 'search/searchTerm',
     component: SearchResultComponent
+  },
+  {
+    path: 'datamodels/:domainName',
+    component: DataModelDomainComponent
   },
   {
     path: '**',
