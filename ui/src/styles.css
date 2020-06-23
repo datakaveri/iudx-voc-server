@@ -22,7 +22,8 @@ code {
 h1 {
   font: bold 26px Helvetica, Arial, sans-serif !important;
   /* color: #990000 !important; */
-  color: #0d1f50 !important;
+  /* color: #0d1f50 !important; */
+  color: #003f87;
   letter-spacing: -1px !important;
   margin: 0.25em 0 0 0 !important;
   padding-top: 30px;
@@ -33,7 +34,7 @@ h2 {
   padding-top: 5px;
   clear: both;
   /* color: #990000; */
-  color: #0d1f50;
+  color: #003f87;
   font: normal 18px Helvetica, Arial, sans-serif;
   margin: 2em 0 0 0;
 }
@@ -119,13 +120,14 @@ a:visited {
   text-decoration: none;
   /* border-bottom: dotted 1px #990000; */
 }
+
 a:hover {
   border-bottom: none;
 
   /* background-color: gray; */
-  color: #ffee99;
+  color: #660000;
   background-color: transparent;
-  text-decoration: none;
+  text-decoration: underline;
 }
 
 /* Footer */

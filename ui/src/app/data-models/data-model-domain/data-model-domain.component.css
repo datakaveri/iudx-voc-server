@@ -1,0 +1,24 @@
+a:hover {
+  text-decoration: underline;
+  color: maroon;
+}
+table {
+  min-width: 1000px;
+}
+thead > tr {
+  color: white;
+  background-color: #4981ce;
+  /* background-color: #0099cc; */
+}
+tbody > tr:nth-child(odd) {
+  background-color: #bfefff !important;
+  /* background-color: #C6E2FF !important; */
+}
+
+h1 {
+  color: #003f87 !important;
+}
+
+tbody > tr:nth-child(even) {
+  background-color: white;
+}

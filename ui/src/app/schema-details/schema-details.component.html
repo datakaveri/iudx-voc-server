@@ -47,11 +47,12 @@
 
         <tbody>
           <tr class="th-style tbody-style">
-            Properties of
-            {{
-              (classDetail | async)?.baseClass.label
-            }}
+            <td colspan="3">
+              Properties of
+              {{ (classDetail | async)?.baseClass.label }}
+            </td>
           </tr>
+
           <tr
             *ngFor="let property of (classDetail | async)?.baseClass.properties"
           >
