@@ -89,7 +89,6 @@ public final class VocApis implements VocApisInterface {
             }
         });
         Proc.execCommand("cd " + VOC_REPO + " && " + UPDATE_REPO_CMD);
-        Proc.execCommand("cd " + VOC_REPO + " && " + UPDATE_REPO_CMD);
         Proc.execCommand("cd " + VOC_REPO + " && " + PUSH_SCHEMAS_CMD);
         context.response()
             .putHeader("content-type", "application/json")
