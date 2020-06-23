@@ -11,7 +11,7 @@
           *ngIf="i < (classDetail | async)?.heirarchy.length - 1"
           [routerLink]="['/', cls]"
         >
-          {{ cls }} &#8658;
+          {{ cls }} &nbsp;&#8658;
         </a>
         <a
           *ngIf="i >= (classDetail | async)?.heirarchy.length - 1"
@@ -64,7 +64,7 @@
             <td>
               <a *ngFor="let tp of property.type" [routerLink]="['/', tp]"
                 ><ngb-highlight [result]="tp"></ngb-highlight>
-                &nbsp;
+                <br />
               </a>
             </td>
             <td>
@@ -90,7 +90,7 @@
             <td>
               <a *ngFor="let tp of property.type" [routerLink]="['/', tp]"
                 ><ngb-highlight [result]="tp"></ngb-highlight>
-                &nbsp;
+                <br />
               </a>
             </td>
 
@@ -137,8 +137,8 @@
             <td>
               <a *ngFor="let tp of property.type" [routerLink]="['/', tp]"
                 ><ngb-highlight [result]="tp"></ngb-highlight>
-                &nbsp;
               </a>
+              <br />
             </td>
 
             <td>
