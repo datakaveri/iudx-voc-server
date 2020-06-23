@@ -9,6 +9,7 @@ p {
   box-shadow: 1px -1px 12px 0px #c9c9c9;
   padding-left: 25px;
   padding-top: 2px;
+  min-width: 1000px;
   transition: background-color 0.2s;
 }
 
