@@ -8,18 +8,16 @@
 }
 
 .example-header-image {
-  /* background-image: url("https://material.angular.io/assets/img/examples/shiba1.jpg"); */
   background-size: cover;
 }
 .para-heading {
-  /* text-align: center; */
-  font-size: 26px;
-  font-weight: 600;
+  font-size: 26px !important;
 }
 
 button {
   margin-left: 35%;
-  background-color: #3a4956;
+  /* background-color: #3a4956; */
+  background-color: #003f87;
   color: white;
   border-radius: 7px;
   border: none;

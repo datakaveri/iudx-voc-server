@@ -11,7 +11,17 @@ import { DataModel } from '../types/dataModel';
 })
 export class DataModelsComponent implements OnInit {
   datamodels: Observable<DataModel[]>;
-
+  Colors: Array<any> = [
+    '#bfefff',
+    '#F6EdFF',
+    '#F5FFFA',
+    '#FFFFED',
+    '#CAE1FF',
+    '#bfefff	',
+    '#D9D9F3',
+    '#fb9667'
+  ];
+  icons: Array<any> = [];
   constructor(private backendService: DataService) {}
 
   ngOnInit(): void {
@@ -26,5 +36,22 @@ export class DataModelsComponent implements OnInit {
   }
   getDataModelDomain(value, event) {
     console.log(value, event);
+  }
+  getColors(index) {
+    let num = this.getnumber(index);
+    return this.Colors[num];
+  }
+  getnumber(data) {
+    let i = data;
+    if (i > this.Colors.length - 1) {
+      i = i - this.Colors.length;
+      if (i < this.Colors.length) {
+        return i;
+      } else {
+        this.getnumber(i);
+      }
+    } else {
+      return i;
+    }
   }
 }
