@@ -81,7 +81,10 @@
             autofocus
           />
           <mat-autocomplete #auto="matAutocomplete">
-            <mat-option *ngFor="let res of searchRes | async">
+            <mat-option
+              *ngFor="let res of searchRes | async"
+              [value]="res.label"
+            >
               <a style="color:black" routerLink="{{ res.label }}">
                 {{ res.label }}
               </a>

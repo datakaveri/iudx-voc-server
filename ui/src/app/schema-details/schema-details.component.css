@@ -25,7 +25,7 @@ tbody > tr > a:hover {
 }
 tbody > tr > a:link,
 tbody > tr > a:visited {
-  border-bottom: dotted 2px #0d1f50;
+  border-bottom: dotted 1px #0d1f50;
 }
 
 .th-style {
