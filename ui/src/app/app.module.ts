@@ -21,6 +21,7 @@ import { environment } from '../environments/environment';
 import { DataModelsComponent } from './data-models/data-models.component';
 import { EntitiesComponent } from './entities/entities.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+import { DataModelDomainComponent } from './data-models/data-model-domain/data-model-domain.component';
 
 @NgModule({
   declarations: [
@@ -34,7 +35,8 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
     SearchResultComponent,
     DataModelsComponent,
     EntitiesComponent,
-    PageNotFoundComponent
+    PageNotFoundComponent,
+    DataModelDomainComponent
   ],
   imports: [
     BrowserModule,

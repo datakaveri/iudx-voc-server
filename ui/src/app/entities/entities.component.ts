@@ -12,14 +12,16 @@ import { Class } from '../types/class';
 export class EntitiesComponent implements OnInit {
   entities: Observable<Class[]>;
 
-  constructor(private backendService: DataService) { }
+  constructor(private backendService: DataService) {}
 
   ngOnInit(): void {
     this.getEntities();
   }
 
   getEntities(): void {
-    this.entities = this.backendService.searchRelationship("subClassOf", "IUDXEntity");
+    this.entities = this.backendService.searchRelationship(
+      'subClassOf',
+      'IUDXEntity'
+    );
   }
-
 }
