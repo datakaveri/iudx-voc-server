@@ -114,3 +114,8 @@ input.mat-autocomplete-trigger {
   font-size: 15px !important;
   border: none;
 }
+/* Form */
+
+form {
+  display: inline;
+}

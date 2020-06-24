@@ -17,6 +17,7 @@ import { DataService } from '../services/data.service';
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent implements OnInit {
+  navbarOpen: boolean = false;
   model: string;
   searchRes: Observable<SearchRes[]>;
   control = new FormControl();
@@ -49,7 +50,9 @@ export class HeaderComponent implements OnInit {
       })
     );
   }
-
+  toggleNavbar() {
+    this.navbarOpen = !this.navbarOpen;
+  }
   onSearch(text: string) {
     // console.log(text);
     // this.searchRes = this.dataService.search(text);
