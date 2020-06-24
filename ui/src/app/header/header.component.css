@@ -119,3 +119,7 @@ input.mat-autocomplete-trigger {
 form {
   display: inline;
 }
+
+form > button {
+  margin-left: 4px;
+}
