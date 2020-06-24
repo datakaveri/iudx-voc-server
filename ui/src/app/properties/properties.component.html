@@ -1,30 +1,30 @@
-<section id="schema_property_section" class="container">
-  <div id="mainContent">
-    <h1>List of Properties</h1>
-    <p>
-      The table here shows the list of properties available with description
-    </p>
-    <br />
-    <table class="table table-striped">
-      <thead>
-        <tr>
-          <th scope="col">Property</th>
-          <th scope="col">Description</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let property of properties | async; index as i">
-          <td>
-            <a [routerLink]="['/', property.label]"
-              ><ngb-highlight [result]="property.label"></ngb-highlight>
-            </a>
-          </td>
+<section id="schema_property_section" class="container content">
+  <!-- <div id="mainContent"> -->
+  <h1>List of Properties</h1>
+  <p>
+    The table here shows the list of properties available with description
+  </p>
+  <br />
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">Property</th>
+        <th scope="col">Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let property of properties | async; index as i">
+        <td>
+          <a [routerLink]="['/', property.label]"
+            ><ngb-highlight [result]="property.label"></ngb-highlight>
+          </a>
+        </td>
 
-          <td>
-            <ngb-highlight [result]="property.comment"></ngb-highlight>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+        <td>
+          <ngb-highlight [result]="property.comment"></ngb-highlight>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <!-- </div> -->
 </section>
