@@ -114,3 +114,47 @@ input.mat-autocomplete-trigger {
   font-size: 15px !important;
   border: none;
 }
+/* Form */
+
+form {
+  display: inline;
+}
+
+form > button {
+  margin-left: 4px;
+}
+.pull-right {
+  float: right !important;
+}
+@media only screen and (max-width: 454px) {
+  nav > button {
+    margin-left: 150px;
+  }
+  .navbar-brand {
+    text-align: center;
+  }
+}
+
+@media only screen and (max-width: 398px) {
+  nav > button {
+    margin-left: 115px;
+  }
+  .navbar-brand {
+    margin-left: 45px;
+  }
+  nav > img {
+    margin-left: 110px !important;
+  }
+}
+
+@media only screen and (max-width: 320px) {
+  nav > button {
+    margin-left: 90px;
+  }
+  .navbar-brand {
+    margin-left: 10px;
+  }
+  nav > img {
+    margin-left: 85px !important;
+  }
+}
