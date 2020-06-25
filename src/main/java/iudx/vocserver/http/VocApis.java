@@ -23,7 +23,6 @@ import io.vertx.ext.web.client.WebClient;
 import io.vertx.ext.web.client.predicate.ResponsePredicate;
 import io.vertx.ext.web.codec.BodyCodec;
 
-
 interface VocApisInterface {
     void getClassesHandler(RoutingContext context);
     void getPropertiesHandler(RoutingContext context);
@@ -56,7 +55,7 @@ public final class VocApis implements VocApisInterface {
     private static final Logger LOGGER = LoggerFactory.getLogger(HttpServerVerticle.class);
 
     private static String VOC_REPO = "iudx-voc/";
-    private static String UPDATE_REPO_CMD = "nohup git fetch && git reset --hard origin/master &";
+    private static String UPDATE_REPO_CMD = "nohup sleep 5 && git fetch && git reset --hard origin/master &";
     private static String PUSH_SCHEMAS_CMD = "nohup python3 utils/push/hookTriggeredInsert.py &";
 
     private Vertx vertx = Vertx.vertx();
@@ -117,8 +116,6 @@ public final class VocApis implements VocApisInterface {
     // tag::db-service-calls[]
     public void getClassesHandler(RoutingContext context) {
             dbService.getAllClasses(reply -> {
-                System.out.println(reply.result().getClass());
-                System.out.println(reply.result().encode().getClass());
                 if (reply.succeeded()) {
                     context.response()
                     .putHeader("content-type", "application/json")
@@ -228,7 +225,7 @@ public final class VocApis implements VocApisInterface {
      * @return void
      * @TODO Throw error if load failed
      */
-    // tag::db-service-calls[]
+    // tag::external-service-calls[]
     public void meilisearchHandler(RoutingContext context) {
         String pattern = "";
         try {
