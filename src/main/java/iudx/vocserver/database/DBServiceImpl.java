@@ -56,7 +56,7 @@ class DBServiceImpl implements DBService {
 
 
 
-    private static final String QUERY_FUZZY_SEARCH =
+    private static final String QUERY_SIMPLE_SEARCH =
         "{\"$or\": [{\"comment\": {\"$regex\": \"(?i).*$1.*\"}},"
                  + "{\"label\": {\"$regex\": \"(?i).*$1.*\"}}]}";
         
@@ -219,15 +219,15 @@ class DBServiceImpl implements DBService {
      * @{@inheritDoc}
      */
     @Override
-    public DBService fuzzySearch(String pattern, Handler<AsyncResult<JsonArray>> resultHandler) {
+    public DBService search(String pattern, Handler<AsyncResult<JsonArray>> resultHandler) {
         dbClient.findWithOptions("summary",
-                new JsonObject(QUERY_FUZZY_SEARCH.replace("$1", pattern)),
+                new JsonObject(QUERY_SIMPLE_SEARCH.replace("$1", pattern)),
                 new FindOptions().setFields(new JsonObject().put("_id", false)),
                 res -> {
                     if (res.succeeded()) {
                         resultHandler.handle(Future.succeededFuture(new JsonArray(res.result())));
                     } else {
-                        LOGGER.info("Fuzzy search for " + pattern + " failed");
+                        LOGGER.info("Simple search for " + pattern + " failed");
                         resultHandler.handle(Future.failedFuture(res.cause()));
                     }
                 });

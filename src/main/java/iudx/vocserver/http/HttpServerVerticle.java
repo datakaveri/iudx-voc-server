@@ -177,7 +177,7 @@ public class HttpServerVerticle extends AbstractVerticle {
             });
 
 
-        /** Fuzzy Search 
+        /** Simple Search 
          */
         router.get("/search").consumes("application/json")
             .produces("application/json")
@@ -185,12 +185,12 @@ public class HttpServerVerticle extends AbstractVerticle {
                 vocApis.searchHandler(routingContext);
             });
 
-        /** MeiliSearch
+        /**Fuzzy Search
          */
-        router.get("/meilisearch").consumes("application/json")
+        router.get("/fuzzysearch").consumes("application/json")
             .produces("application/json")
             .handler( routingContext -> {
-                vocApis.meilisearchHandler(routingContext);
+                vocApis.fuzzySearchHandler(routingContext);
         });
 
         /** Relationship Search 

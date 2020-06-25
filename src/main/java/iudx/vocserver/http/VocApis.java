@@ -28,7 +28,7 @@ interface VocApisInterface {
     void getPropertiesHandler(RoutingContext context);
     void getMasterHandler(RoutingContext context);
     void searchHandler(RoutingContext context);
-    void meilisearchHandler(RoutingContext context);
+    void fuzzySearchHandler(RoutingContext context);
     void relationshipSearchHandler(RoutingContext context);
     void getSchemaHandler(RoutingContext context);
     void insertMasterHandler(RoutingContext context);
@@ -203,12 +203,13 @@ public final class VocApis implements VocApisInterface {
             context.response().setStatusCode(404).end();
             return;
         }
-        dbService.fuzzySearch(pattern, reply -> {
+        dbService.search(pattern, reply -> {
             if (reply.succeeded()) {
                 context.response().putHeader("content-type", "application/json")
                 .setStatusCode(200)
                 .end(reply.result().encode());
-            } else {
+            } 
+            else {
                 LOGGER.info("Failed searching, query params not found");
                 context.response()
                     .putHeader("content-type", "application/json")
@@ -226,7 +227,7 @@ public final class VocApis implements VocApisInterface {
      * @TODO Throw error if load failed
      */
     // tag::external-service-calls[]
-    public void meilisearchHandler(RoutingContext context) {
+    public void fuzzySearchHandler(RoutingContext context) {
         String pattern = "";
         try {
             if (context.queryParams().contains("q")) {
@@ -242,7 +243,7 @@ public final class VocApis implements VocApisInterface {
         }
 
         request = WebClient.create(vertx) 
-        .get(7700, "localhost", "/indexes/summary/search") 
+        .get(7700, "search", "/indexes/summary/search") 
         .addQueryParam("q",pattern)
         .putHeader("Accept", "application/json")
         .as(BodyCodec.jsonObject())
