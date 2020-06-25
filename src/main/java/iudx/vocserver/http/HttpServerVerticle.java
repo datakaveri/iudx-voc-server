@@ -185,6 +185,14 @@ public class HttpServerVerticle extends AbstractVerticle {
                 vocApis.searchHandler(routingContext);
             });
 
+        /** MeiliSearch
+         */
+        router.get("/meilisearch").consumes("application/json")
+            .produces("application/json")
+            .handler( routingContext -> {
+                vocApis.meilisearchHandler(routingContext);
+        });
+
         /** Relationship Search 
          */
         router.get("/relationship").consumes("application/json")

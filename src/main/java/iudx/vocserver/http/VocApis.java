@@ -10,11 +10,18 @@ import io.vertx.core.logging.LoggerFactory;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.core.VertxException;
 import io.vertx.core.json.JsonObject;
+import io.vertx.core.json.JsonArray;
 
 import iudx.vocserver.database.DBService;
 import iudx.vocserver.auth.AuthService;
 import iudx.vocserver.utils.Validator;
 import iudx.vocserver.utils.Proc;
+
+import io.vertx.core.Vertx;
+import io.vertx.ext.web.client.HttpRequest;
+import io.vertx.ext.web.client.WebClient;
+import io.vertx.ext.web.client.predicate.ResponsePredicate;
+import io.vertx.ext.web.codec.BodyCodec;
 
 
 interface VocApisInterface {
@@ -22,6 +29,7 @@ interface VocApisInterface {
     void getPropertiesHandler(RoutingContext context);
     void getMasterHandler(RoutingContext context);
     void searchHandler(RoutingContext context);
+    void meilisearchHandler(RoutingContext context);
     void relationshipSearchHandler(RoutingContext context);
     void getSchemaHandler(RoutingContext context);
     void insertMasterHandler(RoutingContext context);
@@ -48,9 +56,12 @@ public final class VocApis implements VocApisInterface {
     private static final Logger LOGGER = LoggerFactory.getLogger(HttpServerVerticle.class);
 
     private static String VOC_REPO = "iudx-voc/";
-    private static String UPDATE_REPO_CMD = "nohup sleep 5 && git fetch && git reset --hard origin/master &";
+    private static String UPDATE_REPO_CMD = "nohup git fetch && git reset --hard origin/master &";
     private static String PUSH_SCHEMAS_CMD = "nohup python3 utils/push/hookTriggeredInsert.py &";
 
+    private Vertx vertx = Vertx.vertx();
+    private HttpRequest<JsonObject> request;
+    
     /**
      * VocApis constructor
      *
@@ -106,6 +117,8 @@ public final class VocApis implements VocApisInterface {
     // tag::db-service-calls[]
     public void getClassesHandler(RoutingContext context) {
             dbService.getAllClasses(reply -> {
+                System.out.println(reply.result().getClass());
+                System.out.println(reply.result().encode().getClass());
                 if (reply.succeeded()) {
                     context.response()
                     .putHeader("content-type", "application/json")
@@ -205,6 +218,55 @@ public final class VocApis implements VocApisInterface {
                     .setStatusCode(404)
                     .end();
             }
+        });
+    }
+
+    /**
+     * Search for schemas
+     *
+     * @param context {@link RoutingContext}
+     * @return void
+     * @TODO Throw error if load failed
+     */
+    // tag::db-service-calls[]
+    public void meilisearchHandler(RoutingContext context) {
+        String pattern = "";
+        try {
+            if (context.queryParams().contains("q")) {
+                pattern = context.queryParams().get("q");
+            }
+            if (pattern.length() == 0){
+                context.response().setStatusCode(404).end();
+                return;
+            }
+        } catch (Exception e) {
+            context.response().setStatusCode(404).end();
+            return;
+        }
+
+        request = WebClient.create(vertx) 
+        .get(7700, "localhost", "/indexes/summary/search") 
+        .addQueryParam("q",pattern)
+        .putHeader("Accept", "application/json")
+        .as(BodyCodec.jsonObject())
+        .expect(ResponsePredicate.SC_OK);
+
+        request.send(ar -> {
+        if (ar.succeeded()) {
+            JsonArray res = new JsonArray();
+            res.add(ar.result().body());
+            context.response()
+                .putHeader("content-type", "application/json")
+                .setStatusCode(200)
+                .end(res.encode());
+        }
+        else {
+                LOGGER.info("Failed searching, query params not found");
+                context.response()
+                    .putHeader("content-type", "application/json")
+                    .setStatusCode(404)
+                    .end(ar.cause().getMessage());
+        }
         });
     }
 
