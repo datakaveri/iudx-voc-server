@@ -15,6 +15,9 @@ body {
   text-align: center;
   font-display: swap;
 }
+html {
+  overflow-y: scroll;
+}
 code {
   font-family: Courier, monospace;
   font-display: swap;
@@ -71,44 +74,50 @@ pre {
   text-align: left;
   overflow: auto;
 }
+thead {
+  font-size: 18px;
+  color: #0d1f50;
+  white-space: nowrap;
+}
 
 /* -------------------------------------------------
-                  Page Section
+                  Common classes
   --------------------------------------------------*/
 
-#mainContent {
-  /* border-bottom: solid 1px #cccccc; */
+.content {
   text-align: left;
 }
-#footer {
-  text-align: center;
-  font-size: 15px;
+
+.table {
+  border-collapse: separate !important;
 }
-#mainContent,
-#footer,
-.wrapper {
+/* -------------------------------------------------
+                  Footer
+  --------------------------------------------------*/
+
+#footer {
   margin: 0 auto !important;
   padding: 0 0.5em;
 }
 
-/* -------------------------------------------------
-                  main content
-  --------------------------------------------------*/
-#mainContent,
-#mainContent1,
-#mainContent2 {
-  font-size: 100%;
-  position: absolute;
-  top: 15%;
-  /* border-bottom: solid 1px #cccccc; */
+@media (min-width: 960px) {
+  #footer {
+    max-width: 960px;
+    padding: 0 1em 1em 1em;
+  }
 }
-#mainContent ul li,
-#mainContent1 ul li,
-#mainContent2 ul li {
+
+/* -------------------------------------------------
+                  List & Links
+  --------------------------------------------------*/
+/* 
+ul li,
+ul li,
+ul li {
   list-style: inherit;
   padding: 0 0 0 5px;
   margin: 0;
-}
+} */
 a:link {
   /* color: #660000; */
   color: white;
@@ -139,24 +148,4 @@ a:hover {
   table.definition-table br {
     display: none;
   }
-}
-
-@media (min-width: 960px) {
-  #mainContent,
-  #footer,
-  .wrapper {
-    max-width: 960px;
-    padding: 0 1em 1em 1em;
-  }
-}
-thead {
-  font-size: 18px;
-  color: #0d1f50;
-  white-space: nowrap;
-}
-.table {
-  border-collapse: separate !important;
-}
-html {
-  overflow-y: scroll;
 }

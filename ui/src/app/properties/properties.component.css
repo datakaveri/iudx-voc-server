@@ -18,9 +18,18 @@ a:hover {
   background-color: transparent;
   text-decoration: none;
 }
-.table {
+/* .table {
   width: 115%;
-}
+} */
 table thead {
   background-color: #c7cbce;
+}
+
+.content {
+  text-align: left;
+  /* margin: 0 auto !important;
+   padding: 0 0.5em;
+   font-size: 100%;
+   position: absolute;
+   top: 15%; */
 }
