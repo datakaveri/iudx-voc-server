@@ -1,32 +1,35 @@
-<section id="category_section" class="container">
-  <div id="mainContent">
+<section id="category_section" class="container content">
+  <br />
+  <br />
+  <p>
     A Type specifies the data type for a schema. Each
     <strong style="color:#003f87">Type</strong> is associated with a set of
-    properties.<br />
-    <br />
-    <h4>Some important Types in IUDX Vocabulary:</h4>
+    properties.
+  </p>
 
-    <h2 class="h-heading">IUDX Entities</h2>
-    <br />
-    <h6 style="margin-top: 0px;">These are the types for catalogue items.</h6>
+  <br />
+  <h4>Some important Types in IUDX Vocabulary:</h4>
 
-    <div style="align-items: center;">
-      <ul *ngFor="let entity of entities | async">
-        <a [routerLink]="['/', entity.label]"
-          ><li>{{ entity.label }}</li></a
-        >
-      </ul>
+  <h2 class="h-heading">IUDX Entities</h2>
+  <br />
+  <h6 style="margin-top: 0px;">These are the types for catalogue items.</h6>
 
-      <h4>Value Object types</h4>
-      <p>
-        These are used to describe JSON objects that are values of certain
-        properties.
-      </p>
-      <p style="text-align: center;">
-        &nbsp; &nbsp; Check out :
-        <a routerLink="/list/classes">Browse All Types</a>&nbsp;
-        <a routerLink="/list/properties">Browse All Properties</a>
-      </p>
-    </div>
+  <div style="align-items: center;">
+    <ul *ngFor="let entity of entities | async">
+      <a [routerLink]="['/', entity.label]"
+        ><li>{{ entity.label }}</li></a
+      >
+    </ul>
+
+    <h4>Value Object types</h4>
+    <p>
+      These are used to describe JSON objects that are values of certain
+      properties.
+    </p>
+    <p>
+      Check out :
+      <a routerLink="/list/classes">Browse All Types</a>&nbsp;
+      <a routerLink="/list/properties">Browse All Properties</a>
+    </p>
   </div>
 </section>

@@ -1,32 +1,30 @@
-<section id="domain_name_section" class="container">
-  <div id="mainContent">
-    <h1>List of DataModels belonging to the {{ value }} domain</h1>
-    <br />
-    <!-- <p>
+<section id="domain_name_section" class="container content">
+  <h1>List of DataModels belonging to the {{ value }} domain</h1>
+  <br />
+  <!-- <p>
       The table here shows the list of domainNames available with description
     </p> -->
-    <!-- <p>Domain : {{value}}</p> -->
-    <br />
-    <table class="table table-striped">
-      <thead>
-        <tr>
-          <th scope="col">Value</th>
-          <th scope="col">Description</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let value of domains | async; index as i">
-          <td>
-            <a [routerLink]="['/', value.label]"
-              ><ngb-highlight [result]="value.label"></ngb-highlight>
-            </a>
-          </td>
+  <!-- <p>Domain : {{value}}</p> -->
+  <br />
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">Value</th>
+        <th scope="col">Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let value of domains | async; index as i">
+        <td>
+          <a [routerLink]="['/', value.label]"
+            ><ngb-highlight [result]="value.label"></ngb-highlight>
+          </a>
+        </td>
 
-          <td>
-            <ngb-highlight [result]="value.comment"></ngb-highlight>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+        <td>
+          <ngb-highlight [result]="value.comment"></ngb-highlight>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 </section>
