@@ -5,6 +5,7 @@
 
 package iudx.vocserver.http;
 
+import io.vertx.ext.web.client.WebClient;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.ext.web.RoutingContext;
@@ -17,11 +18,6 @@ import iudx.vocserver.auth.AuthService;
 import iudx.vocserver.utils.Validator;
 import iudx.vocserver.utils.Proc;
 
-import io.vertx.core.Vertx;
-import io.vertx.ext.web.client.HttpRequest;
-import io.vertx.ext.web.client.WebClient;
-import io.vertx.ext.web.client.predicate.ResponsePredicate;
-import io.vertx.ext.web.codec.BodyCodec;
 
 interface VocApisInterface {
     void getClassesHandler(RoutingContext context);
@@ -44,7 +40,8 @@ public final class VocApis implements VocApisInterface {
 
     // iudx-voc-server DBService
     private DBService dbService;
-    // iudx-voc-server AuthService
+    // iudx-voc-server SearchClient
+    private WebClient searchClient;
 
     // Validator objects
     private boolean isValidSchema;
@@ -52,14 +49,15 @@ public final class VocApis implements VocApisInterface {
     private Validator classValidator;
     private Validator propertyValidator;
 
+    
+
+
     private static final Logger LOGGER = LoggerFactory.getLogger(HttpServerVerticle.class);
 
     private static String VOC_REPO = "iudx-voc/";
     private static String UPDATE_REPO_CMD = "nohup sleep 5 && git fetch && git reset --hard origin/master &";
     private static String PUSH_SCHEMAS_CMD = "nohup python3 utils/push/hookTriggeredInsert.py &";
 
-    private Vertx vertx = Vertx.vertx();
-    private HttpRequest<JsonObject> request;
     
     /**
      * VocApis constructor
@@ -68,8 +66,10 @@ public final class VocApis implements VocApisInterface {
      * @return void
      * @TODO Throw error if load failed
      */
-    public VocApis(DBService dbService) {
+    public VocApis(DBService dbService, WebClient searchClient) {
         this.dbService = dbService;
+        this.searchClient = searchClient;
+
 
         try {
             // Loads from resources folder
@@ -242,30 +242,25 @@ public final class VocApis implements VocApisInterface {
             return;
         }
 
-        request = WebClient.create(vertx) 
+        searchClient
         .get(7700, "search", "/indexes/summary/search") 
-        .addQueryParam("q",pattern)
-        .putHeader("Accept", "application/json")
-        .as(BodyCodec.jsonObject())
-        .expect(ResponsePredicate.SC_OK);
-
-        request.send(ar -> {
-        if (ar.succeeded()) {
-            JsonArray res = new JsonArray();
-            res.add(ar.result().body());
-            context.response()
-                .putHeader("content-type", "application/json")
-                .setStatusCode(200)
-                .end(res.encode());
-        }
-        else {
-                LOGGER.info("Failed searching, query params not found");
-                context.response()
-                    .putHeader("content-type", "application/json")
-                    .setStatusCode(404)
-                    .end(ar.cause().getMessage());
-        }
-        });
+        .addQueryParam("q", pattern)
+        .putHeader("Accept", "application/json").send(ar -> {
+          if (ar.succeeded()) {
+              context.response()
+                  .putHeader("content-type", "application/json")
+                  .setStatusCode(200)
+                  .end(ar.result().bodyAsString());
+          }
+          else {
+              LOGGER.info("Failed searching, query params not found");
+              LOGGER.info(ar.result().body());
+              context.response()
+                  .putHeader("content-type", "application/json")
+                  .setStatusCode(404)
+                  .end(ar.cause().getMessage());
+          }
+          });
     }
 
     /**
