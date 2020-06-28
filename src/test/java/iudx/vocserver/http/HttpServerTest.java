@@ -1,6 +1,5 @@
 package iudx.vocserver.http;
 
-import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.ext.unit.Async;
@@ -15,14 +14,18 @@ import org.junit.runner.RunWith;
 import java.io.IOException;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.json.JsonObject;
-import io.vertx.core.DeploymentOptions;
-import io.vertx.ext.web.client.WebClient;
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 import io.vertx.ext.web.client.WebClientOptions;
-
+import java.util.concurrent.CountDownLatch;
+import io.vertx.core.json.JsonArray;
 import java.util.concurrent.TimeUnit;
+import io.vertx.ext.web.codec.BodyCodec;
 
 @RunWith(VertxUnitRunner.class)
 public class HttpServerTest {
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(HttpServerTest.class.getName());
 
   private Vertx vertx;
   private WebClient client;
@@ -33,7 +36,6 @@ public class HttpServerTest {
   public void setUp(TestContext context) throws IOException {
     vertx = Vertx.vertx();
 
-    //need to pass directly from config file
     JsonObject conf = new JsonObject()
       .put("authserver.jksfile", "config/authkeystore_example.jks")
       .put("authserver.type","localauth")
@@ -54,11 +56,32 @@ public class HttpServerTest {
       .put("vocserver.auth.queue","vocserver.auth.queue")
       .put("vocserver.testing",true);
 
+
+    CountDownLatch latch = new CountDownLatch(1);
+    WebClientOptions searchClientOptions = new WebClientOptions()
+                                              .setSsl(false);
+
+    client = WebClient.create(vertx, searchClientOptions);
+
     DeploymentOptions options = new DeploymentOptions()
                                     .setConfig(conf)
                                     .setInstances(conf.getInteger("vocserver.http.instances"));
-    vertx.deployVerticle(HttpServerVerticle.class.getName(), options, context.asyncAssertSuccess());
-    
+                                    
+    vertx.deployVerticle(HttpServerVerticle.class.getName(), options, ar -> {
+      if (ar.succeeded()) {
+            LOGGER.info("Http Server Verticle Launched");
+            vertx.setTimer(5000, id -> {
+              context.async().countDown();
+              latch.countDown();
+              context.async().complete();
+            });
+        }
+    });
+    try {
+        latch.await();
+    } catch (Exception e) {
+        LOGGER.info("Failed");
+    }  
   }
   // end::setUp[]
 
@@ -73,14 +96,15 @@ public class HttpServerTest {
   @Test
   public void testFuzzySearchOk(TestContext context) {
     Async async = context.async();
-    WebClient client = WebClient.create(vertx);
-    System.out.println(client);
     client.get(8080, "localhost", "/fuzzysearch?q=resource")
           .putHeader("content-type", "application/json")
           .putHeader("Accept", "application/json")
+          .as(BodyCodec.jsonObject())
           .send(ar -> {
-            System.out.println(ar);
-            context.assertEquals(ar.result().statusCode(), 200);
+            HttpResponse<JsonObject> response = ar.result();
+            context.assertEquals(response.statusCode(), 200);
+            context.assertEquals(response.headers().get("content-type"),"application/json");
+            context.assertNotEquals(response.body().getValue("nbHits"),0);
           async.complete(); 
       });
     }
@@ -91,10 +115,12 @@ public class HttpServerTest {
   public void testFuzzySearchEmpty(TestContext context) {
     Async async = context.async();
     WebClient client = WebClient.create(vertx);
-    client.get(8080, "localhost", "/fuzzysearch?")
+    client.get(8080, "localhost", "/fuzzysearch?q=")
           .putHeader("content-type", "application/json")
           .putHeader("Accept", "application/json")
+          .as(BodyCodec.jsonObject())
           .send(ar -> {
+            LOGGER.info(ar.result().statusCode());
             context.assertEquals(ar.result().statusCode(), 404);
           async.complete(); 
     });
@@ -107,8 +133,12 @@ public class HttpServerTest {
     client.get(8080, "localhost", "/fuzzysearch?q=wfq")
           .putHeader("content-type", "application/json")
           .putHeader("Accept", "application/json")
+          .as(BodyCodec.jsonObject())
           .send(ar -> {
-            context.assertEquals(ar.result().statusCode(), 404);
+            HttpResponse<JsonObject> response = ar.result();
+            context.assertEquals(response.statusCode(), 200);
+            context.assertEquals(response.headers().get("content-type"),"application/json");
+            context.assertEquals(response.body().getValue("nbHits"),0);
           async.complete(); 
     });
   }
