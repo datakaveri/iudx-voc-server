@@ -5,6 +5,7 @@
 
 package iudx.vocserver.database;
 
+import io.vertx.core.*;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
@@ -15,7 +16,10 @@ import io.vertx.core.logging.LoggerFactory;
 import io.vertx.ext.mongo.MongoClient;
 import io.vertx.ext.mongo.FindOptions;
 import io.vertx.ext.mongo.UpdateOptions;
-
+import io.vertx.ext.web.client.WebClient;
+import io.vertx.ext.web.client.WebClientOptions;
+import io.vertx.core.VertxException;
+import io.vertx.core.Promise;
 
 
 class DBServiceImpl implements DBService {
@@ -27,6 +31,13 @@ class DBServiceImpl implements DBService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DBServiceImpl.class);
     private final MongoClient dbClient;
+    
+    //Create Web client
+    private Vertx vertx = Vertx.vertx();
+    WebClientOptions searchClientOptions = new WebClientOptions()
+                                            .setSsl(false);
+    private WebClient indexClient = WebClient.create(vertx, searchClientOptions);
+
 
     /** Queries */ 
 
@@ -96,7 +107,86 @@ class DBServiceImpl implements DBService {
         return this;
     }
 
+    public void createIndex(Handler<AsyncResult<JsonObject>> resultHandler) {
+        indexClient
+        .post(7700, "localhost", "/indexes")
+        .sendJsonObject(new JsonObject()
+        .put("uid", "summary")
+        .put("primaryKey", "_id"), ar -> {
+        if (ar.succeeded() && ar.result().statusCode()==201) {
+            LOGGER.info("Index Created");
+        }
+        else {
+            LOGGER.info(ar.cause());
+        } 
+        });
+    }
 
+    @Override
+    public DBService insertIndex(Handler<AsyncResult<JsonObject>> resultHandler) {
+               
+        //check if index exists
+        JsonObject query = new JsonObject();
+        indexClient
+        .get(7700,"localhost","indexes/summary")
+        .send(ar -> {
+            if (ar.succeeded() && ar.result().statusCode()==200){
+                LOGGER.info("Index exists!");
+            }
+            else {
+                LOGGER.info("Index not found");
+                LOGGER.info("Creating Index");
+                createIndex(resultHandler);
+            }
+        });
+
+        dbClient.find("summary", query, res -> {
+        if (res.succeeded()) {
+            JsonArray body = new JsonArray();
+            for (JsonObject json : res.result()) {
+                body.add(json);
+                break;
+            }
+            LOGGER.info(body);
+            indexClient
+            .post(7700, "localhost", "indexes/summary/documents")
+            .putHeader("content-type","application/json")
+            .sendJson(body.encode(),ar->{
+                if (ar.succeeded() && ar.result().statusCode()==202){
+                    LOGGER.info("Successful"); 
+                }
+                else{
+                    LOGGER.info("Error inserting");
+                    LOGGER.info(ar.result().statusCode());
+                    LOGGER.info(ar.result().body());
+                }
+            });
+        }
+        else {
+            LOGGER.info("Couldn't read");
+            res.cause().printStackTrace();
+        }
+        });
+        return this;
+    }
+
+    public DBService deleteFromIndex(String uid, Handler<AsyncResult<JsonObject>> resultHandler) {
+        JsonObject request = new JsonObject();
+        String uri = "indexes/summary/documents/" + uid;
+        LOGGER.info(uri);
+        indexClient
+        .delete(7700,"localhost",uri)
+        .send(ar->{
+            if(ar.succeeded() && ar.result().statusCode()==202){
+                LOGGER.info("Successfully deleted");
+            }
+            else{
+                LOGGER.info(ar.cause());
+                LOGGER.info(ar.result().statusCode());
+            }
+        });
+        return this;
+    }
     /**
      * @{@inheritDoc}
      */

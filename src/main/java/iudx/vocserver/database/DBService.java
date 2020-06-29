@@ -40,6 +40,15 @@ public interface DBService {
     @Fluent
     DBService insertMasterContext(JsonObject context, Handler<AsyncResult<Boolean>> resultHandler);
 
+    // @Fluent
+    // DBService createIndex(Handler<AsyncResult<JsonObject>> resultHandler);
+
+    @Fluent
+    DBService insertIndex(Handler<AsyncResult<JsonObject>> resultHandler);
+
+     @Fluent
+    DBService deleteFromIndex(String uid, Handler<AsyncResult<JsonObject>> resultHandler);
+
     /**
      * getAllProperties - Gets all vocabulary properties
      * @param name Property Name
@@ -95,7 +104,7 @@ public interface DBService {
      */
     @Fluent
     DBService makeSummary(String name, Handler<AsyncResult<JsonObject>> resultHandler);
-
+    
     /**
      * deleteFromSummary - Delete from summary a class or property 
      * @param name name of the property or class
