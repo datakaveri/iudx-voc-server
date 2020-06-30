@@ -14,7 +14,11 @@
       >
 
       <a [routerLink]="['/', data.label]"
-        ><h2>{{ data.label }}</h2></a
+        ><h2>
+          {{ data.label }} -
+          <span *ngIf="data.type == 'property'">{{ data.type }}</span>
+          <span *ngIf="data.type == 'class'">Type</span>
+        </h2></a
       >
       <p>{{ data.comment }}</p>
       <br />
