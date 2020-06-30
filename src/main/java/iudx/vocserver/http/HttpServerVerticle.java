@@ -183,13 +183,6 @@ public class HttpServerVerticle extends AbstractVerticle {
                 });
             });
 
-        //For testing, needs to be removed
-        router.get("/index").consumes("application/json")
-                    .produces("application/json")
-                    .handler(routingContext -> {
-                        vocApis.checkIndex(routingContext);
-                });
-
         /** Simple Search 
          */
         router.get("/search").consumes("application/json")

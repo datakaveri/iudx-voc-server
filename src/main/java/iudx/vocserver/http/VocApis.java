@@ -23,7 +23,6 @@ interface VocApisInterface {
     void getClassesHandler(RoutingContext context);
     void getPropertiesHandler(RoutingContext context);
     void getMasterHandler(RoutingContext context);
-    void checkIndex(RoutingContext context);
     void searchHandler(RoutingContext context);
     void fuzzySearchHandler(RoutingContext context);
     void relationshipSearchHandler(RoutingContext context);
@@ -181,18 +180,7 @@ public final class VocApis implements VocApisInterface {
             }
         });
     }
-
-    // For testing. Needs to be removed.
-     public void checkIndex(RoutingContext context) {
-
-        dbService.insertIndex(reply-> {
-            LOGGER.info("Okay");
-        });
-        // dbService.deleteFromIndex("GeoProperty", reply->{
-        //     LOGGER.info("Delete");
-        // });
-
-    }
+    
     /**
 
     /**
@@ -257,7 +245,7 @@ public final class VocApis implements VocApisInterface {
         }
 
         searchClient
-        .get(7700, "search", "/indexes/summary/search") 
+        .get(7700, "localhost", "/indexes/summary/search") 
         .addQueryParam("q", pattern)
         .putHeader("Accept", "application/json").send(ar -> {
           if (ar.succeeded()) {
