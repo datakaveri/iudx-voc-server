@@ -33,7 +33,7 @@ export class SearchResultComponent implements OnInit {
   searchTerm(value: string) {
     this.searchDetail = this.backendService.search(value);
     this.searchDetail.subscribe(resp => {
-      // console.log(resp);
+      console.log(resp);
       if (resp.length == 0) {
         this.error = true;
         this.results = false;
