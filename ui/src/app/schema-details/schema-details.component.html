@@ -1,9 +1,13 @@
-<section id="schema_class_section" class="container content">
+<section
+  id="schema_class_section"
+  [hidden]="displayProp"
+  class="container content"
+>
   <!-- <div id="mainContent"> -->
   <!--
       Render class table if class
     -->
-  <div *ngIf="classView">
+  <div *ngIf="classView && displayProp != true">
     <br />
     <br />
     <strong *ngFor="let cls of (classDetail | async)?.heirarchy; let i = index">
@@ -153,7 +157,7 @@
   <!--
       Render property table if property
     -->
-  <div class="display-style" *ngIf="propertyView">
+  <div class="display-style" *ngIf="propertyView && displayProp == false">
     <h1>{{ (propertyDetail | async)?.label }}</h1>
     <p>
       {{ (propertyDetail | async)?.comment }}
