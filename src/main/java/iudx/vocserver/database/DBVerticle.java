@@ -5,6 +5,8 @@ import io.vertx.core.Promise;
 import io.vertx.core.json.JsonObject;
 import io.vertx.serviceproxy.ServiceBinder;
 import io.vertx.ext.mongo.MongoClient;
+import io.vertx.ext.web.client.WebClient;
+import io.vertx.ext.web.client.WebClientOptions;
 
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
@@ -18,6 +20,7 @@ public class DBVerticle extends AbstractVerticle {
     public static final String CONFIG_DB_POOLNAME = "vocserver.database.poolname";
     public static final String CONFIG_DB_UNAME = "vocserver.database.username";
     public static final String CONFIG_DB_PASSWORD = "vocserver.database.password";
+    public static final String CONFIG_SEARCH_QUEUE = "vocserver.search.queue";
     private static final Logger LOGGER = LoggerFactory.getLogger(DBVerticle.class);
 
     @Override
@@ -32,6 +35,10 @@ public class DBVerticle extends AbstractVerticle {
         MongoClient dbClient = MongoClient.createShared(vertx,
                                                         mongoconfig,
                                                         config().getString(CONFIG_DB_POOLNAME));
+        
+        WebClient indexClient = WebClient.create(vertx, new WebClientOptions()
+                                                            .setSsl(false));
+        
         DBService.create(dbClient, ready -> {
             if (ready.succeeded()) {
                 ServiceBinder binder = new ServiceBinder(vertx);
@@ -40,6 +47,21 @@ public class DBVerticle extends AbstractVerticle {
                     .register(DBService.class, ready.result());
                 promise.complete();
             } else {
+                LOGGER.info("Promise Failed");
+                promise.fail(ready.cause());
+            }
+        });
+
+        IndexService.create(indexClient, dbClient, ready->{
+            if(ready.succeeded()) {
+                ServiceBinder binder = new ServiceBinder(vertx);
+                binder
+                    .setAddress(CONFIG_SEARCH_QUEUE)
+                    .register(IndexService.class, ready.result());
+                LOGGER.info("Index service deployed");
+                promise.complete();
+            }
+            else {
                 LOGGER.info("Promise Failed");
                 promise.fail(ready.cause());
             }

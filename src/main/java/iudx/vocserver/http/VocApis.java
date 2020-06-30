@@ -35,7 +35,6 @@ interface VocApisInterface {
     
 }
 
-
 public final class VocApis implements VocApisInterface {
 
     // iudx-voc-server DBService
@@ -49,16 +48,12 @@ public final class VocApis implements VocApisInterface {
     private Validator classValidator;
     private Validator propertyValidator;
 
-    
-
-
     private static final Logger LOGGER = LoggerFactory.getLogger(HttpServerVerticle.class);
 
     private static String VOC_REPO = "iudx-voc/";
     private static String UPDATE_REPO_CMD = "nohup sleep 5 && git fetch && git reset --hard origin/master &";
     private static String PUSH_SCHEMAS_CMD = "nohup python3 utils/push/hookTriggeredInsert.py &";
 
-    
     /**
      * VocApis constructor
      *
@@ -69,7 +64,6 @@ public final class VocApis implements VocApisInterface {
     public VocApis(DBService dbService, WebClient searchClient) {
         this.dbService = dbService;
         this.searchClient = searchClient;
-
 
         try {
             // Loads from resources folder
@@ -180,7 +174,7 @@ public final class VocApis implements VocApisInterface {
             }
         });
     }
-    
+
     /**
 
     /**

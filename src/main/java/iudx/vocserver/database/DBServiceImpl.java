@@ -5,6 +5,7 @@
 
 package iudx.vocserver.database;
 
+import io.vertx.core.Vertx;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
@@ -25,9 +26,13 @@ class DBServiceImpl implements DBService {
      * @param readyHandler Async query result handler. Returns query results as JSONArray
      */
 
+    Vertx vertx = Vertx.vertx();
+    public static final String CONFIG_SEARCH_QUEUE = "vocserver.search.queue";
+
     private static final Logger LOGGER = LoggerFactory.getLogger(DBServiceImpl.class);
     private final MongoClient dbClient;
-    private IndexService indexClient;
+
+    private IndexService indexClient = IndexService.createProxy(vertx,CONFIG_SEARCH_QUEUE);
 
     /** Queries */ 
 
@@ -89,7 +94,7 @@ class DBServiceImpl implements DBService {
         dbClient.runCommand("aggregate", command, res -> {
             if (res.succeeded()) {
                 indexClient.createIndex(resultHandler);
-                indexClient.insertIndex(dbClient, resultHandler);
+                indexClient.insertIndex(resultHandler);
                 resultHandler.handle(Future.succeededFuture());
             } else {
                 LOGGER.info(res.cause());

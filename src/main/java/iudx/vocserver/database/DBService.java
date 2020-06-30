@@ -95,7 +95,7 @@ public interface DBService {
      */
     @Fluent
     DBService makeSummary(String name, Handler<AsyncResult<JsonObject>> resultHandler);
-    
+
     /**
      * deleteFromSummary - Delete from summary a class or property 
      * @param name name of the property or class
