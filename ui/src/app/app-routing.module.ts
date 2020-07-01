@@ -14,6 +14,7 @@ const routes: Routes = [
   {
     path: '',
     component: HomeComponent
+    // pathMatch: 'full'
   },
   {
     path: 'list/classes',
@@ -45,8 +46,13 @@ const routes: Routes = [
     component: DataModelDomainComponent
   },
   {
-    path: '**',
+    path: '404/not-found',
     component: PageNotFoundComponent
+  },
+
+  {
+    path: '**',
+    redirectTo: '404/not-found'
   }
 ];
 

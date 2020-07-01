@@ -16,5 +16,6 @@
   "vocserver.database.poolname": "mongo_pool",
   "vocserver.auth.instances": 2,
   "vocserver.auth.queue": "vocserver.auth.queue",
+  "vocserver.search.queue":"vocserver.search.queue",
   "vocserver.testing": false
 }

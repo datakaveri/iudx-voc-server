@@ -4,7 +4,7 @@ import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
   selector: 'app-page-not-found',
   template: `
     <h1>
-      page-not-found
+      Page-Not-Found !
     </h1>
   `,
   styles: [],
