@@ -31,7 +31,7 @@ export class DataModelsComponent implements OnInit {
   getDataModels() {
     this.datamodels = this.backendService.searchRelationship(
       'subClassOf',
-      'DataModelDomain'
+      'DataModel'
     );
   }
   getDataModelDomain(value, event) {

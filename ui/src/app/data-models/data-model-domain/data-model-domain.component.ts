@@ -27,7 +27,7 @@ export class DataModelDomainComponent implements OnInit {
       this.value = params['domainName'];
     });
     this.domains = this.backendService.searchRelationship(
-      'dataModelDomain',
+      'subClassOf',
       this.value
     );
   }
