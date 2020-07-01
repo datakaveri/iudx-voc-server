@@ -75,10 +75,9 @@ class IndexServiceImpl implements IndexService{
             }
         });
 
-        JsonObject query = new JsonObject();
         indexClient
         .post(7700, "search", "/indexes/summary/documents")
-        .putHeader("content-type","application/json")
+        .putHeader("content-type", "application/json")
         .sendJson(body,ar->{
             if (ar.succeeded() && ar.result().statusCode()==202){
                 LOGGER.info("Successful"); 
@@ -102,7 +101,7 @@ class IndexServiceImpl implements IndexService{
         String uri = "/indexes/summary/documents/" + uid;
         LOGGER.info(uri);
         indexClient
-        .delete(7700,"search",uri)
+        .delete(7700,"search", uri)
         .send(ar->{
             if(ar.succeeded() && ar.result().statusCode()==202){
                 LOGGER.info("Successfully deleted");
@@ -123,7 +122,7 @@ class IndexServiceImpl implements IndexService{
     public void deleteIndex(Handler<AsyncResult<Boolean>> resultHandler) {
         JsonObject request = new JsonObject();
         indexClient
-        .delete(7700,"search","/indexes/summary")
+        .delete(7700,"search", "/indexes/summary")
         .send(ar->{
             if(ar.succeeded() && ar.result().statusCode()==204){
                 LOGGER.info("Successfully deleted");

@@ -38,22 +38,22 @@ public class HttpServerTest {
 
     JsonObject conf = new JsonObject()
       .put("authserver.jksfile", "config/authkeystore_example.jks")
-      .put("authserver.type","localauth")
+      .put("authserver.type", "localauth")
       .put("authserver.jkspasswd", "1!Rbccps-voc@123")
       .put("authserver.url", "auth.iudx.org.in")
-      .put("vocserver.jksfile","config/iudxkeystore.jks")
-      .put("vocserver.http.instances",1)
-      .put("vocserver.jkspasswd","1!Rbccps-voc@123")
-      .put("vocserver.http.port",8080)
-      .put("vocserver.id","org/sha1/example.com/")
-      .put("vocserver.database.queue","vocserver.database.queue")
+      .put("vocserver.jksfile", "config/iudxkeystore.jks")
+      .put("vocserver.http.instances", 1)
+      .put("vocserver.jkspasswd", "1!Rbccps-voc@123")
+      .put("vocserver.http.port", 8080)
+      .put("vocserver.id", "org/sha1/example.com/")
+      .put("vocserver.database.queue", "vocserver.database.queue")
       .put("vocserver.database.url", "mongodb://localhost:27017")
-      .put("vocserver.database.username","abc")
-      .put("vocserver.database.password","123")
+      .put("vocserver.database.username", "abc")
+      .put("vocserver.database.password", "123")
       .put("vocserver.database.name", "voc")
       .put("vocserver.database.poolname", "mongo_pool")
       .put("vocserver.auth.instances", 2)
-      .put("vocserver.auth.queue","vocserver.auth.queue")
+      .put("vocserver.auth.queue", "vocserver.auth.queue")
       .put("vocserver.testing",true);
 
 
@@ -103,8 +103,8 @@ public class HttpServerTest {
           .send(ar -> {
             HttpResponse<JsonObject> response = ar.result();
             context.assertEquals(response.statusCode(), 200);
-            context.assertEquals(response.headers().get("content-type"),"application/json");
-            context.assertNotEquals(response.body().getValue("nbHits"),0);
+            context.assertEquals(response.headers().get("content-type"), "application/json");
+            context.assertNotEquals(response.body().getValue("nbHits"), 0);
           async.complete(); 
       });
     }
@@ -137,8 +137,8 @@ public class HttpServerTest {
           .send(ar -> {
             HttpResponse<JsonObject> response = ar.result();
             context.assertEquals(response.statusCode(), 200);
-            context.assertEquals(response.headers().get("content-type"),"application/json");
-            context.assertEquals(response.body().getValue("nbHits"),0);
+            context.assertEquals(response.headers().get("content-type"), "application/json");
+            context.assertEquals(response.body().getValue("nbHits"), 0);
           async.complete(); 
     });
   }

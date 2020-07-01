@@ -393,7 +393,7 @@ class DBServiceImpl implements DBService {
                 new JsonObject(QUERY_MATCH_ID.replace("$1", name)),
                 res -> {
                     if (res.succeeded()) {
-                        indexClient.deleteFromIndex(name,resultHandler);
+                        indexClient.deleteFromIndex(name, resultHandler);
                         resultHandler.handle(Future.succeededFuture(true));
                     } else {
                         LOGGER.error("Failed deleting from summary");
