@@ -10,6 +10,8 @@ import io.vertx.core.logging.LoggerFactory;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.core.VertxException;
 import io.vertx.core.json.JsonObject;
+import io.vertx.ext.web.client.WebClient;
+import io.vertx.core.json.JsonArray;
 
 import iudx.vocserver.database.DBService;
 import iudx.vocserver.auth.AuthService;
@@ -22,6 +24,7 @@ interface VocApisInterface {
     void getPropertiesHandler(RoutingContext context);
     void getMasterHandler(RoutingContext context);
     void searchHandler(RoutingContext context);
+    void fuzzySearchHandler(RoutingContext context);
     void relationshipSearchHandler(RoutingContext context);
     void getSchemaHandler(RoutingContext context);
     void insertMasterHandler(RoutingContext context);
@@ -37,7 +40,8 @@ public final class VocApis implements VocApisInterface {
 
     // iudx-voc-server DBService
     private DBService dbService;
-    // iudx-voc-server AuthService
+    // iudx-voc-server SearchClient
+    private WebClient searchClient;
 
     // Validator objects
     private boolean isValidSchema;
@@ -58,8 +62,9 @@ public final class VocApis implements VocApisInterface {
      * @return void
      * @TODO Throw error if load failed
      */
-    public VocApis(DBService dbService) {
+    public VocApis(DBService dbService, WebClient searchClient) {
         this.dbService = dbService;
+        this.searchClient = searchClient;
 
         try {
             // Loads from resources folder
@@ -193,7 +198,7 @@ public final class VocApis implements VocApisInterface {
             context.response().setStatusCode(404).end();
             return;
         }
-        dbService.fuzzySearch(pattern, reply -> {
+        dbService.search(pattern, reply -> {
             if (reply.succeeded()) {
                 context.response().putHeader("content-type", "application/json")
                 .setStatusCode(200)
@@ -208,6 +213,50 @@ public final class VocApis implements VocApisInterface {
         });
     }
 
+    /**
+     * Search for schemas
+     *
+     * @param context {@link RoutingContext}
+     * @return void
+     * @TODO Throw error if load failed
+     */
+    // tag::external-service-calls[]
+    public void fuzzySearchHandler(RoutingContext context) {
+        String pattern = "";
+        try {
+            if (context.queryParams().contains("q")) {
+                pattern = context.queryParams().get("q");
+            }
+            if (pattern.length() == 0){
+                context.response().setStatusCode(404).end();
+                return;
+            }
+        } catch (Exception e) {
+            context.response().setStatusCode(404).end();
+            return;
+        }
+
+        searchClient
+        .get(7700, "localhost", "/indexes/summary/search") 
+        .addQueryParam("q", pattern)
+        .putHeader("Accept", "application/json").send(ar -> {
+          if (ar.succeeded()) {
+              context.response()
+                  .putHeader("content-type", "application/json")
+                  .setStatusCode(200)
+                  .end(ar.result().bodyAsString());
+          }
+          else {
+              LOGGER.info("Failed searching, query params not found");
+              LOGGER.info(ar.result().body());
+              context.response()
+                  .putHeader("content-type", "application/json")
+                  .setStatusCode(404)
+                  .end(ar.cause().getMessage());
+          }
+          });
+    }
+    
     /**
      * Search for schemas through a relationship
      *

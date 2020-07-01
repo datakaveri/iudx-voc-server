@@ -21,6 +21,8 @@ import io.vertx.core.http.HttpServerResponse;
 import io.vertx.ext.web.handler.StaticHandler;
 import io.vertx.core.http.HttpMethod;
 import java.security.MessageDigest;
+import io.vertx.ext.web.client.WebClient;
+import io.vertx.ext.web.client.WebClientOptions;
 
 import org.apache.commons.codec.digest.HmacUtils;
 
@@ -55,6 +57,7 @@ public class HttpServerVerticle extends AbstractVerticle {
     // iudx-voc-server AuthService
     private AuthService authService;
     private String serverId ;
+    private WebClient searchClient;
 
     // APIS
     private VocApisInterface vocApis;
@@ -75,6 +78,11 @@ public class HttpServerVerticle extends AbstractVerticle {
 
         String webhookPasswd = config().getString(JKS_PASSWD);
 
+        WebClientOptions searchClientOptions = new WebClientOptions()
+                                       .setSsl(false);
+
+        searchClient = WebClient.create(vertx, searchClientOptions);
+
 
         HttpServerOptions options = new HttpServerOptions()
                                     .setCompressionSupported(true)
@@ -86,7 +94,7 @@ public class HttpServerVerticle extends AbstractVerticle {
         HttpServer server = vertx.createHttpServer(options);
 
         /** Load the APIs class */
-        vocApis = new VocApis(dbService);
+        vocApis = new VocApis(dbService, searchClient);
 
 
 
@@ -177,13 +185,21 @@ public class HttpServerVerticle extends AbstractVerticle {
             });
 
 
-        /** Fuzzy Search 
+        /** Simple Search 
          */
         router.get("/search").consumes("application/json")
             .produces("application/json")
             .handler( routingContext -> {
                 vocApis.searchHandler(routingContext);
             });
+
+        /**Fuzzy Search
+         */
+        router.get("/fuzzysearch").consumes("application/json")
+            .produces("application/json")
+            .handler( routingContext -> {
+                vocApis.fuzzySearchHandler(routingContext);
+        });
 
         /** Relationship Search 
          */
