@@ -5,6 +5,7 @@
 
 package iudx.vocserver.database;
 
+import io.vertx.core.*;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
@@ -16,7 +17,7 @@ import io.vertx.ext.mongo.MongoClient;
 import io.vertx.ext.mongo.FindOptions;
 import io.vertx.ext.mongo.UpdateOptions;
 
-
+import iudx.vocserver.search.IndexService;
 
 class DBServiceImpl implements DBService {
     /**
@@ -25,9 +26,13 @@ class DBServiceImpl implements DBService {
      * @param readyHandler Async query result handler. Returns query results as JSONArray
      */
 
+    Vertx vertx = Vertx.vertx();
+    public static final String CONFIG_SEARCH_QUEUE = "vocserver.search.queue";
+
     private static final Logger LOGGER = LoggerFactory.getLogger(DBServiceImpl.class);
     private final MongoClient dbClient;
-
+    private IndexService indexClient = IndexService.createProxy(vertx,CONFIG_SEARCH_QUEUE);
+    
     /** Queries */ 
 
     // Find all class
@@ -56,7 +61,7 @@ class DBServiceImpl implements DBService {
 
 
 
-    private static final String QUERY_FUZZY_SEARCH =
+    private static final String QUERY_SIMPLE_SEARCH =
         "{\"$or\": [{\"comment\": {\"$regex\": \"(?i).*$1.*\"}},"
                  + "{\"label\": {\"$regex\": \"(?i).*$1.*\"}}]}";
         
@@ -87,8 +92,25 @@ class DBServiceImpl implements DBService {
                                 .put("cursor",  new JsonObject().put("batchSize", 1000));
         dbClient.runCommand("aggregate", command, res -> {
             if (res.succeeded()) {
+                JsonObject query = new JsonObject();
+                dbClient.find("summary", query, ar -> {
+                if (ar.succeeded()) {
+                    JsonArray body = new JsonArray();
+                    for (JsonObject record : ar.result()) {
+                        body.add(record);
+                    }
+                    LOGGER.info(body);
+                    indexClient.createIndex(resultHandler);
+                    indexClient.insertIndex(body, resultHandler);
+                }
+                else {
+                    LOGGER.info("Couldn't read from db");
+                    ar.cause().printStackTrace();
+                    }
+                });
                 resultHandler.handle(Future.succeededFuture());
-            } else {
+            } 
+            else {
                 LOGGER.info(res.cause());
                 resultHandler.handle(Future.failedFuture(res.cause()));
             }
@@ -219,15 +241,15 @@ class DBServiceImpl implements DBService {
      * @{@inheritDoc}
      */
     @Override
-    public DBService fuzzySearch(String pattern, Handler<AsyncResult<JsonArray>> resultHandler) {
+    public DBService search(String pattern, Handler<AsyncResult<JsonArray>> resultHandler) {
         dbClient.findWithOptions("summary",
-                new JsonObject(QUERY_FUZZY_SEARCH.replace("$1", pattern)),
+                new JsonObject(QUERY_SIMPLE_SEARCH.replace("$1", pattern)),
                 new FindOptions().setFields(new JsonObject().put("_id", false)),
                 res -> {
                     if (res.succeeded()) {
                         resultHandler.handle(Future.succeededFuture(new JsonArray(res.result())));
                     } else {
-                        LOGGER.info("Fuzzy search for " + pattern + " failed");
+                        LOGGER.info("Simple search for " + pattern + " failed");
                         resultHandler.handle(Future.failedFuture(res.cause()));
                     }
                 });
@@ -371,6 +393,7 @@ class DBServiceImpl implements DBService {
                 new JsonObject(QUERY_MATCH_ID.replace("$1", name)),
                 res -> {
                     if (res.succeeded()) {
+                        indexClient.deleteFromIndex(name,resultHandler);
                         resultHandler.handle(Future.succeededFuture(true));
                     } else {
                         LOGGER.error("Failed deleting from summary");
@@ -433,6 +456,7 @@ class DBServiceImpl implements DBService {
                 new JsonObject(),
                 res -> {
                     if (res.succeeded()) {
+                        indexClient.deleteIndex(resultHandler);
                     } else {
                         resultHandler.handle(Future.failedFuture(res.cause()));
                     }
