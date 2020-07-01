@@ -92,7 +92,8 @@ class DBServiceImpl implements DBService {
                                 .put("cursor",  new JsonObject().put("batchSize", 1000));
         dbClient.runCommand("aggregate", command, res -> {
             if (res.succeeded()) {
-                JsonObject query = new JsonObject();
+                JsonObject query = new JsonObject()
+                                       .put("_id" ,name);
                 dbClient.find("summary", query, ar -> {
                 if (ar.succeeded()) {
                     JsonArray body = new JsonArray();
@@ -100,7 +101,6 @@ class DBServiceImpl implements DBService {
                         body.add(record);
                     }
                     LOGGER.info(body);
-                    indexClient.createIndex(resultHandler);
                     indexClient.insertIndex(body, resultHandler);
                 }
                 else {

@@ -23,7 +23,6 @@ class IndexServiceImpl implements IndexService{
 
     private static final Logger LOGGER = LoggerFactory.getLogger(IndexService.class);
     private WebClient indexClient;
-    private MongoClient dbClient;
     
 
     IndexServiceImpl(WebClient indexClient, Handler<AsyncResult<IndexService>> readyHandler) {
@@ -132,6 +131,27 @@ class IndexServiceImpl implements IndexService{
                 LOGGER.info(ar.cause());
                 LOGGER.info(ar.result().statusCode());
                 resultHandler.handle(Future.succeededFuture(false));
+            }
+        });
+    }
+
+    /** 
+     *  Search the summary index 
+     *  
+     */
+    public void searchIndex(String pattern, Handler<AsyncResult<JsonArray>> resultHandler) {
+        indexClient
+            .get(7700, "search", "/indexes/summary/search") 
+            .addQueryParam("q", pattern)
+            .putHeader("Accept", "application/json").send(ar -> {
+            if (ar.succeeded()) {
+                JsonArray response = new JsonArray();
+                response.add(ar);
+                resultHandler.handle(Future.succeededFuture(response));
+            }
+            else {
+                LOGGER.info("Failed searching, query params not found");
+                resultHandler.handle(Future.failedFuture(ar.cause()));
             }
         });
     }
