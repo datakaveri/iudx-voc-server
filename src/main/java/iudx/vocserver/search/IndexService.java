@@ -35,5 +35,6 @@ public interface IndexService {
     void insertIndex(JsonArray body, Handler<AsyncResult<JsonObject>> resultHandler);
     void deleteFromIndex(String uid, Handler<AsyncResult<Boolean>> resultHandler);
     void deleteIndex(Handler<AsyncResult<Boolean>> resultHandler);
+    void searchIndex(String pattern, Handler<AsyncResult<JsonArray>> resultHandler);
 
 }
