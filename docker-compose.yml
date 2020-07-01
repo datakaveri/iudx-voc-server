@@ -30,6 +30,26 @@ services:
              max-file: "5"
              max-size: "100m"
 
+  server_local:
+    build:
+      dockerfile: ./Dockerfile
+      context: .
+    depends_on:
+      - "db"
+    ports:
+      - "8081:8081"
+    restart: on-failure
+    networks: 
+      - voc-net
+    volumes:
+      - ./:/vocserver
+    command: sh -c "cd vocserver && java -jar target/vocserver-1.0-fat.jar -conf config/vocserver_local.json"
+    logging:
+         driver: "json-file"
+         options:
+             max-file: "5"
+             max-size: "100m"
+
   db:
     image: mongo
     volumes:
@@ -62,3 +82,15 @@ services:
          options:
              max-file: "5"
              max-size: "100m"
+  
+  search:
+    image: getmeili/meilisearch
+    networks: 
+      - voc-net
+    expose:
+      - "7700"
+    logging:
+         driver: "json-file"
+         options:
+             max-file: "5"
+             max-size: "100m" 
