@@ -23,14 +23,17 @@ interface VocApisInterface {
     void getClassesHandler(RoutingContext context);
     void getPropertiesHandler(RoutingContext context);
     void getMasterHandler(RoutingContext context);
+    void getSchemaHandler(RoutingContext context);
+    void getExampleHandler(RoutingContext context);
     void searchHandler(RoutingContext context);
     void fuzzySearchHandler(RoutingContext context);
     void relationshipSearchHandler(RoutingContext context);
-    void getSchemaHandler(RoutingContext context);
     void insertMasterHandler(RoutingContext context);
     void insertSchemaHandler(RoutingContext context);
+    void insertExampleHandler(RoutingContext context);
     void deleteMasterHandler(RoutingContext context);
     void deleteSchemaHandler(RoutingContext context);
+    void deleteExampleHandler(RoutingContext context);
     void webhookHandler(RoutingContext context);
     
 }
@@ -177,6 +180,75 @@ public final class VocApis implements VocApisInterface {
     }
 
     /**
+     * Get a particular schema from a name
+     *
+     * @param context {@link RoutingContext}
+     * @return void
+     * @TODO Throw error if load failed
+     */
+    // tag::db-service-calls[]
+    public void getSchemaHandler(RoutingContext context) {
+        String name = context.request().getParam("name").replace(".jsonld", "");
+        /** Check if provided param is class or property */
+        boolean isClass = Character.isUpperCase(name.charAt(0));
+        /** This can be simplified by setting a flag, leaving it expanded for future use. */
+        if (isClass == true) {
+            dbService.getClass(name, reply -> {
+                if (reply.succeeded()) {
+                    context.response().putHeader("content-type", "application/json")
+                    .setStatusCode(200)
+                                    .end(reply.result().encode());
+                } else {
+                    LOGGER.info("Failed getting class " + name);
+                    context.response()
+                        .putHeader("content-type", "application/json")
+                        .setStatusCode(404)
+                        .end();
+                }
+            });
+        } else if (isClass == false) {
+            dbService.getProperty(name, reply -> {
+                if (reply.succeeded()) {
+                    context.response().putHeader("content-type", "application/json")
+                    .setStatusCode(200)
+                    .end(reply.result().encode());
+                } else {
+                    context.response()
+                        .putHeader("content-type", "application/json")
+                        .setStatusCode(404)
+                        .end();
+                }
+            });
+        }
+    }
+
+    /**
+     * Get Examples for a type
+     *
+     * @param context {@link RoutingContext}
+     * @return void
+     * @TODO Throw error if load failed
+     */
+    // tag::db-service-calls[]
+    public void getExampleHandler(RoutingContext context) {
+       String type = context.request().getParam("name");
+        dbService.getExamples(type, reply -> {
+            if(reply.succeeded()) {
+                context.response()
+                .putHeader("content-type", "application/json")
+                .setStatusCode(200)
+                .end(reply.result().encode());
+            }
+            else {
+                context.response()
+                    .putHeader("content-type","application/json")
+                    .setStatusCode(404)
+                    .end();
+            }
+        });
+    }
+
+    /**
      * Search for schemas
      *
      * @param context {@link RoutingContext}
@@ -248,9 +320,7 @@ public final class VocApis implements VocApisInterface {
                     .setStatusCode(404)
                     .end();
             }
-        });
-
-        
+        }); 
     }
     
     /**
@@ -292,49 +362,6 @@ public final class VocApis implements VocApisInterface {
                     .end();
             }
         });
-    }
-    
-    /**
-     * Get a particular schema from a name
-     *
-     * @param context {@link RoutingContext}
-     * @return void
-     * @TODO Throw error if load failed
-     */
-    // tag::db-service-calls[]
-    public void getSchemaHandler(RoutingContext context) {
-        String name = context.request().getParam("name").replace(".jsonld", "");
-        /** Check if provided param is class or property */
-        boolean isClass = Character.isUpperCase(name.charAt(0));
-        /** This can be simplified by setting a flag, leaving it expanded for future use. */
-        if (isClass == true) {
-            dbService.getClass(name, reply -> {
-                if (reply.succeeded()) {
-                    context.response().putHeader("content-type", "application/json")
-                    .setStatusCode(200)
-                                    .end(reply.result().encode());
-                } else {
-                    LOGGER.info("Failed getting class " + name);
-                    context.response()
-                        .putHeader("content-type", "application/json")
-                        .setStatusCode(404)
-                        .end();
-                }
-            });
-        } else if (isClass == false) {
-            dbService.getProperty(name, reply -> {
-                if (reply.succeeded()) {
-                    context.response().putHeader("content-type", "application/json")
-                    .setStatusCode(200)
-                    .end(reply.result().encode());
-                } else {
-                    context.response()
-                        .putHeader("content-type", "application/json")
-                        .setStatusCode(404)
-                        .end();
-                }
-            });
-        }
     }
 
     /**
@@ -435,6 +462,29 @@ public final class VocApis implements VocApisInterface {
         }
     }
 
+
+    /**
+     * Insert a example
+     *
+     * @param context {@link RoutingContext}
+     * @return void
+     */
+    // tag::db-service-calls[]
+    public void insertExampleHandler(RoutingContext context) {
+        JsonObject body = context.getBodyAsJson();
+        String filename = context.request().getParam("name");
+        context.response().putHeader("content-type", "application/json");
+
+        dbService.insertExamples(context.getBodyAsJson(), reply -> {
+            if (reply.succeeded()) {
+                LOGGER.info("Inserted example" + filename);
+                context.response().setStatusCode(201).end();
+            } else {
+                context.response().setStatusCode(404).end();
+            }
+        }); 
+    }
+
     /**
      * Delete the master schema
      *
@@ -496,4 +546,28 @@ public final class VocApis implements VocApisInterface {
             });
         }
     }
+
+    /**
+    * Delete examples of type
+    *
+    * @param context {@link RoutingContext}
+    * @return void
+    */
+    // tag::db-service-calls[]
+    public void deleteExampleHandler(RoutingContext context) {
+        String type = context.request().getParam("name");
+        LOGGER.info(type);
+        context.response().putHeader("content-type", "application/json");
+        dbService.deleteExamples(type, reply-> {
+            if(reply.succeeded()){
+                LOGGER.info("Deleted example of type: " + type);
+                context.response().setStatusCode(204).end();
+            }
+            else {
+                context.response().setStatusCode(404).end();
+            }
+        });
+    }
+
+    
 }

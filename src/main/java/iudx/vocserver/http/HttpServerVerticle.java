@@ -203,6 +203,39 @@ public class HttpServerVerticle extends AbstractVerticle {
                 vocApis.relationshipSearchHandler(routingContext);
             });
 
+        /**
+         * GET/POST examples by type
+         */
+
+        router.route("/examples/:name").consumes("application/ld+json")
+            .handler(BodyHandler.create());
+
+        router.get("/examples/:name").consumes("application/ld+json")
+            .produces("application/ld+json")
+            .handler( routingContext -> {
+                vocApis.getExampleHandler(routingContext);
+            });
+
+        router.post("/examples/:name").consumes("application/ld+json")
+            .handler( routingContext -> {
+                String token = routingContext.request().getHeader("token");
+                authService.validateToken(token, serverId, authReply -> {
+                    if (authReply.succeeded()) {
+                        vocApis.insertExampleHandler(routingContext);
+                    }
+                });
+            });
+
+        router.delete("/examples/:name").consumes("application/ld+json")
+            .handler( routingContext -> {
+                String token = routingContext.request().getHeader("token");
+                authService.validateToken(token, serverId, authReply -> {
+                    if (authReply.succeeded()) {
+                        vocApis.deleteExampleHandler(routingContext);
+                    }
+                });
+            });
+
         /** Get/Post classes or properties by name (JSON-LD API) 
          **/
         router.get("/:name").consumes("application/ld+json")
@@ -234,7 +267,7 @@ public class HttpServerVerticle extends AbstractVerticle {
                     }
                 });
             });
-
+        
         /** Get jsonld from browser */
         router.getWithRegex("\\/(?<name>[^\\/]+)\\.jsonld")
             .handler( routingContext -> {
