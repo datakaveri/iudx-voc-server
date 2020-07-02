@@ -78,7 +78,7 @@ public interface DBService {
      * @return {@link DBServiceImpl}
      */
     @Fluent
-    DBService getExample(String name, Handler<AsyncResult<JsonObject>> resultHandler);
+    DBService getExamples(String name, Handler<AsyncResult<JsonObject>> resultHandler);
     
     /**
      * search - Search for a schema either through name or description
@@ -132,12 +132,11 @@ public interface DBService {
 
     /**
      * insertExample - Insert an example
-     * @param name name of the class
-     * @param example example schema validated JsonObject
+     * @param example example JsonObject
      * @return {@link DBServiceImpl}
      */
     @Fluent
-    DBService insertExample(JsonObject example, Handler<AsyncResult<Boolean>> resultHandler);
+    DBService insertExamples(JsonObject example, Handler<AsyncResult<Boolean>> resultHandler);
     /**
      * deleteProperty - Delete a property
      * @param name name of the property
@@ -163,12 +162,12 @@ public interface DBService {
     DBService deleteClass(String name, Handler<AsyncResult<Boolean>> resultHandler);
 
     /**
-     * deleteClass - Delete a class
-     * @param name name of the class
+     * deleteClass - Delete examples
+     * @param name type of example
      * @return {@link DBServiceImpl}
      */
     @Fluent
-    DBService deleteExample(String name, Handler<AsyncResult<Boolean>> resultHandler);
+    DBService deleteExamples(String name, Handler<AsyncResult<Boolean>> resultHandler);
     /**
      * clearDB - Clear all classees, properties, master and summaries
      * @param name name of the class
