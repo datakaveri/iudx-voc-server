@@ -10,23 +10,23 @@ import io.vertx.ext.web.client.WebClientOptions;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 
-public class IndexVerticle extends AbstractVerticle {
+public class SearchVerticle extends AbstractVerticle {
     
     public static final String CONFIG_SEARCH_QUEUE = "vocserver.search.queue";
-    private static final Logger LOGGER = LoggerFactory.getLogger(IndexVerticle.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SearchVerticle.class);
 
     @Override
     public void start(Promise<Void> promise) throws Exception {
-        WebClient indexClient = WebClient.create(vertx, new WebClientOptions()
+        WebClient searchClient = WebClient.create(vertx, new WebClientOptions()
                                                             .setSsl(false));
 
-        IndexService.create(indexClient, ready->{
+        SearchService.create(searchClient, ready->{
                 if(ready.succeeded()) {
                     ServiceBinder binder = new ServiceBinder(vertx);
                     binder
                         .setAddress(CONFIG_SEARCH_QUEUE)
-                        .register(IndexService.class, ready.result());
-                    LOGGER.info("Index service deployed");
+                        .register(SearchService.class, ready.result());
+                    LOGGER.info("Search service deployed");
                     promise.complete();
                 }
                 else {

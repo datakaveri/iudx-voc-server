@@ -14,7 +14,7 @@ import io.vertx.core.json.JsonArray;
 
 import iudx.vocserver.database.DBService;
 import iudx.vocserver.auth.AuthService;
-import iudx.vocserver.search.IndexService;
+import iudx.vocserver.search.SearchService;
 import iudx.vocserver.utils.Validator;
 import iudx.vocserver.utils.Proc;
 
@@ -41,7 +41,7 @@ public final class VocApis implements VocApisInterface {
     // iudx-voc-server DBService
     private DBService dbService;
     // iudx-voc-server SearchClient
-    private IndexService indexClient;
+    private SearchService searchClient;
 
     // Validator objects
     private boolean isValidSchema;
@@ -62,9 +62,9 @@ public final class VocApis implements VocApisInterface {
      * @return void
      * @TODO Throw error if load failed
      */
-    public VocApis(DBService dbService, IndexService indexClient) {
+    public VocApis(DBService dbService, SearchService searchClient) {
         this.dbService = dbService;
-        this.indexClient = indexClient;
+        this.searchClient = searchClient;
 
         try {
             // Loads from resources folder
@@ -220,7 +220,7 @@ public final class VocApis implements VocApisInterface {
      * @return void
      * @TODO Throw error if load failed
      */
-    // tag::index-service-calls[]
+    // tag::search-service-calls[]
     public void fuzzySearchHandler(RoutingContext context) {
         String pattern = "";
         try {
@@ -236,7 +236,7 @@ public final class VocApis implements VocApisInterface {
             return;
         }
 
-        indexClient.searchIndex(pattern, reply -> {
+        searchClient.searchIndex(pattern, reply -> {
             if (reply.succeeded()) {
                 context.response().putHeader("content-type", "application/json")
                 .setStatusCode(200)

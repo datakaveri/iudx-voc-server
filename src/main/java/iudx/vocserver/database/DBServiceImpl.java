@@ -17,7 +17,7 @@ import io.vertx.ext.mongo.MongoClient;
 import io.vertx.ext.mongo.FindOptions;
 import io.vertx.ext.mongo.UpdateOptions;
 
-import iudx.vocserver.search.IndexService;
+import iudx.vocserver.search.SearchService;
 
 class DBServiceImpl implements DBService {
     /**
@@ -31,7 +31,7 @@ class DBServiceImpl implements DBService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DBServiceImpl.class);
     private final MongoClient dbClient;
-    private IndexService indexClient = IndexService.createProxy(vertx,CONFIG_SEARCH_QUEUE);
+    private SearchService searchClient = SearchService.createProxy(vertx,CONFIG_SEARCH_QUEUE);
     
     /** Queries */ 
 
@@ -97,11 +97,9 @@ class DBServiceImpl implements DBService {
                 dbClient.find("summary", query, ar -> {
                 if (ar.succeeded()) {
                     JsonArray body = new JsonArray();
-                    for (JsonObject record : ar.result()) {
-                        body.add(record);
-                    }
+                    body.add(ar.result());
                     LOGGER.info(body);
-                    indexClient.insertIndex(body, resultHandler);
+                    searchClient.insertIndex(body, resultHandler);
                 }
                 else {
                     LOGGER.info("Couldn't read from db");
@@ -393,7 +391,7 @@ class DBServiceImpl implements DBService {
                 new JsonObject(QUERY_MATCH_ID.replace("$1", name)),
                 res -> {
                     if (res.succeeded()) {
-                        indexClient.deleteFromIndex(name, resultHandler);
+                        searchClient.deleteFromIndex(name, resultHandler);
                         resultHandler.handle(Future.succeededFuture(true));
                     } else {
                         LOGGER.error("Failed deleting from summary");
@@ -456,7 +454,7 @@ class DBServiceImpl implements DBService {
                 new JsonObject(),
                 res -> {
                     if (res.succeeded()) {
-                        indexClient.deleteIndex(resultHandler);
+                        searchClient.deleteIndex(resultHandler);
                     } else {
                         resultHandler.handle(Future.failedFuture(res.cause()));
                     }

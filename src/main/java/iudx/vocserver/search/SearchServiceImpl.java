@@ -1,6 +1,6 @@
 /**
- * <h1>IndexServiceImpl.java</h1>
- * Index Service implementation
+ * <h1>SearchServiceImpl.java</h1>
+ * Search Service implementation
  */
 
 package iudx.vocserver.search;
@@ -19,14 +19,14 @@ import io.vertx.ext.web.client.WebClient;
 import io.vertx.ext.web.client.WebClientOptions;
 import io.vertx.core.VertxException;
 
-class IndexServiceImpl implements IndexService{
+class SearchServiceImpl implements SearchService{
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(IndexService.class);
-    private WebClient indexClient;
+    private static final Logger LOGGER = LoggerFactory.getLogger(SearchService.class);
+    private WebClient searchClient;
     
 
-    IndexServiceImpl(WebClient indexClient, Handler<AsyncResult<IndexService>> readyHandler) {
-        this.indexClient = indexClient;
+    SearchServiceImpl(WebClient searchClient, Handler<AsyncResult<SearchService>> readyHandler) {
+        this.searchClient = searchClient;
         readyHandler.handle(Future.succeededFuture(this));
     }
 
@@ -35,7 +35,7 @@ class IndexServiceImpl implements IndexService{
      */
     @Override
     public void createIndex(Handler<AsyncResult<JsonObject>> resultHandler) {
-        indexClient
+        searchClient
         .post(7700, "search", "/indexes")
         .sendJsonObject(new JsonObject()
         .put("uid", "summary")
@@ -58,7 +58,7 @@ class IndexServiceImpl implements IndexService{
     public void insertIndex(JsonArray body, Handler<AsyncResult<JsonObject>> resultHandler) {
 
         //check if index exists 
-        indexClient
+        searchClient
         .get(7700,"search","/indexes/summary")
         .send(ar -> {
             if (ar.succeeded() && ar.result().statusCode()==200){
@@ -74,7 +74,7 @@ class IndexServiceImpl implements IndexService{
             }
         });
 
-        indexClient
+        searchClient
         .post(7700, "search", "/indexes/summary/documents")
         .putHeader("content-type", "application/json")
         .sendJson(body,ar->{
@@ -99,7 +99,7 @@ class IndexServiceImpl implements IndexService{
         JsonObject request = new JsonObject();
         String uri = "/indexes/summary/documents/" + uid;
         LOGGER.info(uri);
-        indexClient
+        searchClient
         .delete(7700,"search", uri)
         .send(ar->{
             if(ar.succeeded() && ar.result().statusCode()==202){
@@ -119,8 +119,7 @@ class IndexServiceImpl implements IndexService{
      *  
      */
     public void deleteIndex(Handler<AsyncResult<Boolean>> resultHandler) {
-        JsonObject request = new JsonObject();
-        indexClient
+        searchClient
         .delete(7700,"search", "/indexes/summary")
         .send(ar->{
             if(ar.succeeded() && ar.result().statusCode()==204){
@@ -140,7 +139,7 @@ class IndexServiceImpl implements IndexService{
      *  
      */
     public void searchIndex(String pattern, Handler<AsyncResult<JsonArray>> resultHandler) {
-        indexClient
+        searchClient
             .get(7700, "search", "/indexes/summary/search") 
             .addQueryParam("q", pattern)
             .putHeader("Accept", "application/json").send(ar -> {
