@@ -30,7 +30,7 @@ import java.util.HashSet;
 
 import iudx.vocserver.database.DBService;
 import iudx.vocserver.auth.AuthService;
-import iudx.vocserver.search.IndexService;
+import iudx.vocserver.search.SearchService;
 
 public class HttpServerVerticle extends AbstractVerticle {
     /**
@@ -56,7 +56,7 @@ public class HttpServerVerticle extends AbstractVerticle {
     // iudx-voc-server AuthService
     private AuthService authService;
     private String serverId ;
-    private IndexService indexService;
+    private SearchService searchService;
 
     // APIS
     private VocApisInterface vocApis;
@@ -74,7 +74,7 @@ public class HttpServerVerticle extends AbstractVerticle {
 
         dbService = DBService.createProxy(vertx, dbQueue);
         authService = AuthService.createProxy(vertx, authQueue);
-        indexService = IndexService.createProxy(vertx,CONFIG_SEARCH_QUEUE);
+        searchService = SearchService.createProxy(vertx,CONFIG_SEARCH_QUEUE);
 
         String webhookPasswd = config().getString(JKS_PASSWD);
 
@@ -88,7 +88,7 @@ public class HttpServerVerticle extends AbstractVerticle {
         HttpServer server = vertx.createHttpServer(options);
 
         /** Load the APIs class */
-        vocApis = new VocApis(dbService, indexService);
+        vocApis = new VocApis(dbService, searchService);
 
 
 
