@@ -1,6 +1,6 @@
 /**
- * <h1>IndexService.java</h1>
- * Index Service interface
+ * <h1>SearchService.java</h1>
+ * Search Service interface
  */
 package iudx.vocserver.search;
 
@@ -21,19 +21,22 @@ import java.util.List;
 
 @ProxyGen
 @VertxGen
-public interface IndexService {
-    @GenIgnore
-    static IndexService create(WebClient indexClient, Handler<AsyncResult<IndexService>> readyHandler) {
-        return new IndexServiceImpl(indexClient, readyHandler);
-    }
-
-    static IndexService createProxy(Vertx vertx, String address) {
-         return new IndexServiceVertxEBProxy(vertx, address);
-    }
+public interface SearchService {
 
     void createIndex(Handler<AsyncResult<JsonObject>> resultHandler);
     void insertIndex(JsonArray body, Handler<AsyncResult<JsonObject>> resultHandler);
     void deleteFromIndex(String uid, Handler<AsyncResult<Boolean>> resultHandler);
     void deleteIndex(Handler<AsyncResult<Boolean>> resultHandler);
+    void searchIndex(String pattern, Handler<AsyncResult<JsonArray>> resultHandler);
+
+    @GenIgnore
+    static SearchService create(WebClient searchClient, Handler<AsyncResult<SearchService>> readyHandler) {
+        return new SearchServiceImpl(searchClient, readyHandler);
+    }
+
+    @GenIgnore
+    static SearchService createProxy(Vertx vertx, String address) {
+         return new SearchServiceVertxEBProxy(vertx, address);
+    }
 
 }
