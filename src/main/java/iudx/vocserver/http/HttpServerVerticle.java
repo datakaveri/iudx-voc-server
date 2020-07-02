@@ -207,16 +207,16 @@ public class HttpServerVerticle extends AbstractVerticle {
          * GET/POST examples by type
          */
 
-        router.route("/examples:name").consumes("application/ld+json")
+        router.route("/examples/:name").consumes("application/ld+json")
             .handler(BodyHandler.create());
 
-        router.get("/examples:name").consumes("application/ld+json")
+        router.get("/examples/:name").consumes("application/ld+json")
             .produces("application/ld+json")
             .handler( routingContext -> {
                 vocApis.getExampleHandler(routingContext);
             });
 
-        router.post("/examples:name").consumes("application/ld+json")
+        router.post("/examples/:name").consumes("application/ld+json")
             .handler( routingContext -> {
                 String token = routingContext.request().getHeader("token");
                 authService.validateToken(token, serverId, authReply -> {
@@ -226,7 +226,7 @@ public class HttpServerVerticle extends AbstractVerticle {
                 });
             });
 
-        router.delete("/examples:name").consumes("application/ld+json")
+        router.delete("/examples/:name").consumes("application/ld+json")
             .handler( routingContext -> {
                 String token = routingContext.request().getHeader("token");
                 authService.validateToken(token, serverId, authReply -> {

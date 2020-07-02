@@ -232,7 +232,7 @@ public final class VocApis implements VocApisInterface {
     // tag::db-service-calls[]
     public void getExampleHandler(RoutingContext context) {
        String type = context.request().getParam("name");
-        dbService.getExample(type, reply -> {
+        dbService.getExamples(type, reply -> {
             if(reply.succeeded()) {
                 context.response()
                 .putHeader("content-type", "application/json")
@@ -475,7 +475,7 @@ public final class VocApis implements VocApisInterface {
         String filename = context.request().getParam("name");
         context.response().putHeader("content-type", "application/json");
 
-        dbService.insertExample(context.getBodyAsJson(), reply -> {
+        dbService.insertExamples(context.getBodyAsJson(), reply -> {
             if (reply.succeeded()) {
                 LOGGER.info("Inserted example" + filename);
                 context.response().setStatusCode(201).end();
@@ -558,7 +558,7 @@ public final class VocApis implements VocApisInterface {
         String type = context.request().getParam("name");
         LOGGER.info(type);
         context.response().putHeader("content-type", "application/json");
-        dbService.deleteExample(type, reply-> {
+        dbService.deleteExamples(type, reply-> {
             if(reply.succeeded()){
                 LOGGER.info("Deleted example of type: " + type);
                 context.response().setStatusCode(204).end();

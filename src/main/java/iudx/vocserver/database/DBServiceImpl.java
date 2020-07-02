@@ -241,7 +241,7 @@ class DBServiceImpl implements DBService {
      * @{@inheritDoc}
      */
     @Override
-    public DBService getExample(String name, Handler<AsyncResult<JsonObject>> resultHandler) {
+    public DBService getExamples(String name, Handler<AsyncResult<JsonObject>> resultHandler) {
         dbClient.find("examples",
                 new JsonObject(QUERY_MATCH_TYPE.replace("$1", "iudx:"+name)),
                 res -> {
@@ -369,7 +369,7 @@ class DBServiceImpl implements DBService {
      * @{@inheritDoc}
      */
     @Override
-    public DBService insertExample(JsonObject example, Handler<AsyncResult<Boolean>> resultHandler) {
+    public DBService insertExamples(JsonObject example, Handler<AsyncResult<Boolean>> resultHandler) {
         dbClient.save("examples",
                 example,
                 res-> {
@@ -427,7 +427,7 @@ class DBServiceImpl implements DBService {
      * @{@inheritDoc}
      */
     @Override
-    public DBService deleteExample(String name,
+    public DBService deleteExamples(String name,
             Handler<AsyncResult<Boolean>> resultHandler) {
         LOGGER.info("Deleting example of type " + name);
         dbClient.removeDocuments("examples",
