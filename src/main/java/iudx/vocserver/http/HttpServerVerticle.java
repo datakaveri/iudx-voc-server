@@ -21,8 +21,6 @@ import io.vertx.core.http.HttpServerResponse;
 import io.vertx.ext.web.handler.StaticHandler;
 import io.vertx.core.http.HttpMethod;
 import java.security.MessageDigest;
-import io.vertx.ext.web.client.WebClient;
-import io.vertx.ext.web.client.WebClientOptions;
 
 import org.apache.commons.codec.digest.HmacUtils;
 
@@ -32,6 +30,7 @@ import java.util.HashSet;
 
 import iudx.vocserver.database.DBService;
 import iudx.vocserver.auth.AuthService;
+import iudx.vocserver.search.SearchService;
 
 public class HttpServerVerticle extends AbstractVerticle {
     /**
@@ -48,7 +47,7 @@ public class HttpServerVerticle extends AbstractVerticle {
     public static final String JKS_FILE = "vocserver.jksfile";
     // NOTE: We use the same JKS_PASSWD for the keystore and the github webhook
     public static final String JKS_PASSWD = "vocserver.jkspasswd";
-
+    public static final String CONFIG_SEARCH_QUEUE = "vocserver.search.queue";
     // Default logger
     private static final Logger LOGGER = LoggerFactory.getLogger(HttpServerVerticle.class);
 
@@ -57,7 +56,7 @@ public class HttpServerVerticle extends AbstractVerticle {
     // iudx-voc-server AuthService
     private AuthService authService;
     private String serverId ;
-    private WebClient searchClient;
+    private SearchService searchService;
 
     // APIS
     private VocApisInterface vocApis;
@@ -75,14 +74,9 @@ public class HttpServerVerticle extends AbstractVerticle {
 
         dbService = DBService.createProxy(vertx, dbQueue);
         authService = AuthService.createProxy(vertx, authQueue);
+        searchService = SearchService.createProxy(vertx,CONFIG_SEARCH_QUEUE);
 
         String webhookPasswd = config().getString(JKS_PASSWD);
-
-        WebClientOptions searchClientOptions = new WebClientOptions()
-                                       .setSsl(false);
-
-        searchClient = WebClient.create(vertx, searchClientOptions);
-
 
         HttpServerOptions options = new HttpServerOptions()
                                     .setCompressionSupported(true)
@@ -94,7 +88,7 @@ public class HttpServerVerticle extends AbstractVerticle {
         HttpServer server = vertx.createHttpServer(options);
 
         /** Load the APIs class */
-        vocApis = new VocApis(dbService, searchClient);
+        vocApis = new VocApis(dbService, searchService);
 
 
 

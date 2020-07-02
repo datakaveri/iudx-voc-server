@@ -22,11 +22,11 @@ public class MainVerticle extends AbstractVerticle {
                             dbVerticleDeployment);
         
         /**Deploy SearchVerticle */
-        Promise<String> indexVerticleDeployment = Promise.promise();
-        vertx.deployVerticle("iudx.vocserver.search.indexVerticle",
+        Promise<String> searchVerticleDeployment = Promise.promise();
+        vertx.deployVerticle("iudx.vocserver.search.searchVerticle",
                                 new DeploymentOptions()
                                     .setConfig(config()),
-                            indexVerticleDeployment);
+                            searchVerticleDeployment);
         
 
         /** Compose-deploy HTTP Verticle */
