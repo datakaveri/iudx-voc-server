@@ -44,6 +44,8 @@ class DBServiceImpl implements DBService {
     private static final String QUERY_MATCH_ID = 
         "{\"_id\": \"$1\"}";
 
+    private static final String QUERY_MATCH_TYPE = 
+        "{\"type\": \"$1\"}";
 
     private static final String QUERY_SUMMARIZE = 
         "[ { \"$match\": { \"_id\": \"iudx:$1\" } },"
@@ -239,6 +241,29 @@ class DBServiceImpl implements DBService {
      * @{@inheritDoc}
      */
     @Override
+    public DBService getExample(String name, Handler<AsyncResult<JsonObject>> resultHandler) {
+        dbClient.find("examples",
+                new JsonObject(QUERY_MATCH_TYPE.replace("$1", "iudx:"+name)),
+                res -> {
+                    if (res.succeeded()) {
+                        try {
+                            resultHandler.handle(Future.succeededFuture(res.result().get(0)));
+                        } catch (Exception e) {
+                            LOGGER.info("Failed getting example for " + name);
+                            resultHandler.handle(Future.failedFuture(res.cause()));
+                        }
+                    } else {
+                        LOGGER.info("Failed getting example for " + name);
+                        resultHandler.handle(Future.failedFuture(res.cause()));
+                    }
+                });
+        return this;
+    }
+
+    /**
+     * @{@inheritDoc}
+     */
+    @Override
     public DBService search(String pattern, Handler<AsyncResult<JsonArray>> resultHandler) {
         dbClient.findWithOptions("summary",
                 new JsonObject(QUERY_SIMPLE_SEARCH.replace("$1", pattern)),
@@ -340,6 +365,24 @@ class DBServiceImpl implements DBService {
         return this;
     }
 
+    /**
+     * @{@inheritDoc}
+     */
+    @Override
+    public DBService insertExample(JsonObject example, Handler<AsyncResult<Boolean>> resultHandler) {
+        dbClient.save("examples",
+                example,
+                res-> {
+                    if(res.succeeded()) {
+                        resultHandler.handle(Future.succeededFuture());
+                    }
+                    else {
+                        LOGGER.error("Failed inserting example");
+                        resultHandler.handle(Future.failedFuture(res.cause()));
+                    }
+                });
+        return this;
+    }
 
     /**
      * @{@inheritDoc}
@@ -365,7 +408,7 @@ class DBServiceImpl implements DBService {
     @Override
     public DBService deleteClass(String name,
             Handler<AsyncResult<Boolean>> resultHandler) {
-        LOGGER.info("Deleteing class " + name);
+        LOGGER.info("Deleting class " + name);
         dbClient.findOneAndDelete("classes",
                 new JsonObject(QUERY_MATCH_ID.replace("$1", "iudx:"+name)),
                 res -> {
@@ -373,6 +416,27 @@ class DBServiceImpl implements DBService {
                         resultHandler.handle(Future.succeededFuture(true));
                     } else {
                         LOGGER.error("Failed deleting class, may not exist");
+                        resultHandler.handle(Future.failedFuture(res.cause()));
+                    }
+
+                });
+        return this;
+    }
+
+     /**
+     * @{@inheritDoc}
+     */
+    @Override
+    public DBService deleteExample(String name,
+            Handler<AsyncResult<Boolean>> resultHandler) {
+        LOGGER.info("Deleting example of type " + name);
+        dbClient.removeDocuments("examples",
+                new JsonObject(QUERY_MATCH_TYPE.replace("$1", "iudx:"+name)),
+                res -> {
+                    if (res.succeeded()) {
+                        resultHandler.handle(Future.succeededFuture(true));
+                    } else {
+                        LOGGER.error("Failed deleting example, may not exist");
                         resultHandler.handle(Future.failedFuture(res.cause()));
                     }
 
