@@ -523,6 +523,14 @@ class DBServiceImpl implements DBService {
                         resultHandler.handle(Future.failedFuture(res.cause()));
                     }
                 });
+        dbClient.removeDocuments("examples",
+                new JsonObject(),
+                res -> {
+                    if (res.succeeded()) {
+                    } else {
+                        resultHandler.handle(Future.failedFuture(res.cause()));
+                    }
+                });
         return this;
     }
 
