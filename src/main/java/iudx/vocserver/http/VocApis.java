@@ -10,11 +10,11 @@ import io.vertx.core.logging.LoggerFactory;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.core.VertxException;
 import io.vertx.core.json.JsonObject;
-import io.vertx.ext.web.client.WebClient;
 import io.vertx.core.json.JsonArray;
 
 import iudx.vocserver.database.DBService;
 import iudx.vocserver.auth.AuthService;
+import iudx.vocserver.search.SearchService;
 import iudx.vocserver.utils.Validator;
 import iudx.vocserver.utils.Proc;
 
@@ -41,7 +41,7 @@ public final class VocApis implements VocApisInterface {
     // iudx-voc-server DBService
     private DBService dbService;
     // iudx-voc-server SearchClient
-    private WebClient searchClient;
+    private SearchService searchClient;
 
     // Validator objects
     private boolean isValidSchema;
@@ -62,7 +62,7 @@ public final class VocApis implements VocApisInterface {
      * @return void
      * @TODO Throw error if load failed
      */
-    public VocApis(DBService dbService, WebClient searchClient) {
+    public VocApis(DBService dbService, SearchService searchClient) {
         this.dbService = dbService;
         this.searchClient = searchClient;
 
@@ -220,7 +220,7 @@ public final class VocApis implements VocApisInterface {
      * @return void
      * @TODO Throw error if load failed
      */
-    // tag::external-service-calls[]
+    // tag::search-service-calls[]
     public void fuzzySearchHandler(RoutingContext context) {
         String pattern = "";
         try {
@@ -236,25 +236,21 @@ public final class VocApis implements VocApisInterface {
             return;
         }
 
-        searchClient
-        .get(7700, "localhost", "/indexes/summary/search") 
-        .addQueryParam("q", pattern)
-        .putHeader("Accept", "application/json").send(ar -> {
-          if (ar.succeeded()) {
-              context.response()
-                  .putHeader("content-type", "application/json")
-                  .setStatusCode(200)
-                  .end(ar.result().bodyAsString());
-          }
-          else {
-              LOGGER.info("Failed searching, query params not found");
-              LOGGER.info(ar.result().body());
-              context.response()
-                  .putHeader("content-type", "application/json")
-                  .setStatusCode(404)
-                  .end(ar.cause().getMessage());
-          }
-          });
+        searchClient.searchIndex(pattern, reply -> {
+            if (reply.succeeded()) {
+                context.response().putHeader("content-type", "application/json")
+                .setStatusCode(200)
+                .end(reply.result().encode());
+            } else {
+                LOGGER.info("Failed searching, query params not found");
+                context.response()
+                    .putHeader("content-type", "application/json")
+                    .setStatusCode(404)
+                    .end();
+            }
+        });
+
+        
     }
     
     /**
