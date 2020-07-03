@@ -178,7 +178,7 @@ export class DataService {
 
   search(term: string): Observable<SearchRes[]> {
     return this.http
-      .get<SearchRes[]>(`${this.baseURL}/search?q=${term}`, {
+      .get<SearchRes[]>(`${this.baseURL}/fuzzysearch?q=${term}`, {
         headers: this.headers
       })
       .pipe(catchError(this.handleError));
