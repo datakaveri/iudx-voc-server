@@ -59,7 +59,7 @@ class SearchServiceImpl implements SearchService{
 
         //check if index exists 
         searchClient
-        .get(7700,"search","/indexes/summary")
+        .get(7700,"search", "/indexes/summary")
         .send(ar -> {
             if (ar.succeeded() && ar.result().statusCode()==200){
                 LOGGER.info(ar.result());
@@ -77,7 +77,7 @@ class SearchServiceImpl implements SearchService{
         searchClient
         .post(7700, "search", "/indexes/summary/documents")
         .putHeader("content-type", "application/json")
-        .sendJson(body,ar->{
+        .sendJson(body, ar->{
             if (ar.succeeded() && ar.result().statusCode()==202){
                 LOGGER.info("Successful"); 
                 resultHandler.handle(Future.succeededFuture());
@@ -144,9 +144,7 @@ class SearchServiceImpl implements SearchService{
             .addQueryParam("q", pattern)
             .putHeader("Accept", "application/json").send(ar -> {
             if (ar.succeeded()) {
-                JsonArray response = new JsonArray();
-                response.add(ar);
-                resultHandler.handle(Future.succeededFuture(response));
+                resultHandler.handle(Future.succeededFuture(ar.result().body().toJsonObject().getJsonArray("hits")));
             }
             else {
                 LOGGER.info("Failed searching, query params not found");

@@ -30,20 +30,21 @@ services:
              max-file: "5"
              max-size: "100m"
 
-  server_local:
+  server-local:
     build:
       dockerfile: ./Dockerfile
       context: .
     depends_on:
       - "db"
     ports:
+      - "443:443"
       - "8081:8081"
     restart: on-failure
     networks: 
       - voc-net
     volumes:
       - ./:/vocserver
-    command: sh -c "cd vocserver && java -jar target/vocserver-1.0-fat.jar -conf config/vocserver_local.json"
+    command: sh -c "cd vocserver && ./redeploy.sh"
     logging:
          driver: "json-file"
          options:
@@ -88,7 +89,7 @@ services:
     networks: 
       - voc-net
     expose:
-      - "7700"
+      - "27017"
     logging:
          driver: "json-file"
          options:
