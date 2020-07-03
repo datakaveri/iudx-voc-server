@@ -56,7 +56,7 @@ public final class VocApis implements VocApisInterface {
 
     private static String VOC_REPO = "iudx-voc/";
     private static String UPDATE_REPO_CMD = "nohup sleep 5 && git fetch && git reset --hard origin/master &";
-    private static String PUSH_SCHEMAS_CMD = "nohup python3 utils/push/hookTriggeredInsert.py &";
+    private static String PUSH_SCHEMAS_CMD = "nohup python3 utils/push/hook.py &";
 
     /**
      * VocApis constructor
