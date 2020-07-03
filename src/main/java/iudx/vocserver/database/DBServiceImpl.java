@@ -26,12 +26,11 @@ class DBServiceImpl implements DBService {
      * @param readyHandler Async query result handler. Returns query results as JSONArray
      */
 
-    Vertx vertx = Vertx.vertx();
     public static final String CONFIG_SEARCH_QUEUE = "vocserver.search.queue";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DBServiceImpl.class);
     private final MongoClient dbClient;
-    private SearchService searchClient = SearchService.createProxy(vertx,CONFIG_SEARCH_QUEUE);
+    private final SearchService searchClient;
     
     /** Queries */ 
 
@@ -71,8 +70,9 @@ class DBServiceImpl implements DBService {
         "{\"$1\": \"$2\"}";
 
 
-    DBServiceImpl(MongoClient dbClient, Handler<AsyncResult<DBService>> readyHandler) {
+    DBServiceImpl(MongoClient dbClient, SearchService searchClient, Handler<AsyncResult<DBService>> readyHandler) {
         this.dbClient = dbClient;
+        this.searchClient = searchClient;
         readyHandler.handle(Future.succeededFuture(this));
     }
 
@@ -95,13 +95,16 @@ class DBServiceImpl implements DBService {
         dbClient.runCommand("aggregate", command, res -> {
             if (res.succeeded()) {
                 JsonObject query = new JsonObject()
-                                       .put("_id" ,name);
+                                       .put("_id", name);
                 dbClient.find("summary", query, ar -> {
                 if (ar.succeeded()) {
-                    JsonArray body = new JsonArray();
-                    body.add(ar.result());
-                    LOGGER.info(body);
-                    searchClient.insertIndex(body, resultHandler);
+                    searchClient.insertIndex(new JsonArray(ar.result()), sar -> {
+                        if (sar.succeeded()) {
+                            LOGGER.info("Succeded inserting index into meili");
+                        } else {
+                            LOGGER.info("Failed inserting index into meili");
+                        }
+                    });
                 }
                 else {
                     LOGGER.info("Couldn't read from db");
