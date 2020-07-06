@@ -471,11 +471,10 @@ public final class VocApis implements VocApisInterface {
      */
     // tag::db-service-calls[]
     public void insertExampleHandler(RoutingContext context) {
-        JsonObject body = context.getBodyAsJson();
         String filename = context.request().getParam("name");
         context.response().putHeader("content-type", "application/json");
 
-        dbService.insertExamples(context.getBodyAsJson(), reply -> {
+        dbService.insertExamples(filename, context.getBodyAsJson(), reply -> {
             if (reply.succeeded()) {
                 LOGGER.info("Inserted example" + filename);
                 context.response().setStatusCode(201).end();

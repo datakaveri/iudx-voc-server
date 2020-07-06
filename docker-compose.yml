@@ -24,7 +24,6 @@ services:
       - voc-net
     volumes:
       - ./:/vocserver
-      - ./config/search_setup.sh:/initsearch.d/init.sh
     command: sh -c "cd vocserver && ./config/search_setup.sh &&
               java -jar target/vocserver-1.0-fat.jar -conf config/vocserver.json"
     logging:
