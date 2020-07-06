@@ -5,7 +5,6 @@
 
 package iudx.vocserver.search;
 
-import io.vertx.core.*;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
@@ -13,11 +12,7 @@ import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
-import io.vertx.ext.mongo.MongoClient;
-import io.vertx.ext.mongo.FindOptions;
 import io.vertx.ext.web.client.WebClient;
-import io.vertx.ext.web.client.WebClientOptions;
-import io.vertx.core.VertxException;
 
 class SearchServiceImpl implements SearchService{
 
@@ -34,22 +29,6 @@ class SearchServiceImpl implements SearchService{
      */
     @Override
     public void insertIndex(JsonArray body, Handler<AsyncResult<JsonObject>> resultHandler) {
-
-        //check if index exists 
-        searchClient
-        .get(7700,"search", "/indexes/summary")
-        .send(ar -> {
-            if (ar.succeeded() && ar.result().statusCode()==200){
-                LOGGER.info(ar.result());
-                LOGGER.info(ar.result().statusCode());
-                LOGGER.info("Index exists!");
-            }
-            else {
-                LOGGER.info(ar.result().statusCode());
-                LOGGER.info("Index not found");
-                LOGGER.info("Creating Index");
-            }
-        });
 
         searchClient
         .post(7700, "search", "/indexes/summary/documents")
