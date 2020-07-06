@@ -76,7 +76,7 @@ class SearchServiceImpl implements SearchService{
      */
     public void deleteIndex(Handler<AsyncResult<Boolean>> resultHandler) {
         searchClient
-        .delete(7700,"search", "/indexes/summary")
+        .delete(7700,"search", "/indexes/summary/documents")
         .send(ar->{
             if(ar.succeeded() && ar.result().statusCode()==204){
                 LOGGER.info("Successfully deleted");
