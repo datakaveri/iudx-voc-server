@@ -74,9 +74,9 @@ public class HttpServerVerticle extends AbstractVerticle {
         String authQueue = config().getString(CONFIG_AUTH_QUEUE);
         serverId = config().getString(CONFIG_SERVER_ID);
 
+        searchService = SearchService.createProxy(vertx, CONFIG_SEARCH_QUEUE);
         dbService = DBService.createProxy(vertx, dbQueue);
         authService = AuthService.createProxy(vertx, authQueue);
-        searchService = SearchService.createProxy(vertx,CONFIG_SEARCH_QUEUE);
 
         String webhookPasswd = config().getString(JKS_PASSWD);
 

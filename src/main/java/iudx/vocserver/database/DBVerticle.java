@@ -9,6 +9,8 @@ import io.vertx.ext.mongo.MongoClient;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 
+import iudx.vocserver.search.SearchService;
+
 // tag::dbverticle[]
 public class DBVerticle extends AbstractVerticle {
 
@@ -19,6 +21,7 @@ public class DBVerticle extends AbstractVerticle {
     public static final String CONFIG_DB_POOLNAME = "vocserver.database.poolname";
     public static final String CONFIG_DB_UNAME = "vocserver.database.username";
     public static final String CONFIG_DB_PASSWORD = "vocserver.database.password";
+    public static final String CONFIG_SEARCH_QUEUE = "vocserver.search.queue";
     private static final Logger LOGGER = LoggerFactory.getLogger(DBVerticle.class);
 
     @Override
@@ -33,7 +36,9 @@ public class DBVerticle extends AbstractVerticle {
         MongoClient dbClient = MongoClient.createShared(vertx,
                                                         mongoconfig,
                                                         config().getString(CONFIG_DB_POOLNAME));
-        DBService.create(dbClient, ready -> {
+        SearchService searchClient = SearchService.createProxy(vertx, config().getString(CONFIG_SEARCH_QUEUE));
+
+        DBService.create(dbClient, searchClient, ready -> {
             if (ready.succeeded()) {
                 ServiceBinder binder = new ServiceBinder(vertx);
                 binder

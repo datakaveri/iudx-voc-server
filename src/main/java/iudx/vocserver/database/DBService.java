@@ -17,6 +17,7 @@ import io.vertx.ext.jdbc.JDBCClient;
 import io.vertx.ext.mongo.MongoClient;
 import java.util.List;
 
+import iudx.vocserver.search.SearchService;
 
 @ProxyGen
 @VertxGen
@@ -178,8 +179,9 @@ public interface DBService {
 
 
     @GenIgnore
-    static DBService create(MongoClient dbClient,  Handler<AsyncResult<DBService>> readyHandler) {
-        return new DBServiceImpl(dbClient, readyHandler);
+    static DBService create(MongoClient dbClient, SearchService searchClient,
+            Handler<AsyncResult<DBService>> readyHandler) {
+        return new DBServiceImpl(dbClient, searchClient, readyHandler);
     }
 
     @GenIgnore

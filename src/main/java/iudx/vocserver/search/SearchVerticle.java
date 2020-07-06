@@ -12,6 +12,7 @@ import io.vertx.core.logging.LoggerFactory;
 
 public class SearchVerticle extends AbstractVerticle {
     
+    //@TODO: pass from config
     public static final String CONFIG_SEARCH_QUEUE = "vocserver.search.queue";
     private static final Logger LOGGER = LoggerFactory.getLogger(SearchVerticle.class);
 

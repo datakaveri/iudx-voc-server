@@ -120,6 +120,11 @@ public class DBServiceVertxProxyHandler extends ProxyHandler {
           service.getMasterContext(HelperUtils.createHandler(msg));
           break;
         }
+        case "insertMasterContext": {
+          service.insertMasterContext((io.vertx.core.json.JsonObject)json.getValue("context"),
+                        HelperUtils.createHandler(msg));
+          break;
+        }
         case "getAllProperties": {
           service.getAllProperties(HelperUtils.createHandler(msg));
           break;
@@ -138,6 +143,32 @@ public class DBServiceVertxProxyHandler extends ProxyHandler {
                         HelperUtils.createHandler(msg));
           break;
         }
+        case "getExamples": {
+          service.getExamples((java.lang.String)json.getValue("name"),
+                        HelperUtils.createHandler(msg));
+          break;
+        }
+        case "search": {
+          service.search((java.lang.String)json.getValue("pattern"),
+                        HelperUtils.createHandler(msg));
+          break;
+        }
+        case "relationshipSearch": {
+          service.relationshipSearch((java.lang.String)json.getValue("key"),
+                        (java.lang.String)json.getValue("value"),
+                        HelperUtils.createHandler(msg));
+          break;
+        }
+        case "makeSummary": {
+          service.makeSummary((java.lang.String)json.getValue("name"),
+                        HelperUtils.createHandler(msg));
+          break;
+        }
+        case "deleteFromSummary": {
+          service.deleteFromSummary((java.lang.String)json.getValue("name"),
+                        HelperUtils.createHandler(msg));
+          break;
+        }
         case "insertProperty": {
           service.insertProperty((java.lang.String)json.getValue("name"),
                         (io.vertx.core.json.JsonObject)json.getValue("prop"),
@@ -148,6 +179,34 @@ public class DBServiceVertxProxyHandler extends ProxyHandler {
           service.insertClass((java.lang.String)json.getValue("name"),
                         (io.vertx.core.json.JsonObject)json.getValue("cls"),
                         HelperUtils.createHandler(msg));
+          break;
+        }
+        case "insertExamples": {
+          service.insertExamples((io.vertx.core.json.JsonObject)json.getValue("example"),
+                        HelperUtils.createHandler(msg));
+          break;
+        }
+        case "deleteMaster": {
+          service.deleteMaster(HelperUtils.createHandler(msg));
+          break;
+        }
+        case "deleteProperty": {
+          service.deleteProperty((java.lang.String)json.getValue("name"),
+                        HelperUtils.createHandler(msg));
+          break;
+        }
+        case "deleteClass": {
+          service.deleteClass((java.lang.String)json.getValue("name"),
+                        HelperUtils.createHandler(msg));
+          break;
+        }
+        case "deleteExamples": {
+          service.deleteExamples((java.lang.String)json.getValue("name"),
+                        HelperUtils.createHandler(msg));
+          break;
+        }
+        case "clearDB": {
+          service.clearDB(HelperUtils.createHandler(msg));
           break;
         }
         default: throw new IllegalStateException("Invalid action: " + action);

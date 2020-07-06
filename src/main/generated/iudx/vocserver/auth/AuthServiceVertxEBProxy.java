@@ -62,13 +62,14 @@ public class AuthServiceVertxEBProxy implements AuthService {
   }
 
   @Override
-  public  AuthService validateToken(String token, Handler<AsyncResult<Boolean>> resultHandler){
+  public  AuthService validateToken(String token, String serverId, Handler<AsyncResult<Boolean>> resultHandler){
     if (closed) {
       resultHandler.handle(Future.failedFuture(new IllegalStateException("Proxy is closed")));
       return this;
     }
     JsonObject _json = new JsonObject();
     _json.put("token", token);
+    _json.put("serverId", serverId);
 
     DeliveryOptions _deliveryOptions = (_options != null) ? new DeliveryOptions(_options) : new DeliveryOptions();
     _deliveryOptions.addHeader("action", "validateToken");

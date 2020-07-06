@@ -23,7 +23,7 @@ public class MainVerticle extends AbstractVerticle {
         
         /**Deploy SearchVerticle */
         Promise<String> searchVerticleDeployment = Promise.promise();
-        vertx.deployVerticle("iudx.vocserver.search.searchVerticle",
+        vertx.deployVerticle("iudx.vocserver.search.SearchVerticle",
                                 new DeploymentOptions()
                                     .setConfig(config()),
                             searchVerticleDeployment);
