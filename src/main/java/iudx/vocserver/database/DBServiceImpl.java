@@ -31,6 +31,7 @@ class DBServiceImpl implements DBService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DBServiceImpl.class);
     private final MongoClient dbClient;
+
     private SearchService searchClient = SearchService.createProxy(vertx,CONFIG_SEARCH_QUEUE);
     
     /** Queries */ 
@@ -143,7 +144,7 @@ class DBServiceImpl implements DBService {
 
     /**
      * @{@inheritDoc}
-     * @TODO: Batch size issue. Need to iterate cursor or find alternative solution later.
+     * @TODO: Batch size issue. Need to iterate cursor or find alternative solution later, LOG messages
      */
     @Override
     public DBService getAllClasses(Handler<AsyncResult<JsonArray>> resultHandler) {
@@ -164,7 +165,7 @@ class DBServiceImpl implements DBService {
 
     /**
      * @{@inheritDoc}
-     * @TODO: Batch size issue. Need to iterate cursor or find alternative solution later.
+     * @TODO: Batch size issue. Need to iterate cursor or find alternative solution later. LOG messages
      */
     @Override
     public DBService getAllProperties(Handler<AsyncResult<JsonArray>> resultHandler) {
@@ -367,6 +368,7 @@ class DBServiceImpl implements DBService {
 
     /**
      * @{@inheritDoc}
+     * @TODO: add name in log message
      */
     @Override
     public DBService insertExamples(JsonObject example, Handler<AsyncResult<Boolean>> resultHandler) {
@@ -404,6 +406,7 @@ class DBServiceImpl implements DBService {
 
     /**
      * @{@inheritDoc}
+     * @TODO: Add name of class to LOG message
      */
     @Override
     public DBService deleteClass(String name,
@@ -425,6 +428,7 @@ class DBServiceImpl implements DBService {
 
      /**
      * @{@inheritDoc}
+     * @TODO: Add name of example to LOG message
      */
     @Override
     public DBService deleteExamples(String name,
@@ -446,6 +450,7 @@ class DBServiceImpl implements DBService {
 
     /**
      * @{@inheritDoc}
+     * @TODO: Add name to LOG message
      */
     @Override
     public DBService deleteFromSummary(String name,
@@ -468,6 +473,7 @@ class DBServiceImpl implements DBService {
 
     /**
      * @{@inheritDoc}
+     * @TODO: Add name of property to LOG message
      */
     @Override
     public DBService deleteProperty(String name,
@@ -487,6 +493,7 @@ class DBServiceImpl implements DBService {
 
     /**
      * @{@inheritDoc}
+     * Add LOG messages
      */
     @Override
     public DBService clearDB(Handler<AsyncResult<Boolean>> resultHandler) {

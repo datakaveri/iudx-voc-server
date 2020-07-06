@@ -3,6 +3,7 @@
 * HTTP Server Verticle
 */
 
+//@TODO: remove unused packages
 package iudx.vocserver.http;
 
 import io.vertx.core.*;
@@ -40,6 +41,7 @@ public class HttpServerVerticle extends AbstractVerticle {
      */
 
     // Config variables
+    //@TODO: Config variables should be passed from config file
     public static final String CONFIG_SERVER_ID = "vocserver.id";
     public static final String CONFIG_HTTP_SERVER_PORT = "vocserver.http.port";
     public static final String CONFIG_DB_QUEUE = "vocserver.database.queue";
@@ -120,6 +122,7 @@ public class HttpServerVerticle extends AbstractVerticle {
 
         /** UI
          *  Notes: This is the first registered route to prevent conflict with json-ld response
+         *  @TODO: Handle failures while sending file, spacing needs to be fixed.
          * */
         router.getWithRegex("^\\/(?!assets\\/)(?!static\\/)[A-Za-z0-9]+")
             .produces("text/html")
@@ -158,6 +161,7 @@ public class HttpServerVerticle extends AbstractVerticle {
         router.route("/").consumes("application/ld+json").produces("application/ld+json")
             .handler(BodyHandler.create());
 
+        //@TODO: Log Failure
         router.post("/").consumes("application/ld+json").produces("application/ld+json")
             .handler( routingContext -> {
                 String token = routingContext.request().getHeader("token");
@@ -168,6 +172,7 @@ public class HttpServerVerticle extends AbstractVerticle {
                 });
             });
 
+         //@TODO: Log Failure
         router.delete("/").consumes("application/ld+json").produces("application/ld+json")
             .handler( routingContext -> {
                 String token = routingContext.request().getHeader("token");
@@ -205,6 +210,7 @@ public class HttpServerVerticle extends AbstractVerticle {
 
         /**
          * GET/POST examples by type
+         * @TODO: Auth failure needs to be logged
          */
 
         router.route("/examples/:name").consumes("application/ld+json")
@@ -237,6 +243,7 @@ public class HttpServerVerticle extends AbstractVerticle {
             });
 
         /** Get/Post classes or properties by name (JSON-LD API) 
+          * @TODO: Auth failure needs to be logged
          **/
         router.get("/:name").consumes("application/ld+json")
             .produces("application/ld+json")
@@ -309,7 +316,7 @@ public class HttpServerVerticle extends AbstractVerticle {
                 }
             });
 
-
+        //@TODO: Pass port number from config
         int portNumber = config().getInteger(CONFIG_HTTP_SERVER_PORT, 8080);
         server
             .requestHandler(router)

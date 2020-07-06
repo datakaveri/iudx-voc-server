@@ -18,7 +18,7 @@ import iudx.vocserver.search.SearchService;
 import iudx.vocserver.utils.Validator;
 import iudx.vocserver.utils.Proc;
 
-
+//@TODO: Interface should be a separate file
 interface VocApisInterface {
     void getClassesHandler(RoutingContext context);
     void getPropertiesHandler(RoutingContext context);

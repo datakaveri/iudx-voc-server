@@ -12,6 +12,7 @@ import io.vertx.core.logging.LoggerFactory;
 // tag::dbverticle[]
 public class DBVerticle extends AbstractVerticle {
 
+    //@TODO: Can we pass this from config?
     public static final String CONFIG_DB_URL = "vocserver.database.url";
     public static final String CONFIG_DB_NAME = "vocserver.database.name";
     public static final String CONFIG_DB_QUEUE = "vocserver.database.queue";
