@@ -23,47 +23,10 @@ class SearchServiceImpl implements SearchService{
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SearchService.class);
     private WebClient searchClient;
-    
-    private JsonArray stopWords = new JsonArray();
-
-    stopWords = ["i", "me", "my", "myself", "we", "our", "ours", "ourselves", 
-    "you", "your", "yours", "yourself", "yourselves", "he", "him", "his", "himself",
-    "she", "her", "hers", "herself", "it", "its", "itself", "they", "them", "their",
-    "theirs", "themselves", "what", "which", "who", "whom", "this", "that", "these",
-    "those", "am", "is", "are", "was", "were", "be", "been", "being", "have", "has", "had",
-    "having", "do", "does", "did", "doing", "a", "an", "the", "and", "but", "if", "or", 
-    "because", "as", "until", "while", "of", "at", "by", "for", "with", "about", "against",
-    "between", "into", "through", "during", "before", "after", "above", "below", "to", "from",
-    "up", "down", "in", "out", "on", "off", "over", "under", "again", "further", "then", "once",
-    "here", "there", "when", "where", "why", "how", "all", "any", "both", "each", "few", "more",
-    "most", "other", "some", "such", "no", "nor", "not", "only", "own", "same", "so", "than",
-    "too", "very", "s", "t", "can", "will", "just", "don", "should", "now"]
 
     SearchServiceImpl(WebClient searchClient, Handler<AsyncResult<SearchService>> readyHandler) {
         this.searchClient = searchClient;
         readyHandler.handle(Future.succeededFuture(this));
-    }
-
-    /** 
-     *  Call the search service to create summary index
-     */
-    @Override
-    public void createIndex(Handler<AsyncResult<JsonObject>> resultHandler) {
-        searchClient
-        .post(7700, "search", "/indexes")
-        .sendJsonObject(new JsonObject()
-        .put("uid", "summary")
-        .put("primaryKey", "_id"), ar -> {
-        if (ar.succeeded() && ar.result().statusCode()==200) {
-            LOGGER.info("Index Created");
-            addStopWords(resultHandler);
-            resultHandler.handle(Future.succeededFuture());
-        }
-        else {
-            LOGGER.info(ar.cause());
-            resultHandler.handle(Future.failedFuture(ar.cause()));
-        } 
-        });
     }
 
     /** 
@@ -85,7 +48,6 @@ class SearchServiceImpl implements SearchService{
                 LOGGER.info(ar.result().statusCode());
                 LOGGER.info("Index not found");
                 LOGGER.info("Creating Index");
-                createIndex(resultHandler);
             }
         });
 
@@ -167,25 +129,4 @@ class SearchServiceImpl implements SearchService{
             }
         });
     }
-
-    /** 
-     *  Add list of stopwords to the index
-     *  
-     */
-     public void addStopWords(Handler<AsyncResult<JsonArray>> resultHandler) {
-         searchClient
-         .post(7700, "search", "/indexes/summary/settings/stop-words")
-         .putHeader("content-type", "application/json")
-         .sendJson(stopWords, reply -> {
-             if(reply.succeeded()) {
-                 LOGGER.info("Updated stop words for the index");
-                 resultHandler.handle(Future.succeededFuture());
-             }
-             else {
-                 LOGGER.info("Failed to update stop words");
-                 resultHandler.handle(Future.failedFuture(ar.cause());
-             }
-         });
-     }
-
 } 

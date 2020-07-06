@@ -23,7 +23,6 @@ import java.util.List;
 @VertxGen
 public interface SearchService {
 
-    void createIndex(Handler<AsyncResult<JsonObject>> resultHandler);
     void insertIndex(JsonArray body, Handler<AsyncResult<JsonObject>> resultHandler);
     void deleteFromIndex(String uid, Handler<AsyncResult<Boolean>> resultHandler);
     void deleteIndex(Handler<AsyncResult<Boolean>> resultHandler);
