@@ -79,7 +79,7 @@ public interface DBService {
      * @return {@link DBServiceImpl}
      */
     @Fluent
-    DBService getExamples(String name, Handler<AsyncResult<JsonObject>> resultHandler);
+    DBService getExamples(String name, Handler<AsyncResult<JsonArray>> resultHandler);
     
     /**
      * search - Search for a schema either through name or description
@@ -137,7 +137,7 @@ public interface DBService {
      * @return {@link DBServiceImpl}
      */
     @Fluent
-    DBService insertExamples(JsonObject example, Handler<AsyncResult<Boolean>> resultHandler);
+    DBService insertExamples(String name, JsonObject example, Handler<AsyncResult<Boolean>> resultHandler);
     /**
      * deleteProperty - Delete a property
      * @param name name of the property

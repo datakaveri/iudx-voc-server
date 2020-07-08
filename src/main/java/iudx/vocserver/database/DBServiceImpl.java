@@ -246,13 +246,14 @@ class DBServiceImpl implements DBService {
      * @{@inheritDoc}
      */
     @Override
-    public DBService getExamples(String name, Handler<AsyncResult<JsonObject>> resultHandler) {
-        dbClient.find("examples",
+    public DBService getExamples(String name, Handler<AsyncResult<JsonArray>> resultHandler) {
+        dbClient.findWithOptions("examples",
                 new JsonObject(QUERY_MATCH_TYPE.replace("$1", "iudx:"+name)),
+                new FindOptions().setFields(new JsonObject().put("_id", false)),
                 res -> {
                     if (res.succeeded()) {
                         try {
-                            resultHandler.handle(Future.succeededFuture(res.result().get(0)));
+                            resultHandler.handle(Future.succeededFuture(new JsonArray(res.result())));
                         } catch (Exception e) {
                             LOGGER.info("Failed getting example for " + name);
                             resultHandler.handle(Future.failedFuture(res.cause()));
@@ -375,7 +376,8 @@ class DBServiceImpl implements DBService {
      * @TODO: add name in log message
      */
     @Override
-    public DBService insertExamples(JsonObject example, Handler<AsyncResult<Boolean>> resultHandler) {
+    public DBService insertExamples(String name, JsonObject example, Handler<AsyncResult<Boolean>> resultHandler) {
+        example = example.put("_id", name);
         dbClient.save("examples",
                 example,
                 res-> {

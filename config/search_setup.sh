@@ -2,17 +2,17 @@
 
 #Create index
 
-curl \
-  -X POST 'http://search:7700/indexes' \
-  --data '{
-    "uid": "summary",
-    "primaryKey": "_id"
-  }'
+wget -S \
+  -O /dev/null \
+  --header='accept:application/json' \
+  --post-data='{ "uid": "summary", "primaryKey": "_id" }' \
+  'http://search:7700/indexes' 
 
 #add stopwords setting
-curl \
-  -X POST 'http://search:7700/indexes/summary/settings/stop-words' \
-  --data '["i", "me", "my", "myself", "we", "our", "ours", "ourselves", 
+wget -S \
+  -O /dev/null \
+  --header='accept:application/json' \
+  --post-data='["i", "me", "my", "myself", "we", "our", "ours", "ourselves", 
     "you", "your", "yours", "yourself", "yourselves", "he", "him", "his", "himself",
     "she", "her", "hers", "herself", "it", "its", "itself", "they", "them", "their",
     "theirs", "themselves", "what", "which", "who", "whom", "this", "that", "these",
@@ -23,4 +23,5 @@ curl \
     "up", "down", "in", "out", "on", "off", "over", "under", "again", "further", "then", "once",
     "here", "there", "when", "where", "why", "how", "all", "any", "both", "each", "few", "more",
     "most", "other", "some", "such", "no", "nor", "not", "only", "own", "same", "so", "than",
-    "too", "very", "s", "t", "can", "will", "just", "don", "should", "now"]'
+    "too", "very", "s", "t", "can", "will", "just", "don", "should", "now"]' \
+  'http://search:7700/indexes/summary/settings/stop-words'
