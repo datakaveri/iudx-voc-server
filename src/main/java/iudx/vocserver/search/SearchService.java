@@ -23,21 +23,21 @@ import java.util.List;
 @VertxGen
 public interface SearchService {
 
-    //@TODO: Add comments for the functions
+  //@TODO: Add comments for the functions
 
-    void insertIndex(JsonArray body, Handler<AsyncResult<JsonObject>> resultHandler);
-    void deleteFromIndex(String uid, Handler<AsyncResult<Boolean>> resultHandler);
-    void deleteIndex(Handler<AsyncResult<Boolean>> resultHandler);
-    void searchIndex(String pattern, Handler<AsyncResult<JsonArray>> resultHandler);
+  void insertIndex(JsonArray body, Handler<AsyncResult<JsonObject>> resultHandler);
+  void deleteFromIndex(String uid, Handler<AsyncResult<Boolean>> resultHandler);
+  void deleteIndex(Handler<AsyncResult<Boolean>> resultHandler);
+  void searchIndex(String pattern, Handler<AsyncResult<JsonArray>> resultHandler);
 
-    @GenIgnore
-    static SearchService create(WebClient searchClient, Handler<AsyncResult<SearchService>> readyHandler) {
-        return new SearchServiceImpl(searchClient, readyHandler);
-    }
+  @GenIgnore
+  static SearchService create(WebClient searchClient, Handler<AsyncResult<SearchService>> readyHandler) {
+    return new SearchServiceImpl(searchClient, readyHandler);
+  }
 
-    @GenIgnore
-    static SearchService createProxy(Vertx vertx, String address) {
-         return new SearchServiceVertxEBProxy(vertx, address);
-    }
+  @GenIgnore
+  static SearchService createProxy(Vertx vertx, String address) {
+     return new SearchServiceVertxEBProxy(vertx, address);
+  }
 
 }

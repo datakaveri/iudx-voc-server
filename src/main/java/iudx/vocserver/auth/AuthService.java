@@ -21,25 +21,25 @@ import io.vertx.ext.web.client.WebClient;
 @ProxyGen
 @VertxGen
 public interface AuthService {
-    /**
-     * AuthService interface
-     */
+  /**
+   * AuthService interface
+   */
 
-    /**
-     * validateToken - Gets json-ld iudx master context
-     * @param token IUDX token
-     * @return {@link DBServiceImpl}
-     */
-    @Fluent
-    AuthService validateToken(String token, String serverId, Handler<AsyncResult<Boolean>> resultHandler);
+  /**
+   * validateToken - Gets json-ld iudx master context
+   * @param token IUDX token
+   * @return {@link DBServiceImpl}
+   */
+  @Fluent
+  AuthService validateToken(String token, String serverId, Handler<AsyncResult<Boolean>> resultHandler);
 
-    @GenIgnore
-    static AuthService create(WebClient client, JsonObject authDetails, Handler<AsyncResult<AuthService>> readyHandler) {
-        return new AuthServiceImpl(client, authDetails, readyHandler);
-    }
+  @GenIgnore
+  static AuthService create(WebClient client, JsonObject authDetails, Handler<AsyncResult<AuthService>> readyHandler) {
+    return new AuthServiceImpl(client, authDetails, readyHandler);
+  }
 
-    @GenIgnore
-    static AuthService createProxy(Vertx vertx, String address) {
-        return new AuthServiceVertxEBProxy(vertx, address);
-    }
+  @GenIgnore
+  static AuthService createProxy(Vertx vertx, String address) {
+    return new AuthServiceVertxEBProxy(vertx, address);
+  }
 }

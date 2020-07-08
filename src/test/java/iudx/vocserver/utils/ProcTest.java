@@ -32,21 +32,21 @@ import org.mockito.stubbing.Answer;
 @RunWith(VertxUnitRunner.class)
 public class ProcTest {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ProcTest.class.getName());
+  private static final Logger LOGGER = LoggerFactory.getLogger(ProcTest.class.getName());
 
-    @Before
-    public void setUp(TestContext tc) {
-    }
+  @Before
+  public void setUp(TestContext tc) {
+  }
 
-    @After
-    public void tearDown(TestContext tc) {
-    }
+  @After
+  public void tearDown(TestContext tc) {
+  }
 
 
-    @Test
-    public void testProc(TestContext tc) {
-        int statusCode = Proc.execCommand("cd iudx-voc && git pull origin master");
-        LOGGER.info(statusCode);
+  @Test
+  public void testProc(TestContext tc) {
+    int statusCode = Proc.execCommand("cd iudx-voc && git pull origin master");
+    LOGGER.info(statusCode);
 
-    }
+  }
 }

@@ -116,13 +116,24 @@ public class DBServiceVertxProxyHandler extends ProxyHandler {
       if (action == null) throw new IllegalStateException("action not specified");
       accessed();
       switch (action) {
-        case "getMasterContext": {
-          service.getMasterContext(HelperUtils.createHandler(msg));
+        case "makeSummary": {
+          service.makeSummary((java.lang.String)json.getValue("name"),
+                        HelperUtils.createHandler(msg));
           break;
         }
-        case "insertMasterContext": {
-          service.insertMasterContext((io.vertx.core.json.JsonObject)json.getValue("context"),
+        case "relationshipSearch": {
+          service.relationshipSearch((java.lang.String)json.getValue("key"),
+                        (java.lang.String)json.getValue("value"),
                         HelperUtils.createHandler(msg));
+          break;
+        }
+        case "search": {
+          service.search((java.lang.String)json.getValue("pattern"),
+                        HelperUtils.createHandler(msg));
+          break;
+        }
+        case "getMasterContext": {
+          service.getMasterContext(HelperUtils.createHandler(msg));
           break;
         }
         case "getAllProperties": {
@@ -148,24 +159,8 @@ public class DBServiceVertxProxyHandler extends ProxyHandler {
                         HelperUtils.createHandler(msg));
           break;
         }
-        case "search": {
-          service.search((java.lang.String)json.getValue("pattern"),
-                        HelperUtils.createHandler(msg));
-          break;
-        }
-        case "relationshipSearch": {
-          service.relationshipSearch((java.lang.String)json.getValue("key"),
-                        (java.lang.String)json.getValue("value"),
-                        HelperUtils.createHandler(msg));
-          break;
-        }
-        case "makeSummary": {
-          service.makeSummary((java.lang.String)json.getValue("name"),
-                        HelperUtils.createHandler(msg));
-          break;
-        }
-        case "deleteFromSummary": {
-          service.deleteFromSummary((java.lang.String)json.getValue("name"),
+        case "insertMasterContext": {
+          service.insertMasterContext((io.vertx.core.json.JsonObject)json.getValue("context"),
                         HelperUtils.createHandler(msg));
           break;
         }
@@ -182,7 +177,13 @@ public class DBServiceVertxProxyHandler extends ProxyHandler {
           break;
         }
         case "insertExamples": {
-          service.insertExamples((io.vertx.core.json.JsonObject)json.getValue("example"),
+          service.insertExamples((java.lang.String)json.getValue("name"),
+                        (io.vertx.core.json.JsonObject)json.getValue("example"),
+                        HelperUtils.createHandler(msg));
+          break;
+        }
+        case "deleteFromSummary": {
+          service.deleteFromSummary((java.lang.String)json.getValue("name"),
                         HelperUtils.createHandler(msg));
           break;
         }

@@ -16,98 +16,98 @@ import io.vertx.ext.web.client.WebClient;
 
 class SearchServiceImpl implements SearchService{
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SearchService.class);
-    private WebClient searchClient;
+  private static final Logger LOGGER = LoggerFactory.getLogger(SearchService.class);
+  private WebClient searchClient;
 
-    SearchServiceImpl(WebClient searchClient, Handler<AsyncResult<SearchService>> readyHandler) {
-        this.searchClient = searchClient;
-        readyHandler.handle(Future.succeededFuture(this));
-    }
+  SearchServiceImpl(WebClient searchClient, Handler<AsyncResult<SearchService>> readyHandler) {
+    this.searchClient = searchClient;
+    readyHandler.handle(Future.succeededFuture(this));
+  }
 
-    /** 
-     *  Insert documents into summary index
-     * @TODO: Remove multiple LOG statements, combine into one.
-     */
-    @Override
-    public void insertIndex(JsonArray body, Handler<AsyncResult<JsonObject>> resultHandler) {
+  /** 
+   *  Insert documents into summary index
+   * @TODO: Remove multiple LOG statements, combine into one.
+   */
+  @Override
+  public void insertIndex(JsonArray body, Handler<AsyncResult<JsonObject>> resultHandler) {
 
-        searchClient
-        .post(7700, "search", "/indexes/summary/documents")
-        .putHeader("content-type", "application/json")
-        .sendJson(body, ar->{
-            if (ar.succeeded() && ar.result().statusCode()==202){
-                LOGGER.info("Successful"); 
-                resultHandler.handle(Future.succeededFuture());
-            }
-            else {
-                LOGGER.info("Error inserting");
-                LOGGER.info(ar.result().statusCode());
-                resultHandler.handle(Future.failedFuture(ar.cause()));
-            }
-        });
-    }
+    searchClient
+    .post(7700, "search", "/indexes/summary/documents")
+    .putHeader("content-type", "application/json")
+    .sendJson(body, ar->{
+      if (ar.succeeded() && ar.result().statusCode()==202){
+        LOGGER.info("Successful"); 
+        resultHandler.handle(Future.succeededFuture());
+      }
+      else {
+        LOGGER.info("Error inserting");
+        LOGGER.info(ar.result().statusCode());
+        resultHandler.handle(Future.failedFuture(ar.cause()));
+      }
+    });
+  }
 
-    /** 
-     *  Delete document from summary index
-     *   @param uid String
-     *  @TODO: Remove multiple LOG statements, combine into one.
-     */
-    @Override
-    public void deleteFromIndex(String uid, Handler<AsyncResult<Boolean>> resultHandler) {
-        JsonObject request = new JsonObject();
-        String uri = "/indexes/summary/documents/" + uid;
-        LOGGER.info(uri);
-        searchClient
-        .delete(7700,"search", uri)
-        .send(ar->{
-            if(ar.succeeded() && ar.result().statusCode()==202){
-                LOGGER.info("Successfully deleted");
-                resultHandler.handle(Future.succeededFuture(true));
-            }
-            else {
-                LOGGER.info(ar.cause());
-                LOGGER.info(ar.result().statusCode());
-                resultHandler.handle(Future.succeededFuture(false));
-            }
-        });
-    }
+  /** 
+   *  Delete document from summary index
+   *   @param uid String
+   *  @TODO: Remove multiple LOG statements, combine into one.
+   */
+  @Override
+  public void deleteFromIndex(String uid, Handler<AsyncResult<Boolean>> resultHandler) {
+    JsonObject request = new JsonObject();
+    String uri = "/indexes/summary/documents/" + uid;
+    LOGGER.info(uri);
+    searchClient
+    .delete(7700,"search", uri)
+    .send(ar->{
+      if(ar.succeeded() && ar.result().statusCode()==202){
+        LOGGER.info("Successfully deleted");
+        resultHandler.handle(Future.succeededFuture(true));
+      }
+      else {
+        LOGGER.info(ar.cause());
+        LOGGER.info(ar.result().statusCode());
+        resultHandler.handle(Future.succeededFuture(false));
+      }
+    });
+  }
 
-    /** 
-     *  Delete the summary index 
-     *  @TODO: Remove multiple LOG statements, combine into one.
-     */
-    public void deleteIndex(Handler<AsyncResult<Boolean>> resultHandler) {
-        searchClient
-        .delete(7700,"search", "/indexes/summary/documents")
-        .send(ar->{
-            if(ar.succeeded() && ar.result().statusCode()==204){
-                LOGGER.info("Successfully deleted");
-                resultHandler.handle(Future.succeededFuture(true));
-            }
-            else {
-                LOGGER.info(ar.cause());
-                LOGGER.info(ar.result().statusCode());
-                resultHandler.handle(Future.succeededFuture(false));
-            }
-        });
-    }
+  /** 
+   *  Delete the summary index 
+   *  @TODO: Remove multiple LOG statements, combine into one.
+   */
+  public void deleteIndex(Handler<AsyncResult<Boolean>> resultHandler) {
+    searchClient
+    .delete(7700,"search", "/indexes/summary/documents")
+    .send(ar->{
+      if(ar.succeeded() && ar.result().statusCode()==204){
+        LOGGER.info("Successfully deleted");
+        resultHandler.handle(Future.succeededFuture(true));
+      }
+      else {
+        LOGGER.info(ar.cause());
+        LOGGER.info(ar.result().statusCode());
+        resultHandler.handle(Future.succeededFuture(false));
+      }
+    });
+  }
 
-    /** 
-     *  Search the summary index 
-     *  
-     */
-    public void searchIndex(String pattern, Handler<AsyncResult<JsonArray>> resultHandler) {
-        searchClient
-            .get(7700, "search", "/indexes/summary/search") 
-            .addQueryParam("q", pattern)
-            .putHeader("Accept", "application/json").send(ar -> {
-            if (ar.succeeded()) {
-                resultHandler.handle(Future.succeededFuture(ar.result().body().toJsonObject().getJsonArray("hits")));
-            }
-            else {
-                LOGGER.info("Failed searching, query params not found");
-                resultHandler.handle(Future.failedFuture(ar.cause()));
-            }
-        });
-    }
+  /** 
+   *  Search the summary index 
+   *  
+   */
+  public void searchIndex(String pattern, Handler<AsyncResult<JsonArray>> resultHandler) {
+    searchClient
+      .get(7700, "search", "/indexes/summary/search") 
+      .addQueryParam("q", pattern)
+      .putHeader("Accept", "application/json").send(ar -> {
+      if (ar.succeeded()) {
+        resultHandler.handle(Future.succeededFuture(ar.result().body().toJsonObject().getJsonArray("hits")));
+      }
+      else {
+        LOGGER.info("Failed searching, query params not found");
+        resultHandler.handle(Future.failedFuture(ar.cause()));
+      }
+    });
+  }
 } 
