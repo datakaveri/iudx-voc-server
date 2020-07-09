@@ -1,5 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
+import { HighlightModule } from 'ngx-highlightjs';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -14,6 +16,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatCardModule } from '@angular/material/card';
+import { MatTabsModule } from '@angular/material/tabs';
 
 import { SearchResultComponent } from './search-result/search-result.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
@@ -40,6 +43,8 @@ import { DataModelDomainComponent } from './data-models/data-model-domain/data-m
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
+    HighlightModule,
     AppRoutingModule,
     HttpClientModule,
     NgbModule,
@@ -47,6 +52,7 @@ import { DataModelDomainComponent } from './data-models/data-model-domain/data-m
     ReactiveFormsModule,
     MatAutocompleteModule,
     MatCardModule,
+    MatTabsModule,
     ServiceWorkerModule.register('ngsw-worker.js', {
       enabled: environment.production
     })

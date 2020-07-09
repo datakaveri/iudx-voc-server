@@ -50,7 +50,11 @@ span {
   display: table-cell;
   font-weight: bold;
 }
-
+.example-style {
+  font-size: 20px !important;
+  padding-top: 10px !important;
+  color: #0d1f50 !important;
+}
 .display-none {
   display: none !important;
 }

@@ -39,7 +39,7 @@ export class HeaderComponent implements OnInit {
 
   ngOnInit(): void {
     this.searchRes = this.control.valueChanges.pipe(
-      debounceTime(200),
+      debounceTime(1500),
       distinctUntilChanged(),
       switchMap(term =>
         term ? this.dataService.search(term) : of<SearchRes[]>([])

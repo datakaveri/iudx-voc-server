@@ -191,6 +191,13 @@ export class DataService {
       })
       .pipe(catchError(this.handleError));
   }
+  getExamples(schemaName: string) {
+    return this.http
+      .get<[]>(`${this.baseURL}/examples/${schemaName}`, {
+        headers: this.headersLD
+      })
+      .pipe(catchError(this.handleError));
+  }
 
   private handleError(res: HttpErrorResponse) {
     // console.error(res.error);
