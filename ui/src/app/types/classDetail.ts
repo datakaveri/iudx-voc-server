@@ -1,26 +1,25 @@
 export interface ClassDetail {
+  [x: string]: any;
   baseClass: Class;
   superClasses?: Classes;
   heirarchy?: string[];
 }
 
 export interface Class {
-    label: string;
-    comment: string;
-    properties?: Properties;
-    subClassOf?: string;
+  label: string;
+  comment: string;
+  properties?: Properties;
+  subClassOf?: string;
 }
 export interface Classes extends Array<Class> {
-  [index:number]: Class;
+  [index: number]: Class;
 }
 
 export interface Property {
-    label: string;
-    comment: string;
-    type?: string[];
+  label: string;
+  comment: string;
+  type?: string[];
 }
 export interface Properties extends Array<Property> {
-  [index:number]: Property;
+  [index: number]: Property;
 }
-
-

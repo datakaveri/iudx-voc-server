@@ -199,5 +199,24 @@
       </tbody>
     </table>
   </div>
-  <!-- </div> -->
+  <!--
+      Render examples if examples
+    -->
+
+  <div *ngIf="examples">
+    <h1 class="example-style">
+      Examples
+    </h1>
+    <mat-tab-group animationDuration="0ms">
+      <mat-tab
+        *ngFor="let example of code; let i = index"
+        label="{{ label + (i + 1) }}"
+      >
+        <pre>
+          <code [highlight]="example | json">
+          </code>
+      </pre>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
 </section>

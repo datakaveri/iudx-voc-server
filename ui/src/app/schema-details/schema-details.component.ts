@@ -16,6 +16,10 @@ export class SchemaDetailsComponent implements OnInit {
   propertyView: boolean;
   classView: boolean;
   displayProp: boolean = false;
+  value: string;
+  examples: boolean = false;
+  code: any;
+  label: string;
 
   constructor(
     private route: ActivatedRoute,
@@ -24,25 +28,26 @@ export class SchemaDetailsComponent implements OnInit {
   ) {
     this.propertyView = false;
     this.classView = false;
+    this.examples = false;
+    this.label = 'Example';
   }
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
+      this.value = params['schemaName'];
       if (params['schemaName'][0] === params['schemaName'][0].toUpperCase()) {
         this.classView = true;
         this.propertyView = false;
         this.classDetail = this.backendService.getClass(params['schemaName']);
-        this.classDetail.subscribe(
-          resp => console.log(resp),
-
-          error => {
-            console.log(error);
-            if (error == 'Server error') {
-              this.router.navigate(['404', 'not-found']);
-              this.displayProp = true;
-            }
+        this.classDetail.subscribe((
+          resp //console.log(resp),
+        ) => error => {
+          //console.log(error);
+          if (error == 'Server error') {
+            this.router.navigate(['404', 'not-found']);
+            this.displayProp = true;
           }
-        );
+        });
       } else {
         this.propertyView = true;
         this.classView = false;
@@ -50,8 +55,8 @@ export class SchemaDetailsComponent implements OnInit {
           params['schemaName']
         );
 
-        this.propertyDetail.subscribe(
-          resp => console.log(resp),
+        this.propertyDetail.subscribe(resp =>
+          //console.log(resp),
 
           error => {
             if (error == 'Server error') {
@@ -60,6 +65,23 @@ export class SchemaDetailsComponent implements OnInit {
             }
           }
         );
+      }
+      //console.log(this.value);
+      this.showExamples(this.value);
+    });
+  }
+  showExamples(val: string) {
+    this.backendService.getExamples(val).subscribe(response => {
+      if (response == [] || response.length == 0) {
+        //console.log(response);
+        this.examples = false;
+
+        //console.log(this.examples);
+      } else {
+        this.examples = true;
+        this.code = response;
+        //console.log(response);
+        //console.log(this.examples);
       }
     });
   }
