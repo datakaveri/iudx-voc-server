@@ -216,7 +216,19 @@
           <code [highlight]="example | json">
           </code>
       </pre>
+        <br />
+        <a
+          style="text-align: center;"
+          class="btn btnjson mat-raised-button"
+          (click)="getjson(example)"
+          href="{{ jsonQuery }}"
+          target="_blank"
+          >Try the playground here</a
+        >
+        <br />
       </mat-tab>
     </mat-tab-group>
+
+    <hr />
   </div>
 </section>

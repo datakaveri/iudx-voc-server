@@ -4,11 +4,12 @@ import { DataService } from '../services/data.service';
 import { ClassDetail } from '../types/classDetail';
 import { PropertyDetail } from '../types/propertyDetail';
 import { Observable } from 'rxjs';
+import { share } from 'rxjs/operators';
 
 @Component({
   selector: 'app-schema-details',
   templateUrl: './schema-details.component.html',
-  styleUrls: ['./schema-details.component.css']
+  styleUrls: ['./schema-details.component.css'],
 })
 export class SchemaDetailsComponent implements OnInit {
   classDetail: Observable<ClassDetail>;
@@ -20,6 +21,7 @@ export class SchemaDetailsComponent implements OnInit {
   examples: boolean = false;
   code: any;
   label: string;
+  jsonQuery: string;
 
   constructor(
     private route: ActivatedRoute,
@@ -33,32 +35,39 @@ export class SchemaDetailsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.route.params.subscribe(params => {
+    this.showProperty();
+  }
+  showProperty() {
+    this.route.params.subscribe((params) => {
       this.value = params['schemaName'];
+      // console.log(params['schemaName'][0].toUpperCase());
       if (params['schemaName'][0] === params['schemaName'][0].toUpperCase()) {
         this.classView = true;
         this.propertyView = false;
-        this.classDetail = this.backendService.getClass(params['schemaName']);
-        this.classDetail.subscribe((
-          resp //console.log(resp),
-        ) => error => {
-          //console.log(error);
-          if (error == 'Server error') {
-            this.router.navigate(['404', 'not-found']);
-            this.displayProp = true;
+        this.classDetail = this.backendService
+          .getClass(params['schemaName'])
+          .pipe(share());
+        this.classDetail.subscribe(
+          (resp) => console.log(resp),
+          (error) => {
+            //console.log(error);
+            if (error == 'Server error') {
+              this.router.navigate(['404', 'not-found']);
+              this.displayProp = true;
+            }
           }
-        });
+        );
       } else {
         this.propertyView = true;
         this.classView = false;
-        this.propertyDetail = this.backendService.getProperty(
-          params['schemaName']
-        );
+        this.propertyDetail = this.backendService
+          .getProperty(params['schemaName'])
+          .pipe(share());
 
-        this.propertyDetail.subscribe(resp =>
+        this.propertyDetail.subscribe((resp) =>
           //console.log(resp),
 
-          error => {
+          (error) => {
             if (error == 'Server error') {
               this.router.navigate(['404', 'not-found']);
               this.displayProp = true;
@@ -71,7 +80,7 @@ export class SchemaDetailsComponent implements OnInit {
     });
   }
   showExamples(val: string) {
-    this.backendService.getExamples(val).subscribe(response => {
+    this.backendService.getExamples(val).subscribe((response) => {
       if (response == [] || response.length == 0) {
         //console.log(response);
         this.examples = false;
@@ -84,5 +93,11 @@ export class SchemaDetailsComponent implements OnInit {
         //console.log(this.examples);
       }
     });
+  }
+  getjson(example: Object) {
+    console.log(typeof example);
+    this.jsonQuery =
+      'https://json-ld.org/playground/#startTab=tab-expand&json-ld=' +
+      encodeURIComponent(JSON.stringify(example));
   }
 }
