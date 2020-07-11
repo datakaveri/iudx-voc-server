@@ -66,3 +66,7 @@ tr:nth-child(even) {
 .display-style table {
   width: 70%;
 }
+.btnjson {
+  padding: 10px;
+  font-size: large;
+}
