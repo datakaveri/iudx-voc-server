@@ -212,20 +212,31 @@
         *ngFor="let example of code; let i = index"
         label="{{ label + (i + 1) }}"
       >
+        <br />
+        <div id="aJson" style="float: right;">
+          <a
+            class="button mat-raised-button"
+            (click)="getjson(example)"
+            href="{{ jsonQuery }}"
+            target="_blank"
+            >Open in Playground</a
+          >
+        </div>
+        <br />
         <pre>
           <code [highlight]="example | json">
           </code>
       </pre>
         <br />
-        <a
-          style="text-align: center;"
-          class="btn btnjson mat-raised-button"
-          (click)="getjson(example)"
-          href="{{ jsonQuery }}"
-          target="_blank"
-          >Try the playground here</a
-        >
-        <br />
+        <!-- <div id="aJson">
+          <a
+            class="button mat-raised-button"
+            (click)="getjson(example)"
+            href="{{ jsonQuery }}"
+            target="_blank"
+            >Try the playground here</a
+          >
+        </div> -->
       </mat-tab>
     </mat-tab-group>
 

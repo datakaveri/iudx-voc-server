@@ -66,7 +66,19 @@ tr:nth-child(even) {
 .display-style table {
   width: 70%;
 }
-.btnjson {
-  padding: 10px;
-  font-size: large;
+.button {
+  /* background-color: #3a4956; */
+  background-color: #003f87;
+  text-decoration-color: white;
+  border-radius: 7px;
+  padding: 15px;
+  color: white;
+  font-size: 15px;
+}
+#aJson a {
+  color: white;
+  border: black;
+}
+#aJson a:hover {
+  color: black;
 }

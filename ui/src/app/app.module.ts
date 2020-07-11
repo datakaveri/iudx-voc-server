@@ -39,7 +39,7 @@ import { DataModelDomainComponent } from './data-models/data-model-domain/data-m
     DataModelsComponent,
     EntitiesComponent,
     PageNotFoundComponent,
-    DataModelDomainComponent
+    DataModelDomainComponent,
   ],
   imports: [
     BrowserModule,
@@ -54,10 +54,10 @@ import { DataModelDomainComponent } from './data-models/data-model-domain/data-m
     MatCardModule,
     MatTabsModule,
     ServiceWorkerModule.register('ngsw-worker.js', {
-      enabled: environment.production
-    })
+      enabled: environment.production,
+    }),
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
 export class AppModule {}
