@@ -80,5 +80,8 @@ tr:nth-child(even) {
   border: black;
 }
 #aJson a:hover {
-  color: black;
+  color: maroon;
+  /* color: rgb(5, 5, 119); */
+  background-color: lightgray;
+  text-decoration: underline;
 }
