@@ -19,7 +19,10 @@ import { MatCardModule } from '@angular/material/card';
 import { MatTabsModule } from '@angular/material/tabs';
 
 import { SearchResultComponent } from './search-result/search-result.component';
-import { ServiceWorkerModule } from '@angular/service-worker';
+import {
+  ServiceWorkerModule,
+  SwRegistrationOptions
+} from '@angular/service-worker';
 import { environment } from '../environments/environment';
 import { DataModelsComponent } from './data-models/data-models.component';
 import { EntitiesComponent } from './entities/entities.component';
@@ -39,7 +42,7 @@ import { DataModelDomainComponent } from './data-models/data-model-domain/data-m
     DataModelsComponent,
     EntitiesComponent,
     PageNotFoundComponent,
-    DataModelDomainComponent,
+    DataModelDomainComponent
   ],
   imports: [
     BrowserModule,
@@ -53,11 +56,14 @@ import { DataModelDomainComponent } from './data-models/data-model-domain/data-m
     MatAutocompleteModule,
     MatCardModule,
     MatTabsModule,
-    ServiceWorkerModule.register('ngsw-worker.js', {
-      enabled: environment.production,
-    }),
+    ServiceWorkerModule.register('ngsw-worker.js')
   ],
-  providers: [],
-  bootstrap: [AppComponent],
+  providers: [
+    {
+      provide: SwRegistrationOptions,
+      useFactory: () => ({ enabled: environment.production })
+    }
+  ],
+  bootstrap: [AppComponent]
 })
 export class AppModule {}
