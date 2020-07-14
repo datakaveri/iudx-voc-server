@@ -18,13 +18,13 @@ import io.vertx.ext.web.client.HttpResponse;
 import io.vertx.ext.web.codec.BodyCodec;
 import java.lang.Throwable;
 
-
+import iudx.vocserver.auth.AuthCache;
 
 class AuthServiceImpl implements AuthService {
   private static final Logger LOGGER = LoggerFactory.getLogger(AuthServiceImpl.class);
   private WebClient client;
   private JsonObject authObject;
-
+  private AuthCache cache;
 
   AuthServiceImpl(WebClient client, JsonObject authObject, Handler<AsyncResult<AuthService>> readyHandler) {
     this.client = client;
@@ -38,8 +38,13 @@ class AuthServiceImpl implements AuthService {
   @Override
   public AuthService validateToken(String token, String serverId,
       Handler<AsyncResult<Boolean>> resultHandler) {
-
+   
     if (authObject.getString("authType").equals("localauth")) {
+      resultHandler.handle(Future.succeededFuture(true));
+      return this;
+    }
+
+    if (cache.token.equals(token)) {
       resultHandler.handle(Future.succeededFuture(true));
       return this;
     }
@@ -64,7 +69,15 @@ class AuthServiceImpl implements AuthService {
                     .replace("*", ""));
 
                 try {
-                  if (patObj.matcher(serverId).matches()) validToken = 1;
+                  if (patObj.matcher(serverId).matches()) {
+                    validToken = 1;
+                    //cache the result
+                    cache.token = token;
+                    cache.statusCode = ar.result().statusCode();
+                    cache.body = ar.result().bodyAsJsonObject();
+                    cache.startTimer();
+                    LOGGER.info("Cached");
+                  }
                 } catch (Exception e) {
                   validToken = 0;
                 }
