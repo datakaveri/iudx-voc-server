@@ -1,21 +1,32 @@
 package iudx.vocserver.auth;
 
-import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
+
+import java.util.Timer; 
+import java.util.TimerTask; 
 
 public class AuthCache {
 
-    public String token;
-    public int statusCode;
-    public JsonObject body;
+  private static final Logger LOGGER = LoggerFactory.getLogger(AuthCache.class);
 
-    private Vertx vertx = Vertx.vertx();
+  public String token;
+  public int statusCode;
+  public JsonObject body;
 
-    public void startTimer() {
-       long timerID = vertx.setTimer(600000, id -> {
-            token = "";
-            statusCode = -1;
-            body.clear();
-        });
-    }
+  Timer t = new Timer();  
+  TimerTask task = new TimerTask() {  
+    @Override  
+    public void run() {  
+        LOGGER.info("Timer ran");
+        token = "";
+        statusCode = -1;
+        body.clear();  
+    };  
+  };  
+  public void startTimer() {
+    long delay = 600000L;
+    t.schedule(task, delay);
+  }
 }
