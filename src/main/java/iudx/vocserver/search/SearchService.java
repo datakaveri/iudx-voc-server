@@ -22,12 +22,35 @@ import java.util.List;
 @ProxyGen
 @VertxGen
 public interface SearchService {
+  /**
+   * Search Service Interface
+   */
 
-  //@TODO: Add comments for the functions
-
+  /**
+   * insertIndex - Insert the document into the search index
+   * @param body JsonArray of document to be inserted
+   * @return void
+   */
   void insertIndex(JsonArray body, Handler<AsyncResult<JsonObject>> resultHandler);
+
+  /**
+   * deleteFromIndex - Delete the document from the search index
+   * @param uid unique identifier for document
+   * @return void
+   */
   void deleteFromIndex(String uid, Handler<AsyncResult<Boolean>> resultHandler);
+
+  /**
+   * deleteIndex - Delete the whole index
+   * @return void
+   */
   void deleteIndex(Handler<AsyncResult<Boolean>> resultHandler);
+
+  /**
+   * searchIndex - search for the document in the index
+   * @param pattern search query
+   * @return void
+   */
   void searchIndex(String pattern, Handler<AsyncResult<JsonArray>> resultHandler);
 
   @GenIgnore
