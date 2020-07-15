@@ -24,7 +24,8 @@ class AuthServiceImpl implements AuthService {
   private static final Logger LOGGER = LoggerFactory.getLogger(AuthServiceImpl.class);
   private WebClient client;
   private JsonObject authObject;
-  private AuthCache cache;
+  private AuthCache cache[] = new AuthCache[10];
+  private int cacheIndex = 0;
 
   AuthServiceImpl(WebClient client, JsonObject authObject, Handler<AsyncResult<AuthService>> readyHandler) {
     this.client = client;
@@ -43,10 +44,11 @@ class AuthServiceImpl implements AuthService {
       resultHandler.handle(Future.succeededFuture(true));
       return this;
     }
-
-    if (cache.token.equals(token)) {
-      resultHandler.handle(Future.succeededFuture(true));
-      return this;
+    for(int i=0;i<cacheIndex;i++) {
+      if (cache[i].token.equals(token)) {
+        resultHandler.handle(Future.succeededFuture(true));
+        return this;
+      }
     }
 
     client
@@ -72,10 +74,11 @@ class AuthServiceImpl implements AuthService {
                   if (patObj.matcher(serverId).matches()) {
                     validToken = 1;
                     //cache the result
-                    cache.token = token;
-                    cache.statusCode = ar.result().statusCode();
-                    cache.body = ar.result().bodyAsJsonObject();
-                    cache.startTimer();
+                    cache[cacheIndex].token = token;
+                    cache[cacheIndex].statusCode = ar.result().statusCode();
+                    cache[cacheIndex].body = ar.result().bodyAsJsonObject();
+                    cache[cacheIndex].startTimer();
+                    cacheIndex++;
                     LOGGER.info("Cached");
                   }
                 } catch (Exception e) {
