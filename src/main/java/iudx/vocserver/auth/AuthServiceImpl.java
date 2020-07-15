@@ -24,7 +24,7 @@ class AuthServiceImpl implements AuthService {
   private static final Logger LOGGER = LoggerFactory.getLogger(AuthServiceImpl.class);
   private WebClient client;
   private JsonObject authObject;
-  private AuthCache cache[] = new AuthCache[10];
+  private AuthCache cache[] = new AuthCache[100];
   private int cacheIndex = 0;
 
   AuthServiceImpl(WebClient client, JsonObject authObject, Handler<AsyncResult<AuthService>> readyHandler) {
@@ -78,7 +78,7 @@ class AuthServiceImpl implements AuthService {
                     cache[cacheIndex].statusCode = ar.result().statusCode();
                     cache[cacheIndex].body = ar.result().bodyAsJsonObject();
                     cache[cacheIndex].startTimer();
-                    cacheIndex++;
+                    cacheIndex = (cacheIndex+1)%100;
                     LOGGER.info("Cached");
                   }
                 } catch (Exception e) {
