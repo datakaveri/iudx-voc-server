@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DataModelsComponent } from './data-models.component';
+import { DataModelsComponent } from './../data-models/data-models.component';
 
 describe('DataModelsComponent', () => {
   let component: DataModelsComponent;
@@ -8,9 +8,8 @@ describe('DataModelsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DataModelsComponent ]
-    })
-    .compileComponents();
+      declarations: [DataModelsComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

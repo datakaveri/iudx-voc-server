@@ -4,22 +4,22 @@ import { Observable } from 'rxjs';
 import { DataModel } from '../types/dataModel';
 
 @Component({
-  selector: 'app-data-models',
-  templateUrl: './data-models.component.html',
-  styleUrls: ['./data-models.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'app-data-models-domain',
+  templateUrl: './data-models-domain.component.html',
+  styleUrls: ['./data-models-domain.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DataModelsComponent implements OnInit {
+export class DataModelsDomainComponent implements OnInit {
   datamodels: Observable<DataModel[]>;
   Colors: Array<any> = [
-    '#bfefff',
     '#F6EdFF',
-    '#F5FFFA',
-    '#FFFFED',
-    '#CAE1FF',
-    '#bfefff	',
-    '#D9D9F3',
-    '#fb9667'
+    // '#bfefff',
+    // '#F5FFFA',
+    // '#FFFFED',
+    // '#CAE1FF',
+    // '#bfefff	',
+    // '#D9D9F3',
+    // '#fb9667',
   ];
   icons: Array<any> = [];
   constructor(private backendService: DataService) {}
