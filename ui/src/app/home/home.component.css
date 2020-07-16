@@ -1,6 +1,12 @@
 .jumbotron {
   background-color: white;
 }
-.content-style {
+.content {
   margin-top: -20px;
+  /* margin: 0 auto; */
+  text-align: justify;
+  /* padding: 0px 100px; */
+}
+h1 {
+  text-align: center;
 }
