@@ -32,3 +32,6 @@ mat-card {
   margin-right: 100px;
   align-items: center;
 }
+img {
+  width: 30px;
+}
