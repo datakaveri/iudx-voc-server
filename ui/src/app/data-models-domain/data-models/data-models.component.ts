@@ -5,12 +5,12 @@ import { DataModel } from 'src/app/types/dataModel';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
-  selector: 'app-data-model-domain',
-  templateUrl: './data-model-domain.component.html',
-  styleUrls: ['./data-model-domain.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'app-data-models',
+  templateUrl: './data-models.component.html',
+  styleUrls: ['./data-models.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DataModelDomainComponent implements OnInit {
+export class DataModelsComponent implements OnInit {
   domains: Observable<DataModel[]>;
   value: string;
 
@@ -23,7 +23,7 @@ export class DataModelDomainComponent implements OnInit {
     return this.getDomainValue();
   }
   getDomainValue() {
-    this.route.params.subscribe(params => {
+    this.route.params.subscribe((params) => {
       this.value = params['domainName'];
     });
     this.domains = this.backendService.searchRelationship(

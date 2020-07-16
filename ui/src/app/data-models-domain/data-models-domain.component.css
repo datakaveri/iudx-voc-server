@@ -1,5 +1,6 @@
 .example-card {
-  max-width: 400px;
+  /* max-width: 400px; */
+  width: 40%;
   display: inline-block;
   /* margin: 20px; */
   min-width: 400px;
@@ -28,5 +29,6 @@ i {
 
 mat-card {
   margin-bottom: 50px;
-  margin-right: 50px;
+  margin-right: 100px;
+  align-items: center;
 }
