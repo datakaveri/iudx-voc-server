@@ -18,18 +18,20 @@ import io.vertx.ext.web.client.HttpResponse;
 import io.vertx.ext.web.codec.BodyCodec;
 import java.lang.Throwable;
 
-import iudx.vocserver.auth.AuthCache;
+import java.util.concurrent.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter; 
 
 class AuthServiceImpl implements AuthService {
   private static final Logger LOGGER = LoggerFactory.getLogger(AuthServiceImpl.class);
   private WebClient client;
   private JsonObject authObject;
-  private AuthCache cache[] = new AuthCache[100];
-  private int cacheIndex = 0;
+  private ConcurrentHashMap cache;
 
   AuthServiceImpl(WebClient client, JsonObject authObject, Handler<AsyncResult<AuthService>> readyHandler) {
     this.client = client;
     this.authObject = authObject;
+    cache = new ConcurrentHashMap<String,String>();
     readyHandler.handle(Future.succeededFuture(this));
   }
 
@@ -44,10 +46,13 @@ class AuthServiceImpl implements AuthService {
       resultHandler.handle(Future.succeededFuture(true));
       return this;
     }
-    for(int i=0;i<cacheIndex;i++) {
-      if (cache[i].token.equals(token)) {
+
+    if(cache.containsKey(token)){
+      if(isValid(cache.get(token).toString())) {
         resultHandler.handle(Future.succeededFuture(true));
         return this;
+      } else {
+        cache.remove(token,cache.get(token));
       }
     }
 
@@ -73,12 +78,10 @@ class AuthServiceImpl implements AuthService {
                 try {
                   if (patObj.matcher(serverId).matches()) {
                     validToken = 1;
-                    //cache the result
-                    cache[cacheIndex].token = token;
-                    cache[cacheIndex].statusCode = ar.result().statusCode();
-                    cache[cacheIndex].body = ar.result().bodyAsJsonObject();
-                    cache[cacheIndex].startTimer();
-                    cacheIndex = (cacheIndex+1)%100;
+                    //cache the token and expiry date
+                    String expiry = ar.result().bodyAsJsonObject().getString("expiry");
+                    String truncExpiry = expiry.substring(0,19);
+                    cache.put(token,truncExpiry);
                     LOGGER.info("Cached");
                   }
                 } catch (Exception e) {
@@ -96,5 +99,15 @@ class AuthServiceImpl implements AuthService {
           }
         });
     return this;
+  }
+
+  private boolean isValid(String expiry){
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+    LocalDateTime now = LocalDateTime.now();  
+    String today = formatter.format(now);
+
+    LocalDateTime expiryDate = LocalDateTime.parse(expiry,formatter);
+    LocalDateTime currentDate = LocalDateTime.parse(today,formatter);
+    return currentDate.isBefore(expiryDate);
   }
 }
