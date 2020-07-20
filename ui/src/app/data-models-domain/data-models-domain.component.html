@@ -75,17 +75,23 @@
           *ngSwitchCase="'Environment'"
           mat-card-avatar
           class="example-header-image"
-        ></div>
+        >
+          <i class="fab fa-pagelines fa-2x"></i>
+        </div>
         <div
           *ngSwitchCase="'StreetLight'"
           mat-card-avatar
           class="example-header-image"
         >
-          <i
+          <img
+            style="color: yellow !important;"
+            src="../../assets/streetlight.png"
+          />
+          <!-- <i
             class="fa fa-lightbulb-o fa-lg"
             aria-hidden="true"
             style="color: red;"
-          ></i>
+          ></i> -->
         </div>
         <div
           *ngSwitchDefault
