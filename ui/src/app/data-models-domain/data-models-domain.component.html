@@ -1,33 +1,6 @@
 <section id="category_section" class="container content">
   <h1 class="para-heading">IUDX DataModel Domains</h1>
 
-  <p>
-    The schema used to specify voc.iudx.org.in is derived from the Resource
-    Description Framework (RDF) schema. Apart from standard properties from
-    RDFS, additional properties have been defined to specify vocabulary
-    components. For example, similar to schema.org, additional properties like
-    ‘domainIncludes’ and ‘rangeIncludes’ have been used to allow associating a
-    property with multiple domains and ranges.
-  </p>
-  <p>voc.iudx.org.in consists of:</p>
-  <br />
-  <ul style="text-align: justify;">
-    <li>
-      Set of ‘types’ (or ‘classes’) representing structured data objects. These
-      ‘types’ are organized into single inheritance hierarchies using the
-      ‘rdfs:subclassOf’ property from RDF Schema.
-    </li>
-    <br />
-    <li>
-      Set of ‘properties’ where each property may have one or more types as its
-      domain which implies that this property may be present in the instances
-      belonging to any of the domain types. Further, each property may have one
-      or more types as its range which implies that the value objects for this
-      property should be an instance of at least one of the range types.
-      Additional properties like ‘exactMatch’ may be used to provide additional
-      linkings to already known properties from other vocabularies.
-    </li>
-  </ul>
   <br />
   <br />
   <div class="card-container">
