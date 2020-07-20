@@ -1,12 +1,17 @@
 .jumbotron {
   background-color: white;
+  padding-bottom: 10px;
 }
 .content {
-  margin-top: -20px;
+  margin-top: -25px;
   /* margin: 0 auto; */
   text-align: justify;
   /* padding: 0px 100px; */
 }
 h1 {
   text-align: center;
+}
+
+ul > li {
+  font-size: 17px;
 }
