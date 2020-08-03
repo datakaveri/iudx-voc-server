@@ -25,12 +25,14 @@ interface VocApisInterface {
   void getMasterHandler(RoutingContext context);
   void getSchemaHandler(RoutingContext context);
   void getExampleHandler(RoutingContext context);
+  void getDescriptorHandler(RoutingContext context);
   void searchHandler(RoutingContext context);
   void fuzzySearchHandler(RoutingContext context);
   void relationshipSearchHandler(RoutingContext context);
   void insertMasterHandler(RoutingContext context);
   void insertSchemaHandler(RoutingContext context);
   void insertExampleHandler(RoutingContext context);
+  void insertDescriptorHandler(RoutingContext context);
   void deleteMasterHandler(RoutingContext context);
   void deleteSchemaHandler(RoutingContext context);
   void deleteExampleHandler(RoutingContext context);
@@ -229,7 +231,7 @@ public final class VocApis implements VocApisInterface {
    */
   // tag::db-service-calls[]
   public void getExampleHandler(RoutingContext context) {
-     String type = context.request().getParam("name");
+    String type = context.request().getParam("name");
     dbService.getExamples(type, reply -> {
       if(reply.succeeded()) {
         context.response()
@@ -246,6 +248,32 @@ public final class VocApis implements VocApisInterface {
     });
   }
 
+  /**
+   * Get Descriptor for a type
+   *
+   * @param context {@link RoutingContext}
+   * @return void
+   * @TODO Throw error if load failed
+   */
+  // tag::db-service-calls[]
+  public void getDescriptorHandler(RoutingContext context) {
+    String type = context.request().getParam("name");
+    LOGGER.info(type);
+    dbService.getDescriptor(type, reply -> {
+      if(reply.succeeded()) {
+        context.response()
+        .putHeader("content-Type","application/json")
+        .setStatusCode(200)
+        .end(reply.result().encode());
+      }
+      else {
+        context.response()
+        .putHeader("content-Type","application/json")
+        .setStatusCode(404)
+        .end();
+      }
+    });
+  }
   /**
    * Search for schemas
    *
@@ -482,6 +510,29 @@ public final class VocApis implements VocApisInterface {
   }
 
   /**
+   * Insert a descriptor
+   *
+   * @param context {@link RoutingContext}
+   * @return void
+   */
+  // tag::db-service-calls[]
+  public void insertDescriptorHandler(RoutingContext context) {
+    String id = context.request().getParam("name");
+    LOGGER.info(id);
+    context.response().putHeader("content-type", "application/json");
+    LOGGER.info(context.getBodyAsJson());
+    dbService.insertDescriptor(id,context.getBodyAsJson(), reply -> {
+      if (reply.succeeded()) {
+        LOGGER.info("Inserted descriptor" + id);
+        context.response().setStatusCode(201).end();
+      }
+      else {
+        LOGGER.info("Failed to insert descriptor");
+        context.response().setStatusCode(400).end();
+      }
+    });
+  }
+  /** 
    * Delete the master schema
    *
    * @param context {@link RoutingContext}

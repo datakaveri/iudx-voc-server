@@ -231,6 +231,27 @@ public class HttpServerVerticle extends AbstractVerticle {
       });
     });
 
+    /** GET/POST for Data Descriptor
+    */
+    router.route("/descriptor/:name").consumes("application/ld+json")
+      .handler(BodyHandler.create());
+
+    router.get("/descriptor/:name").consumes("application/ld+json")
+      .produces("application/ld+json")
+      .handler( routingContext -> {
+        vocApis.getDescriptorHandler(routingContext);
+      });
+    
+    router.post("/descriptor/:name").consumes("application/ld+json")
+    .handler( routingContext -> {
+      String token = routingContext.request().getHeader("token");
+      authService.validateToken(token, serverId, authReply -> {
+        if (authReply.succeeded()) {
+        vocApis.insertDescriptorHandler(routingContext);
+        }
+      });
+    });
+
     /** Get/Post classes or properties by name (JSON-LD API) 
       * @TODO: Auth failure needs to be logged
     **/
@@ -284,7 +305,7 @@ public class HttpServerVerticle extends AbstractVerticle {
       vocApis.getPropertiesHandler(routingContext);
     });
 
-    /**  Webhook trigger
+    /**  Webhook triggerf
     */
     router.route("/webhook").consumes("application/json")
       .handler(BodyHandler.create());

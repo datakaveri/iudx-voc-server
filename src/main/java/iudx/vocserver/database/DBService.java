@@ -95,7 +95,15 @@ public interface DBService {
   @Fluent
   DBService getExamples(String name, Handler<AsyncResult<JsonArray>> resultHandler);
   
-   /**
+  /**
+   * getDescriptor - Gets descriptor for the given type
+   * @param name Type name
+   * @return {@link DBServiceImpl}
+   */ 
+  @Fluent
+  DBService getDescriptor(String name, Handler<AsyncResult<JsonArray>> resultHandler);
+
+  /**
    * insertMasterContext - insert json-ld iudx master context
    * @param contex JsonObject Master Context
    * @return {@link DBServiceImpl}
@@ -128,6 +136,14 @@ public interface DBService {
    */
   @Fluent
   DBService insertExamples(String name, JsonObject example, Handler<AsyncResult<Boolean>> resultHandler);
+
+  /**
+   * insertDescriptor - Insert a descriptor
+   * @param descriptor descriptor JsonObject
+   * @return {@link DBServiceImpl}
+   */
+  @Fluent
+  DBService insertDescriptor(String name, JsonObject descriptor, Handler<AsyncResult<Boolean>> resultHandler);
 
    /**
    * deleteFromSummary - Delete from summary a class or property 
