@@ -528,7 +528,7 @@ public final class VocApis implements VocApisInterface {
       }
       else {
         LOGGER.info("Failed to insert descriptor");
-        context.response().setStatusCode(400).end();
+        context.response().setStatusCode(404).end();
       }
     });
   }

@@ -305,7 +305,7 @@ public class HttpServerVerticle extends AbstractVerticle {
       vocApis.getPropertiesHandler(routingContext);
     });
 
-    /**  Webhook triggerf
+    /**  Webhook trigger
     */
     router.route("/webhook").consumes("application/json")
       .handler(BodyHandler.create());
