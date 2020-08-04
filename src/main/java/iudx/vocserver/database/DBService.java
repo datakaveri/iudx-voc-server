@@ -33,6 +33,14 @@ public interface DBService {
   @Fluent
   DBService makeSummary(String name, Handler<AsyncResult<JsonObject>> resultHandler);
 
+  /**
+   * makeDescriptorSummary - Make summary of descriptor type and id 
+   * @param name type of the descriptor
+   * @return {@link DBServiceImpl}
+   */
+  @Fluent
+  DBService makeDescriptorSummary(String name, JsonObject descriptor, Handler<AsyncResult<JsonObject>> resultHandler);
+
    /**
    * relationshipSearch - Search for a schema either through a relationship
    * @param key key
@@ -49,6 +57,13 @@ public interface DBService {
    */
   @Fluent
   DBService search(String pattern, Handler<AsyncResult<JsonArray>> resultHandler);
+
+  /**
+   * listDescriptor -Return list of descriptors of particular type
+   * @return {@link DBServiceImpl}
+   */
+  @Fluent
+  DBService listDescriptor(Handler<AsyncResult<JsonArray>> resultHandler);
 
   /**
    * getMasterContext - Gets json-ld iudx master context

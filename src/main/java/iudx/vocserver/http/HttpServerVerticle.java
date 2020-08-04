@@ -196,7 +196,7 @@ public class HttpServerVerticle extends AbstractVerticle {
       .handler( routingContext -> {
       vocApis.relationshipSearchHandler(routingContext);
     });
-
+    
     /**
     * GET/POST examples by type
     * @TODO: Auth failure needs to be logged
@@ -250,6 +250,12 @@ public class HttpServerVerticle extends AbstractVerticle {
         vocApis.insertDescriptorHandler(routingContext);
         }
       });
+    });
+
+    router.get("/list/descriptors").consumes("application/json")
+    .produces("application/json")
+    .handler(routingContext -> {
+      vocApis.listDescriptorHandler(routingContext);
     });
 
     /** Get/Post classes or properties by name (JSON-LD API) 

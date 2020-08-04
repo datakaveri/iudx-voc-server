@@ -29,6 +29,7 @@ interface VocApisInterface {
   void searchHandler(RoutingContext context);
   void fuzzySearchHandler(RoutingContext context);
   void relationshipSearchHandler(RoutingContext context);
+  void listDescriptorHandler(RoutingContext context);
   void insertMasterHandler(RoutingContext context);
   void insertSchemaHandler(RoutingContext context);
   void insertExampleHandler(RoutingContext context);
@@ -390,6 +391,22 @@ public final class VocApis implements VocApisInterface {
     });
   }
 
+  public void listDescriptorHandler(RoutingContext context) {
+    dbService.listDescriptor(reply -> {
+      if(reply.succeeded()) {
+        context.response()
+        .putHeader("content-Type","application/json")
+        .setStatusCode(200)
+        .end(reply.result().encode());
+      }
+      else {
+        context.response()
+        .putHeader("content-Type","application/json")
+        .setStatusCode(404)
+        .end();
+      }
+    });
+  } 
   /**
    * Insert the master schema
    *
@@ -524,6 +541,7 @@ public final class VocApis implements VocApisInterface {
     dbService.insertDescriptor(id,context.getBodyAsJson(), reply -> {
       if (reply.succeeded()) {
         LOGGER.info("Inserted descriptor" + id);
+        dbService.makeDescriptorSummary(id, context.getBodyAsJson(),res -> {} );
         context.response().setStatusCode(201).end();
       }
       else {
