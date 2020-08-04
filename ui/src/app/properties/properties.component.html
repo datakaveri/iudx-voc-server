@@ -15,13 +15,11 @@
     <tbody>
       <tr *ngFor="let property of properties | async; index as i">
         <td>
-          <a [routerLink]="['/', property.label]"
-            ><ngb-highlight [result]="property.label"></ngb-highlight>
-          </a>
+          <a [routerLink]="['/', property.label]">{{ property.label }} </a>
         </td>
 
         <td>
-          <ngb-highlight [result]="property.comment"></ngb-highlight>
+          {{ property.comment }}
         </td>
       </tr>
     </tbody>

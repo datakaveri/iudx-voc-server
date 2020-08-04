@@ -9,6 +9,8 @@ import { EntitiesComponent } from './entities/entities.component';
 import { SearchResultComponent } from './search-result/search-result.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { DataModelsComponent } from './data-models-domain/data-models/data-models.component';
+import { DataDescriptorsComponent } from './data-descriptors/data-descriptors.component';
+import { DescriptorDetailsComponent } from './data-descriptors/descriptor-details/descriptor-details.component';
 
 const routes: Routes = [
   {
@@ -31,6 +33,14 @@ const routes: Routes = [
   {
     path: 'entities',
     component: EntitiesComponent,
+  },
+  {
+    path: 'data-descriptors',
+    component: DataDescriptorsComponent,
+  },
+  {
+    path: 'data-descriptors/details',
+    component: DescriptorDetailsComponent,
   },
   {
     path: ':schemaName',

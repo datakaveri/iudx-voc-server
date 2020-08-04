@@ -2,7 +2,7 @@
   <div id="intro">
     <nav id="nav-style" class="navbar navbar-expand-lg navbar-dark bg-dark">
       <img
-        style="padding-right:10px;"
+        style="padding-right: 10px;"
         class="img-style img-fluid"
         alt="IUDX-Logo"
         src="../../assets/iudx_logo.png"
@@ -39,7 +39,7 @@
               class="nav-link"
               routerLinkActive="active"
               routerLink="/datamodels"
-              >DataModels</a
+              >Data Models</a
             >
           </li>
           <li class="nav-item">
@@ -47,31 +47,14 @@
               >Types</a
             >
           </li>
-          <!-- <li class="nav-item">
-            <a class="nav-link">IUDX properties</a>
-          </li> -->
-          <!-- <li class="nav-item dropdown">
+          <li class="nav-item">
             <a
-              class="nav-link dropdown-toggle"
-              href="#"
-              id="dropdown01"
-              data-toggle="dropdown"
-              aria-haspopup="true"
-              aria-expanded="false"
+              class="nav-link"
+              routerLinkActive="active"
+              routerLink="/data-descriptors"
+              >Data Descriptors</a
             >
-              base schemas
-            </a>
-            <div
-              id="menu-style"
-              class="dropdown-menu"
-              aria-labelledby="dropdown01"
-            >
-              <a class="dropdown-item" routerLink="/list/classes">Classes</a>
-              <a class="dropdown-item" routerLink="/list/properties"
-                >Properties</a
-              >
-            </div>
-          </li> -->
+          </li>
         </ul>
         <form class="form-inline my-2 my-lg-0">
           <input
@@ -90,7 +73,7 @@
               *ngFor="let res of searchRes | async"
               [value]="res.label"
             >
-              <a style="color:black" routerLink="{{ res.label }}">
+              <a style="color: black;" routerLink="{{ res.label }}">
                 {{ res.label }}
               </a>
             </mat-option>

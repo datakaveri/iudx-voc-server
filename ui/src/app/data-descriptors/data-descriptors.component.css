@@ -11,14 +11,14 @@ thead > tr {
 tbody > tr:nth-child(odd) {
   background-color: #bfefff !important;
 }
-td a:link,
-td a:visited {
+.list-style a:link,
+.list-style a:visited {
   color: #2c2c2c;
   border-bottom: dotted 1px #2c2c2c;
   transition: color 0.2s border-bottom 0.2s;
   text-decoration: none;
 }
-td > a:hover {
+.list-style a:hover {
   border-bottom: none;
   color: maroon;
 }

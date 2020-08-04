@@ -16,13 +16,11 @@
     <tbody>
       <tr *ngFor="let value of domains | async; index as i">
         <td>
-          <a [routerLink]="['/', value.label]"
-            ><ngb-highlight [result]="value.label"></ngb-highlight>
-          </a>
+          <a [routerLink]="['/', value.label]">{{ value.label }} </a>
         </td>
 
         <td>
-          <ngb-highlight [result]="value.comment"></ngb-highlight>
+          {{ value.comment }}
         </td>
       </tr>
     </tbody>

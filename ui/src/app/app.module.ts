@@ -17,6 +17,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatCardModule } from '@angular/material/card';
 import { MatTabsModule } from '@angular/material/tabs';
+import { ClipboardModule } from '@angular/cdk/clipboard';
 
 import { SearchResultComponent } from './search-result/search-result.component';
 import {
@@ -28,6 +29,8 @@ import { DataModelsDomainComponent } from './data-models-domain/data-models-doma
 import { EntitiesComponent } from './entities/entities.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { DataModelsComponent } from './data-models-domain/data-models/data-models.component';
+import { DataDescriptorsComponent } from './data-descriptors/data-descriptors.component';
+import { DescriptorDetailsComponent } from './data-descriptors/descriptor-details/descriptor-details.component';
 
 @NgModule({
   declarations: [
@@ -43,6 +46,8 @@ import { DataModelsComponent } from './data-models-domain/data-models/data-model
     EntitiesComponent,
     PageNotFoundComponent,
     DataModelsDomainComponent,
+    DataDescriptorsComponent,
+    DescriptorDetailsComponent,
   ],
   imports: [
     BrowserModule,
@@ -56,6 +61,7 @@ import { DataModelsComponent } from './data-models-domain/data-models/data-model
     MatAutocompleteModule,
     MatCardModule,
     MatTabsModule,
+    ClipboardModule,
     ServiceWorkerModule.register('ngsw-worker.js'),
   ],
   providers: [

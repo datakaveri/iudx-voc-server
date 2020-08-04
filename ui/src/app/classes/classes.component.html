@@ -12,13 +12,11 @@
     <tbody>
       <tr *ngFor="let class of classes | async; index as i">
         <td>
-          <a [routerLink]="['/', class.label]"
-            ><ngb-highlight [result]="class.label"></ngb-highlight>
-          </a>
+          <a [routerLink]="['/', class.label]">{{ class.label }} </a>
         </td>
 
         <td>
-          <ngb-highlight [result]="class.comment"></ngb-highlight>
+          {{ class.comment }}
         </td>
       </tr>
     </tbody>

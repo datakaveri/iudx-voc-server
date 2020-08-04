@@ -1,0 +1,32 @@
+<section id="data_descriptor_section" class="container content">
+  <h1>List of Data Descriptors for Data Model</h1>
+  <br />
+
+  <br />
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">Data Model</th>
+        <th scope="col">Data Descriptor name</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- <tr *ngFor="let value of descriptors | async; index as i"> -->
+      <tr>
+        <td>
+          EnvAQM
+        </td>
+
+        <td>
+          <ul *ngFor="let value of descriptors.EnvAQM">
+            <li class="list-style">
+              <a routerLink="" (click)="getDescriptorDetails(value)">{{
+                value
+              }}</a>
+            </li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</section>

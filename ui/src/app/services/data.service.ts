@@ -5,7 +5,7 @@ import { map } from 'rxjs/operators';
 import {
   HttpClient,
   HttpErrorResponse,
-  HttpHeaders
+  HttpHeaders,
 } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
 
@@ -15,13 +15,13 @@ import {
   Class,
   Classes,
   Property,
-  Properties
+  Properties,
 } from '../types/classDetail';
 import { PropertyDetail } from '../types/propertyDetail';
 import { DataModel } from '../types/dataModel';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class DataService {
   [x: string]: any;
@@ -64,7 +64,7 @@ export class DataService {
     return this.http
       .get(`${this.baseURL}/${className}`, { headers: this.headersLD })
       .pipe(
-        map(resp => {
+        map((resp) => {
           var flattened = <ClassDetail>{};
           flattened.superClasses = <Classes>[];
 
@@ -85,14 +85,14 @@ export class DataService {
                   label: className,
                   comment: nodeComment,
                   properties: <Properties>[],
-                  subClassOf: subClassOf
+                  subClassOf: subClassOf,
                 };
               } else {
                 flattened.superClasses.push(<Class>{
                   label: nodeId,
                   comment: nodeComment,
                   properties: <Properties>[],
-                  subClassOf: subClassOf
+                  subClassOf: subClassOf,
                 });
               }
             }
@@ -115,7 +115,7 @@ export class DataService {
                   flattened.baseClass.properties.push(<Property>{
                     label: nodeId,
                     comment: nodeComment,
-                    type: this.ranges
+                    type: this.ranges,
                   });
                 } else {
                   for (var supClass of flattened.superClasses) {
@@ -124,7 +124,7 @@ export class DataService {
                       supClass.properties.push(<Property>{
                         label: nodeId,
                         comment: nodeComment,
-                        type: this.ranges
+                        type: this.ranges,
                       });
                     }
                   }
@@ -132,7 +132,7 @@ export class DataService {
               }
             }
           }
-          flattened.superClasses.forEach(function(node, i) {
+          flattened.superClasses.forEach(function (node, i) {
             flattened.heirarchy.push(node.label);
           });
           flattened.heirarchy = flattened.heirarchy.reverse();
@@ -148,7 +148,7 @@ export class DataService {
     return this.http
       .get(`${this.baseURL}/${propertyName}`, { headers: this.headersLD })
       .pipe(
-        map(resp => {
+        map((resp) => {
           var flattened = <PropertyDetail>{};
           flattened.type = <string[]>[];
           flattened.domains = <string[]>[];
@@ -179,7 +179,7 @@ export class DataService {
   search(term: string): Observable<SearchRes[]> {
     return this.http
       .get<SearchRes[]>(`${this.baseURL}/fuzzysearch?q=${term}`, {
-        headers: this.headers
+        headers: this.headers,
       })
       .pipe(catchError(this.handleError));
   }
@@ -187,14 +187,21 @@ export class DataService {
   searchRelationship(rel: string, val: string): Observable<SearchRes[]> {
     return this.http
       .get<SearchRes[]>(`${this.baseURL}/relationship?rel=${rel}&val=${val}`, {
-        headers: this.headers
+        headers: this.headers,
       })
       .pipe(catchError(this.handleError));
   }
   getExamples(schemaName: string) {
     return this.http
       .get<[]>(`${this.baseURL}/examples/${schemaName}`, {
-        headers: this.headersLD
+        headers: this.headersLD,
+      })
+      .pipe(catchError(this.handleError));
+  }
+  getdataDescriptors() {
+    return this.http
+      .get(`${this.baseURL}/list/descriptors}`, {
+        headers: this.headers,
       })
       .pipe(catchError(this.handleError));
   }

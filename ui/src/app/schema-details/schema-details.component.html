@@ -61,18 +61,16 @@
           *ngFor="let property of (classDetail | async)?.baseClass.properties"
         >
           <td>
-            <a [routerLink]="['/', property.label]"
-              ><ngb-highlight [result]="property.label"></ngb-highlight>
-            </a>
+            <a [routerLink]="['/', property.label]">{{ property.label }} </a>
           </td>
           <td>
             <a *ngFor="let tp of property.type" [routerLink]="['/', tp]"
-              ><ngb-highlight [result]="tp"></ngb-highlight>
+              >{{ tp }}
               <br />
             </a>
           </td>
           <td>
-            <ngb-highlight [result]="property.comment"></ngb-highlight>
+            {{ property.comment }}
           </td>
         </tr>
       </tbody>
@@ -87,19 +85,17 @@
 
         <tr *ngFor="let property of supClass.properties">
           <td>
-            <a [routerLink]="['/', property.label]"
-              ><ngb-highlight [result]="property.label"></ngb-highlight>
-            </a>
+            <a [routerLink]="['/', property.label]">{{ property.label }} </a>
           </td>
           <td>
             <a *ngFor="let tp of property.type" [routerLink]="['/', tp]"
-              ><ngb-highlight [result]="tp"></ngb-highlight>
+              >{{ tp }}
               <br />
             </a>
           </td>
 
           <td>
-            <ngb-highlight [result]="property.comment"></ngb-highlight>
+            {{ property.comment }}
           </td>
         </tr>
         <br />
@@ -134,19 +130,17 @@
 
         <tr *ngFor="let property of supClass.properties">
           <td>
-            <a [routerLink]="['/', property.label]"
-              ><ngb-highlight [result]="property.label"></ngb-highlight>
-            </a>
+            <a [routerLink]="['/', property.label]">{{ property.label }} </a>
           </td>
           <td>
             <a *ngFor="let tp of property.type" [routerLink]="['/', tp]"
-              ><ngb-highlight [result]="tp"></ngb-highlight>
+              >{{ tp }}
             </a>
             <br />
           </td>
 
           <td>
-            <ngb-highlight [result]="property.comment"></ngb-highlight>
+            {{ property.comment }}
           </td>
         </tr>
         <br />
@@ -172,9 +166,7 @@
       <tbody id="">
         <tr *ngFor="let tp of (propertyDetail | async)?.type">
           <td>
-            <a [routerLink]="['/', tp]"
-              ><ngb-highlight [result]="tp"></ngb-highlight>
-            </a>
+            <a [routerLink]="['/', tp]">{{ tp }} </a>
           </td>
           <br />
         </tr>
@@ -191,9 +183,7 @@
       <tbody>
         <tr *ngFor="let class of (propertyDetail | async)?.domains">
           <td>
-            <a [routerLink]="['/', class]"
-              ><ngb-highlight [result]="class"></ngb-highlight>
-            </a>
+            <a [routerLink]="['/', class]">{{ class }} </a>
           </td>
         </tr>
       </tbody>
@@ -214,6 +204,10 @@
       >
         <br />
         <div id="aJson" style="float: right;">
+          <button [cdkCopyToClipboard]="example | json">
+            Copy to clipboard
+          </button>
+          &nbsp;
           <a
             class="button mat-raised-button"
             (click)="getjson(example)"
