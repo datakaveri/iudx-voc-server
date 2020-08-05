@@ -19,6 +19,7 @@ import {
 } from '../types/classDetail';
 import { PropertyDetail } from '../types/propertyDetail';
 import { DataModel } from '../types/dataModel';
+import { DescriptorDetail } from '../types/descriptorDetail';
 
 @Injectable({
   providedIn: 'root',
@@ -198,14 +199,37 @@ export class DataService {
       })
       .pipe(catchError(this.handleError));
   }
-  getdataDescriptors() {
+  getAlldataDescriptors() {
     return this.http
-      .get(`${this.baseURL}/list/descriptors}`, {
+      .get<[]>(`${this.baseURL}/list/descriptors`, {
         headers: this.headers,
+      })
+      .pipe(
+        map((resp) => {
+          console.log(resp);
+          var desType = <DescriptorDetail>{};
+          desType.documents = <string[]>[];
+          desType.type = '';
+          for (var node of resp) {
+            var nodeType = '';
+            var nodeDocuments = [];
+            nodeType = node['type'];
+            nodeDocuments = node['documents'];
+            desType.type = nodeType.split('iudx:')[1];
+            desType.documents.push(nodeDocuments[0].split('iudx:')[1]);
+          }
+          return desType;
+        }),
+        catchError(this.handleError)
+      );
+  }
+  getDescriptorDetails(descriptorName: string) {
+    return this.http
+      .get<[]>(`${this.baseURL}/descriptor/${descriptorName}`, {
+        headers: this.headersLD,
       })
       .pipe(catchError(this.handleError));
   }
-
   private handleError(res: HttpErrorResponse) {
     // console.error(res.error);
     return observableThrowError(res.error || 'Server error');

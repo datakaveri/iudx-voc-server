@@ -75,27 +75,21 @@ export class SchemaDetailsComponent implements OnInit {
           }
         );
       }
-      //console.log(this.value);
       this.showExamples(this.value);
     });
   }
   showExamples(val: string) {
     this.backendService.getExamples(val).subscribe((response) => {
       if (response == [] || response.length == 0) {
-        //console.log(response);
         this.examples = false;
-
-        //console.log(this.examples);
       } else {
         this.examples = true;
         this.code = response;
-        //console.log(response);
-        //console.log(this.examples);
       }
     });
   }
   getjson(example: Object) {
-    console.log(typeof example);
+    // console.log(typeof example);
     this.jsonQuery =
       'https://json-ld.org/playground/#startTab=tab-expand&json-ld=' +
       encodeURIComponent(JSON.stringify(example));

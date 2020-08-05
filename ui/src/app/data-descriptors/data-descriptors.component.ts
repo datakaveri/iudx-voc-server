@@ -10,18 +10,22 @@ import { Router } from '@angular/router';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DataDescriptorsComponent implements OnInit {
-  // descriptors: Observable<any>;
-  descriptors = { EnvAQM: ['EnvAQM1', 'EnvAQM2'] };
+  descriptors: Observable<any>;
+  desType: any;
+  DesDocument: [];
+  documents: string;
+  arraydocs: any;
+  results: any;
   constructor(private backendService: DataService, private router: Router) {}
 
   ngOnInit(): void {
-    // this.getDescriptors();
+    this.getDescriptors();
   }
   getDescriptors() {
-    // this.descriptors = this.backendService.getdataDescriptors();
-  }
-  getDescriptorDetails(value) {
-    console.log(value);
-    this.router.navigate(['/data-descriptors', 'details']);
+    this.descriptors = this.backendService.getAlldataDescriptors();
+    this.descriptors.subscribe((res) => {
+      console.log(res);
+      this.results = res;
+    });
   }
 }

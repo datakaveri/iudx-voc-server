@@ -39,7 +39,7 @@ const routes: Routes = [
     component: DataDescriptorsComponent,
   },
   {
-    path: 'data-descriptors/details',
+    path: 'data-descriptors/:descriptorName',
     component: DescriptorDetailsComponent,
   },
   {

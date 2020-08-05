@@ -14,15 +14,13 @@
       <!-- <tr *ngFor="let value of descriptors | async; index as i"> -->
       <tr>
         <td>
-          EnvAQM
+          {{ results?.type }}
         </td>
 
         <td>
-          <ul *ngFor="let value of descriptors.EnvAQM">
+          <ul *ngFor="let doc of (descriptors | async)?.documents">
             <li class="list-style">
-              <a routerLink="" (click)="getDescriptorDetails(value)">{{
-                value
-              }}</a>
+              <a [routerLink]="['/data-descriptors', doc]">{{ doc }}</a>
             </li>
           </ul>
         </td>

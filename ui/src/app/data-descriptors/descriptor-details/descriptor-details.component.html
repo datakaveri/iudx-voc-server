@@ -1,16 +1,22 @@
 <section id="descriptor_details_section" class="container content">
   <h1>List of Data Descriptors for Data Model</h1>
-  <br />
 
-  <br />
-  <ul>
-    aqiMajorPollutant
-    <li>type: ValueDescriptor</li>
-    <li>description: Major pollutant in the AQI index</li>
-    <li>dataSchema: Text</li>
-    <li>
-      CO
-      <ul>
+  <pre>
+    <code [highlight]="details | async | json">
+    </code>
+</pre>
+
+  <!-- <ul *ngFor="let item of resultKeys">
+    {{
+      item
+    }}
+    <div *ngFor="let val of resultValues">
+      <li>type: {{ val.type }}</li>
+      <li>description: {{ val.description }}</li>
+      <li>unitCode: {{ val.unitCode }}</li>
+      <li>
+        unitText : {{ val.unitText }}
+        <!-- <ul>
         <li>
           description: Describes instantaneous and/or aggregated values for
           carbon monooxide(CO)
@@ -29,7 +35,9 @@
             </li>
           </ul>
         </li>
-      </ul>
-    </li>
-  </ul>
+      </ul> -->
+  <!-- </li>
+      <li>dataSchema : {{ val.dataSchema }}</li>
+    </div> 
+  </ul> -->
 </section>
