@@ -126,6 +126,28 @@ class DBServiceImpl implements DBService {
   /**
    * @{@inheritDoc}
    */
+  public DBService makeDescriptorSummary(String name, JsonObject descriptor, Handler<AsyncResult<JsonObject>> resultHandler) {
+    JsonArray types = (JsonArray) descriptor.getValue("type");
+    for(int i=0;i<types.size();i++) {
+      String type = types.getString(i);
+      JsonObject query = new JsonObject().put("type",type);
+      JsonObject update = new JsonObject().put("$push", new JsonObject().put("documents",name));
+      UpdateOptions options = new UpdateOptions().setUpsert(true);
+      dbClient.updateCollectionWithOptions("descriptorSummary", query, update, options, res -> {
+        if(res.succeeded()) {
+          resultHandler.handle(Future.succeededFuture());
+        }
+        else {
+          resultHandler.handle(Future.failedFuture(res.cause()));
+        }
+      });
+    }
+    return this;
+  }
+
+  /**
+   * @{@inheritDoc}
+   */
   @Override
   public DBService relationshipSearch(String key, String value, Handler<AsyncResult<JsonArray>> resultHandler) {
     dbClient.findWithOptions("summary",
@@ -161,6 +183,24 @@ class DBServiceImpl implements DBService {
     return this;
   }
 
+  /**
+   * @{@inheritDoc}
+   */
+  @Override
+  public DBService listDescriptor(Handler<AsyncResult<JsonArray>> resultHandler) {
+    dbClient.findWithOptions("descriptorSummary",
+    new JsonObject(),
+    new FindOptions().setFields(new JsonObject().put("_id", false)),
+    res -> {
+      if(res.succeeded()){
+        resultHandler.handle(Future.succeededFuture(new JsonArray(res.result())));
+      } else {
+        LOGGER.error("List Descriptor API failed");
+        resultHandler.handle(Future.failedFuture(res.cause()));
+      }
+    });
+    return this;
+  }
   /**
    * @{@inheritDoc}
    */
@@ -301,6 +341,28 @@ class DBServiceImpl implements DBService {
     return this;
   }
 
+  public DBService getDescriptor(String name, Handler<AsyncResult<JsonArray>> resultHandler) {
+    dbClient.findWithOptions("descriptors",
+    new JsonObject(QUERY_MATCH_ID.replace("$1","iudx:"+name)),
+    new FindOptions().setFields(new JsonObject().put("_id", false)),
+    res -> {
+      if (res.succeeded()) {
+        try {
+          LOGGER.info("Made successful request");
+          resultHandler.handle(Future.succeededFuture(new JsonArray(res.result())));
+        }
+        catch (Exception e) {
+          LOGGER.error("Exception occurred" + e);
+          resultHandler.handle(Future.failedFuture(res.cause()));
+        }
+      } else {
+        LOGGER.error("Failed getting descriptor for" + name);
+        resultHandler.handle(Future.failedFuture(res.cause()));
+      }
+    });
+    return this;
+  }
+
   /**
    * @{@inheritDoc}
    */
@@ -383,6 +445,34 @@ class DBServiceImpl implements DBService {
     return this;
   }
 
+  /**
+   * @{@inheritDoc}
+   */
+  @Override
+  public DBService insertDescriptor(String name, JsonObject descriptor, Handler<AsyncResult<Boolean>> resultHandler) {
+    descriptor = descriptor.put("_id",name);
+    final JsonObject body = descriptor;
+    dbClient.find("descriptors",
+    new JsonObject(QUERY_MATCH_ID.replace("$1", name)),
+    res -> {
+      if(res.succeeded() && !res.result().isEmpty() ) {
+        LOGGER.error("Descriptor with id already exists");
+        resultHandler.handle(Future.failedFuture(res.cause()));
+      } else {
+        dbClient.save("descriptors",
+        body,
+        ar -> {
+          if(ar.succeeded()) {
+            resultHandler.handle(Future.succeededFuture());
+          } else {
+            LOGGER.error("Failed inserting descriptor" + name);
+            resultHandler.handle(Future.failedFuture(ar.cause()));
+          }
+        });
+      }
+    });
+    return this;
+  }
   /**
    * @{@inheritDoc}
    */
