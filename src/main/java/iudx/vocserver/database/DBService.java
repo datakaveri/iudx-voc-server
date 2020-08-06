@@ -116,7 +116,7 @@ public interface DBService {
    * @return {@link DBServiceImpl}
    */ 
   @Fluent
-  DBService getDescriptor(String name, Handler<AsyncResult<JsonArray>> resultHandler);
+  DBService getDescriptor(String name, Handler<AsyncResult<JsonObject>> resultHandler);
 
   /**
    * insertMasterContext - insert json-ld iudx master context

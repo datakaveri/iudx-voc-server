@@ -341,7 +341,7 @@ class DBServiceImpl implements DBService {
     return this;
   }
 
-  public DBService getDescriptor(String name, Handler<AsyncResult<JsonArray>> resultHandler) {
+  public DBService getDescriptor(String name, Handler<AsyncResult<JsonObject>> resultHandler) {
     dbClient.findWithOptions("descriptors",
     new JsonObject(QUERY_MATCH_ID.replace("$1","iudx:"+name)),
     new FindOptions().setFields(new JsonObject().put("_id", false)),
@@ -349,7 +349,7 @@ class DBServiceImpl implements DBService {
       if (res.succeeded()) {
         try {
           LOGGER.info("Made successful request");
-          resultHandler.handle(Future.succeededFuture(new JsonArray(res.result())));
+          resultHandler.handle(Future.succeededFuture(res.result().get(0)));
         }
         catch (Exception e) {
           LOGGER.error("Exception occurred" + e);
