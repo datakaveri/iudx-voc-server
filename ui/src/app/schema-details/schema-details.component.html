@@ -203,8 +203,8 @@
         label="{{ label + (i + 1) }}"
       >
         <br />
-        <div id="aJson" style="float: right;">
-          <button [cdkCopyToClipboard]="example | json">
+        <div id="aJson">
+          <button class="clipboard-style" [cdkCopyToClipboard]="example | json">
             Copy to clipboard
           </button>
           &nbsp;
@@ -216,11 +216,13 @@
             >Open in Playground</a
           >
         </div>
-        <br />
-        <pre>
+        <!-- <br /> -->
+        <div>
+          <pre>
           <code [highlight]="example | json">
           </code>
       </pre>
+        </div>
         <br />
         <!-- <div id="aJson">
           <a
