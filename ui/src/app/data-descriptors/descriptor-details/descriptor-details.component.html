@@ -1,7 +1,11 @@
 <section id="descriptor_details_section" class="container content">
   <h1>Descriptor: {{ value }}</h1>
   <br />
-  <ngx-json-viewer [json]="details | async"></ngx-json-viewer>
+  <ngx-json-viewer
+    id="
+  #json_view"
+    [json]="details | async"
+  ></ngx-json-viewer>
 
   <!-- <ngx-json-viewer
     [json]="details | async"

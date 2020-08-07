@@ -35,3 +35,6 @@ mat-card {
 img {
   width: 30px;
 }
+.para-style p {
+  margin-top: -10px;
+}
