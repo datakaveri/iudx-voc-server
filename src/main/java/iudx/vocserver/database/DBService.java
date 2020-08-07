@@ -33,6 +33,14 @@ public interface DBService {
   @Fluent
   DBService makeSummary(String name, Handler<AsyncResult<JsonObject>> resultHandler);
 
+  /**
+   * makeDescriptorSummary - Make summary of descriptor type and id 
+   * @param name type of the descriptor
+   * @return {@link DBServiceImpl}
+   */
+  @Fluent
+  DBService makeDescriptorSummary(String name, JsonObject descriptor, Handler<AsyncResult<JsonObject>> resultHandler);
+
    /**
    * relationshipSearch - Search for a schema either through a relationship
    * @param key key
@@ -49,6 +57,13 @@ public interface DBService {
    */
   @Fluent
   DBService search(String pattern, Handler<AsyncResult<JsonArray>> resultHandler);
+
+  /**
+   * listDescriptor -Return list of descriptors of particular type
+   * @return {@link DBServiceImpl}
+   */
+  @Fluent
+  DBService listDescriptor(Handler<AsyncResult<JsonArray>> resultHandler);
 
   /**
    * getMasterContext - Gets json-ld iudx master context
@@ -95,7 +110,15 @@ public interface DBService {
   @Fluent
   DBService getExamples(String name, Handler<AsyncResult<JsonArray>> resultHandler);
   
-   /**
+  /**
+   * getDescriptor - Gets descriptor for the given type
+   * @param name Type name
+   * @return {@link DBServiceImpl}
+   */ 
+  @Fluent
+  DBService getDescriptor(String name, Handler<AsyncResult<JsonObject>> resultHandler);
+
+  /**
    * insertMasterContext - insert json-ld iudx master context
    * @param contex JsonObject Master Context
    * @return {@link DBServiceImpl}
@@ -128,6 +151,14 @@ public interface DBService {
    */
   @Fluent
   DBService insertExamples(String name, JsonObject example, Handler<AsyncResult<Boolean>> resultHandler);
+
+  /**
+   * insertDescriptor - Insert a descriptor
+   * @param descriptor descriptor JsonObject
+   * @return {@link DBServiceImpl}
+   */
+  @Fluent
+  DBService insertDescriptor(String name, JsonObject descriptor, Handler<AsyncResult<Boolean>> resultHandler);
 
    /**
    * deleteFromSummary - Delete from summary a class or property 
