@@ -79,10 +79,11 @@ tr:nth-child(even) {
 #aJson a {
   color: white;
   border: black;
-  margin-left: 20px;
+  margin-left: 10px;
 }
 #aJson a:hover {
-  color: black;
+  color: white;
+  background-color: #003f87;
 }
 button {
   border: none;
@@ -90,6 +91,6 @@ button {
 #aJson {
   width: 100%;
   display: flex;
-  align-items: flex-end;
-  padding-left: 775px;
+  /* align-items: flex-end; */
+  padding-left: 850px;
 }
