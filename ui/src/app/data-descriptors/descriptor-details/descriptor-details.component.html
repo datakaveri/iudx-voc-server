@@ -1,10 +1,12 @@
 <section id="descriptor_details_section" class="container content">
-  <h1>List of Data Descriptors for Data Model</h1>
+  <h1>Descriptor: {{ value }}</h1>
+  <br />
+  <ngx-json-viewer [json]="details | async"></ngx-json-viewer>
 
-  <pre>
-    <code [highlight]="details | async | json">
-    </code>
-</pre>
+  <!-- <ngx-json-viewer
+    [json]="details | async"
+    [expanded]="false"
+  ></ngx-json-viewer> -->
 
   <!-- <ul *ngFor="let item of resultKeys">
     {{
