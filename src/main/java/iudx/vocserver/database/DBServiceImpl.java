@@ -585,6 +585,15 @@ class DBServiceImpl implements DBService {
             resultHandler.handle(Future.failedFuture(res.cause()));
           }
         });
+    dbClient.removeDocuments("descriptorSummary",
+        new JsonObject(),
+        res -> {
+          if (res.succeeded()) {
+          } else {
+            LOGGER.error("Failed to delete all descriptors");
+            resultHandler.handle(Future.failedFuture(res.cause()));
+          }
+        });
     return this;
   }
 

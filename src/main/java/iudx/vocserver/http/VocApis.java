@@ -57,7 +57,7 @@ public final class VocApis implements VocApisInterface {
   private static final Logger LOGGER = LoggerFactory.getLogger(HttpServerVerticle.class);
 
   private static String VOC_REPO = "iudx-voc/";
-  private static String DESCRIPTORS_REPO = "user-contrib-models";
+  private static String DESCRIPTORS_REPO = "user-contrib-models/";
 
   private static String UPDATE_REPO_CMD = "nohup sleep 5 && git fetch && git reset --hard origin/master &";
   private static String PUSH_SCHEMAS_CMD = "nohup python3 utils/push/hook.py &";
@@ -567,7 +567,6 @@ public final class VocApis implements VocApisInterface {
     String id = context.request().getParam("name");
     LOGGER.info(id);
     context.response().putHeader("content-type", "application/json");
-    LOGGER.info(context.getBodyAsJson());
     dbService.insertDescriptor(id, context.getBodyAsJson(), reply -> {
       if (reply.succeeded()) {
         LOGGER.info("Inserted descriptor" + id);
