@@ -31,6 +31,7 @@
     "bootstrap-autocomplete": "^2.3.5",
     "jquery": "^3.5.1",
     "ngx-highlightjs": "^4.1.0-beta",
+    "ngx-json-viewer": "^2.4.0",
     "popper.js": "^1.16.1",
     "rxjs": "~6.5.4",
     "tslib": "^1.10.0",
