@@ -158,6 +158,11 @@ public class HttpServerVerticle extends AbstractVerticle {
       authService.validateToken(token, serverId, authReply -> {
         if (authReply.succeeded()) {
         vocApis.insertMasterHandler(routingContext);
+        } else {
+          routingContext.response()
+          .putHeader("content-type", "application/json")
+          .setStatusCode(404)
+          .end();
         }
       });
     });
@@ -168,8 +173,14 @@ public class HttpServerVerticle extends AbstractVerticle {
       String token = routingContext.request().getHeader("token");
       authService.validateToken(token, serverId, authReply -> {
         if (authReply.succeeded()) {
-        vocApis.deleteMasterHandler(routingContext);
+          vocApis.deleteMasterHandler(routingContext);
+        } else {
+          routingContext.response()
+            .putHeader("content-type", "application/json")
+            .setStatusCode(404)
+            .end();
         }
+
       });
     });
 
@@ -217,7 +228,13 @@ public class HttpServerVerticle extends AbstractVerticle {
       authService.validateToken(token, serverId, authReply -> {
         if (authReply.succeeded()) {
         vocApis.insertExampleHandler(routingContext);
+        } else {
+          routingContext.response()
+          .putHeader("content-type", "application/json")
+          .setStatusCode(404)
+          .end();
         }
+
       });
     });
 
@@ -227,7 +244,13 @@ public class HttpServerVerticle extends AbstractVerticle {
       authService.validateToken(token, serverId, authReply -> {
         if (authReply.succeeded()) {
         vocApis.deleteExampleHandler(routingContext);
+        } else {
+          routingContext.response()
+          .putHeader("content-type", "application/json")
+          .setStatusCode(404)
+          .end();
         }
+
       });
     });
 
@@ -248,7 +271,13 @@ public class HttpServerVerticle extends AbstractVerticle {
       authService.validateToken(token, serverId, authReply -> {
         if (authReply.succeeded()) {
         vocApis.insertDescriptorHandler(routingContext);
+        } else {
+          routingContext.response()
+            .putHeader("content-type", "application/json")
+            .setStatusCode(404)
+            .end();
         }
+
       });
     });
 
@@ -276,7 +305,12 @@ public class HttpServerVerticle extends AbstractVerticle {
       String token = routingContext.request().getHeader("token");
       authService.validateToken(token, serverId, authReply -> {
         if (authReply.succeeded()) {
-        vocApis.insertSchemaHandler(routingContext);
+          vocApis.insertSchemaHandler(routingContext);
+        } else {
+          routingContext.response()
+            .putHeader("content-type", "application/json")
+            .setStatusCode(404)
+            .end();
         }
       });
     });
@@ -286,7 +320,12 @@ public class HttpServerVerticle extends AbstractVerticle {
       String token = routingContext.request().getHeader("token");
       authService.validateToken(token, serverId, authReply -> {
         if (authReply.succeeded()) {
-        vocApis.deleteSchemaHandler(routingContext);
+          vocApis.deleteSchemaHandler(routingContext);
+        }  else {
+          routingContext.response()
+            .putHeader("content-type", "application/json")
+            .setStatusCode(404)
+            .end();
         }
       });
     });
