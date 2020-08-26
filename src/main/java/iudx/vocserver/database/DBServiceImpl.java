@@ -473,6 +473,7 @@ class DBServiceImpl implements DBService {
     });
     return this;
   }
+
   /**
    * @{@inheritDoc}
    */
@@ -566,6 +567,23 @@ class DBServiceImpl implements DBService {
             LOGGER.error("Failed deleting property" + name + ", may not exist");
           }
 
+        });
+    return this;
+  }
+
+  /**
+   * @{@inheritDoc}
+   */
+  @Override
+  public DBService clearDescriptors(Handler<AsyncResult<Boolean>> resultHandler) {
+    dbClient.removeDocuments("descriptors",
+        new JsonObject(),
+        res -> {
+          if (res.succeeded()) {
+          } else {
+            LOGGER.error("Failed to delete all descriptors");
+            resultHandler.handle(Future.failedFuture(res.cause()));
+          }
         });
     return this;
   }

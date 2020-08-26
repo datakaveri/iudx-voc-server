@@ -38,6 +38,7 @@ interface VocApisInterface {
   void deleteSchemaHandler(RoutingContext context);
   void deleteExampleHandler(RoutingContext context);
   void webhookHandler(RoutingContext context); 
+  void descriptorHookHandler(RoutingContext context); 
 }
 
 public final class VocApis implements VocApisInterface {
@@ -56,8 +57,11 @@ public final class VocApis implements VocApisInterface {
   private static final Logger LOGGER = LoggerFactory.getLogger(HttpServerVerticle.class);
 
   private static String VOC_REPO = "iudx-voc/";
+  private static String DESCRIPTORS_REPO = "user-contrib-models";
+
   private static String UPDATE_REPO_CMD = "nohup sleep 5 && git fetch && git reset --hard origin/master &";
   private static String PUSH_SCHEMAS_CMD = "nohup python3 utils/push/hook.py &";
+  private static String PUSH_DESCRIPTORS_CMD = "nohup python3 utils/push/hook.py &";
 
   /**
    * VocApis constructor
@@ -100,6 +104,32 @@ public final class VocApis implements VocApisInterface {
     });
     Proc.execCommand("cd " + VOC_REPO + " && " + UPDATE_REPO_CMD);
     Proc.execCommand("cd " + VOC_REPO + " && " + PUSH_SCHEMAS_CMD);
+    context.response()
+      .putHeader("content-type", "application/json")
+      .setStatusCode(200)
+      .end(new JsonObject().put("status", "success").encode());
+  }
+
+  /**
+   * Descriptor webhook trigger to reload insert descriptors
+   *
+   * @param context {@link RoutingContext}
+   * @return void
+   * @TODO Throw error if load failed
+   */
+  // tag::db-service-calls[]
+  public void descriptorHookHandler(RoutingContext context) {
+    LOGGER.info("Received webhook trigger ");
+    dbService.clearDescriptors(reply -> {
+      if (reply.failed()) {
+        context.response()
+          .putHeader("content-type", "application/json")
+          .setStatusCode(404)
+          .end();
+      }
+    });
+    Proc.execCommand("cd " + DESCRIPTORS_REPO + " && " + UPDATE_REPO_CMD);
+    Proc.execCommand("cd " + DESCRIPTORS_REPO + " && " + PUSH_DESCRIPTORS_CMD);
     context.response()
       .putHeader("content-type", "application/json")
       .setStatusCode(200)
@@ -538,7 +568,7 @@ public final class VocApis implements VocApisInterface {
     LOGGER.info(id);
     context.response().putHeader("content-type", "application/json");
     LOGGER.info(context.getBodyAsJson());
-    dbService.insertDescriptor(id,context.getBodyAsJson(), reply -> {
+    dbService.insertDescriptor(id, context.getBodyAsJson(), reply -> {
       if (reply.succeeded()) {
         LOGGER.info("Inserted descriptor" + id);
         dbService.makeDescriptorSummary(id, context.getBodyAsJson(),res -> {} );
@@ -550,6 +580,7 @@ public final class VocApis implements VocApisInterface {
       }
     });
   }
+
   /** 
    * Delete the master schema
    *

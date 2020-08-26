@@ -156,6 +156,7 @@ public interface DBService {
    * insertDescriptor - Insert a descriptor
    * @param descriptor descriptor JsonObject
    * @return {@link DBServiceImpl}
+   * Note: deletion of description is not supported
    */
   @Fluent
   DBService insertDescriptor(String name, JsonObject descriptor, Handler<AsyncResult<Boolean>> resultHandler);
@@ -198,6 +199,13 @@ public interface DBService {
    */
   @Fluent
   DBService deleteExamples(String name, Handler<AsyncResult<Boolean>> resultHandler);
+
+  /**
+   * clearDescriptors - Clear all descriptors
+   * @return {@link DBServiceImpl}
+   */
+  @Fluent
+  DBService clearDescriptors(Handler<AsyncResult<Boolean>> resultHandler);
 
   /**
    * clearDB - Clear all classes, properties, master and summaries

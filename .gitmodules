@@ -1,3 +1,6 @@
 [submodule "iudx-voc"]
 	path = iudx-voc
 	url = https://github.com/datakaveri/iudx-voc.git
+[submodule "user-contrib-models"]
+	path = user-contrib-models
+	url = https://github.com/datakaveri/user-contrib-models.git

@@ -161,7 +161,7 @@ public class HttpServerVerticle extends AbstractVerticle {
         } else {
           routingContext.response()
           .putHeader("content-type", "application/json")
-          .setStatusCode(404)
+          .setStatusCode(401)
           .end();
         }
       });
@@ -177,7 +177,7 @@ public class HttpServerVerticle extends AbstractVerticle {
         } else {
           routingContext.response()
             .putHeader("content-type", "application/json")
-            .setStatusCode(404)
+            .setStatusCode(401)
             .end();
         }
 
@@ -231,7 +231,7 @@ public class HttpServerVerticle extends AbstractVerticle {
         } else {
           routingContext.response()
           .putHeader("content-type", "application/json")
-          .setStatusCode(404)
+          .setStatusCode(401)
           .end();
         }
 
@@ -247,7 +247,7 @@ public class HttpServerVerticle extends AbstractVerticle {
         } else {
           routingContext.response()
           .putHeader("content-type", "application/json")
-          .setStatusCode(404)
+          .setStatusCode(401)
           .end();
         }
 
@@ -274,7 +274,7 @@ public class HttpServerVerticle extends AbstractVerticle {
         } else {
           routingContext.response()
             .putHeader("content-type", "application/json")
-            .setStatusCode(404)
+            .setStatusCode(401)
             .end();
         }
 
@@ -309,7 +309,7 @@ public class HttpServerVerticle extends AbstractVerticle {
         } else {
           routingContext.response()
             .putHeader("content-type", "application/json")
-            .setStatusCode(404)
+            .setStatusCode(401)
             .end();
         }
       });
@@ -324,7 +324,7 @@ public class HttpServerVerticle extends AbstractVerticle {
         }  else {
           routingContext.response()
             .putHeader("content-type", "application/json")
-            .setStatusCode(404)
+            .setStatusCode(401)
             .end();
         }
       });
@@ -367,6 +367,26 @@ public class HttpServerVerticle extends AbstractVerticle {
         .end();
       } else {
         vocApis.webhookHandler(routingContext);
+      }
+    });
+
+    /**  Descriptor webhook trigger
+    */
+    router.route("/descriptorhook").consumes("application/json")
+      .handler(BodyHandler.create());
+    router.post("/descriptorhook").consumes("application/json")
+      .handler( routingContext -> {
+      String gitHmac = routingContext.request().headers().get("X-Hub-Signature");
+      String computedHmac =  String.format("sha1=%s",
+            HmacUtils.hmacSha1Hex(webhookPasswd,
+            routingContext.getBodyAsString()));
+      if (!MessageDigest.isEqual(gitHmac.getBytes(), computedHmac.getBytes())) {
+        routingContext.response()
+        .putHeader("content-type", "application/json")
+        .setStatusCode(401)
+        .end();
+      } else {
+        vocApis.descriptorHookHandler(routingContext);
       }
     });
 
