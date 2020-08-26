@@ -288,9 +288,9 @@ public final class VocApis implements VocApisInterface {
    */
   // tag::db-service-calls[]
   public void getDescriptorHandler(RoutingContext context) {
-    String type = context.request().getParam("name");
-    LOGGER.info(type);
-    dbService.getDescriptor(type, reply -> {
+    String name = context.request().getParam("name");
+    LOGGER.info(name);
+    dbService.getDescriptor(name, reply -> {
       if(reply.succeeded()) {
         context.response()
         .putHeader("content-Type","application/json")
@@ -564,13 +564,13 @@ public final class VocApis implements VocApisInterface {
    */
   // tag::db-service-calls[]
   public void insertDescriptorHandler(RoutingContext context) {
-    String id = context.request().getParam("name");
-    LOGGER.info(id);
+    String name = context.request().getParam("name");
+    LOGGER.info(name);
     context.response().putHeader("content-type", "application/json");
-    dbService.insertDescriptor(id, context.getBodyAsJson(), reply -> {
+    dbService.insertDescriptor(name, context.getBodyAsJson(), reply -> {
       if (reply.succeeded()) {
-        LOGGER.info("Inserted descriptor" + id);
-        dbService.makeDescriptorSummary(id, context.getBodyAsJson(),res -> {} );
+        LOGGER.info("Inserted descriptor" + name);
+        dbService.makeDescriptorSummary(name, context.getBodyAsJson(),res -> {} );
         context.response().setStatusCode(201).end();
       }
       else {

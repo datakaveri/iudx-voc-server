@@ -343,7 +343,7 @@ class DBServiceImpl implements DBService {
 
   public DBService getDescriptor(String name, Handler<AsyncResult<JsonObject>> resultHandler) {
     dbClient.findWithOptions("descriptors",
-    new JsonObject(QUERY_MATCH_ID.replace("$1","iudx:"+name)),
+    new JsonObject(QUERY_MATCH_ID.replace("$1", name)),
     new FindOptions().setFields(new JsonObject().put("_id", false)),
     res -> {
       if (res.succeeded()) {
@@ -583,6 +583,7 @@ class DBServiceImpl implements DBService {
           } else {
             LOGGER.error("Failed to delete all descriptors");
             resultHandler.handle(Future.failedFuture(res.cause()));
+            return;
           }
         });
     dbClient.removeDocuments("descriptorSummary",
@@ -592,8 +593,10 @@ class DBServiceImpl implements DBService {
           } else {
             LOGGER.error("Failed to delete all descriptors");
             resultHandler.handle(Future.failedFuture(res.cause()));
+            return;
           }
         });
+    resultHandler.handle(Future.succeededFuture());
     return this;
   }
 

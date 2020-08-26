@@ -270,7 +270,7 @@ public class HttpServerVerticle extends AbstractVerticle {
       String token = routingContext.request().getHeader("token");
       authService.validateToken(token, serverId, authReply -> {
         if (authReply.succeeded()) {
-        vocApis.insertDescriptorHandler(routingContext);
+          vocApis.insertDescriptorHandler(routingContext);
         } else {
           routingContext.response()
             .putHeader("content-type", "application/json")
