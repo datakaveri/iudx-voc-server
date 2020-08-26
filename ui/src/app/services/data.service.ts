@@ -19,7 +19,7 @@ import {
 } from '../types/classDetail';
 import { PropertyDetail } from '../types/propertyDetail';
 import { DataModel } from '../types/dataModel';
-import { DescriptorDetail } from '../types/descriptorDetail';
+import { Descriptors, Descriptor } from '../types/descriptors';
 
 @Injectable({
   providedIn: 'root',
@@ -201,27 +201,19 @@ export class DataService {
   }
   getAlldataDescriptors() {
     return this.http
-      .get<[]>(`${this.baseURL}/list/descriptors`, {
+      .get<Descriptors>(`${this.baseURL}/list/descriptors`, {
         headers: this.headers,
       })
       .pipe(
         map((resp) => {
-          console.log(resp);
-          var desType = <DescriptorDetail>{};
-          desType.documents = <string[]>[];
-          desType.type = '';
-          for (var node of resp) {
-            var nodeType = '';
-            var nodeDocuments = [];
-            nodeType = node['type'];
-            nodeDocuments = node['documents'];
-            desType.type = nodeType.split('iudx:')[1];
-            desType.documents.push(nodeDocuments[0].split('iudx:')[1]);
-          }
-          return desType;
+          resp.forEach((val, idx) => {
+            if (val.type == "iudx:DataDescriptor") {
+              resp.splice(idx, 1);
+            }
+          })
+          return resp;
         }),
-        catchError(this.handleError)
-      );
+        catchError(this.handleError));
   }
   getDescriptorDetails(descriptorName: string) {
     return this.http

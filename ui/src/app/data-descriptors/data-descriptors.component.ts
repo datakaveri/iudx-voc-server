@@ -1,5 +1,6 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Observable } from 'rxjs';
+import { Descriptors, Descriptor } from '../types/descriptors';
 import { DataService } from '../services/data.service';
 import { Router } from '@angular/router';
 
@@ -10,22 +11,17 @@ import { Router } from '@angular/router';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DataDescriptorsComponent implements OnInit {
-  descriptors: Observable<any>;
+  results: Observable<Descriptors>;
   desType: any;
   DesDocument: [];
   documents: string;
   arraydocs: any;
-  results: any;
   constructor(private backendService: DataService, private router: Router) {}
 
   ngOnInit(): void {
     this.getDescriptors();
   }
   getDescriptors() {
-    this.descriptors = this.backendService.getAlldataDescriptors();
-    this.descriptors.subscribe((res) => {
-      console.log(res);
-      this.results = res;
-    });
+    this.results = this.backendService.getAlldataDescriptors();
   }
 }

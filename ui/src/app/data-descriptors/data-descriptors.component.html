@@ -12,15 +12,14 @@
     </thead>
     <tbody>
       <!-- <tr *ngFor="let value of descriptors | async; index as i"> -->
-      <tr>
+      <tr *ngFor="let desType of (results|async)">
         <td>
-          {{ results?.type }}
+          {{ desType?.type }}
         </td>
-
         <td>
-          <ul *ngFor="let doc of (descriptors | async)?.documents">
+          <ul *ngFor="let des of (desType)?.documents">
             <li class="list-style">
-              <a [routerLink]="['/data-descriptors', doc]">{{ doc }}</a>
+              <a [routerLink]="['/data-descriptors', des]">{{ des }}</a>
             </li>
           </ul>
         </td>
