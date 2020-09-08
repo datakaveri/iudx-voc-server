@@ -42,6 +42,7 @@ public class AuthVerticle extends AbstractVerticle {
     String authType = config().getString(AUTH_TYPE);
     if (authType.equals("localauth")) {
       authConfig.put("authType", "localauth");
+      authConfig.put("password", config().getString(AUTH_KEYSTORE_PASSWORD));
     } else {
       authConfig.put("authType", "iudxauth");
       authConfig.put("url", config().getString(AUTH_URL));

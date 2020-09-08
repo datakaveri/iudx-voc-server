@@ -42,7 +42,11 @@ class AuthServiceImpl implements AuthService {
       Handler<AsyncResult<Boolean>> resultHandler) {
    
     if (authObject.getString("authType").equals("localauth")) {
-      resultHandler.handle(Future.succeededFuture(true));
+      if (authObject.getString("password").equals(token)) {
+        resultHandler.handle(Future.succeededFuture(true));
+      } else {
+        resultHandler.handle(Future.failedFuture(new Throwable("Invalid token")));
+      }
       return this;
     }
 
