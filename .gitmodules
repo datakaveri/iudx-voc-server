@@ -4,3 +4,6 @@
 [submodule "user-contrib-models"]
 	path = user-contrib-models
 	url = https://github.com/datakaveri/user-contrib-models.git
+[submodule "ui"]
+	path = ui
+	url = https://github.com/datakaveri/dk-voc-ui.git

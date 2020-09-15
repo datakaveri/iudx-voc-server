@@ -121,19 +121,19 @@ public class HttpServerVerticle extends AbstractVerticle {
       .handler(
         routingContext -> {
         HttpServerResponse response = routingContext.response();
-        response.sendFile("ui/dist/ui-vocab/index.html");
+        response.sendFile("ui/dist/dk-voc-ui/index.html");
     });
 
     router.route("/static/*").produces("text/html")
-      .handler(StaticHandler.create("ui/dist/ui-vocab/"));
+      .handler(StaticHandler.create("ui/dist/dk-voc-ui/"));
 
     router.route("/assets/*").produces("*/*")
-      .handler(StaticHandler.create("ui/dist/ui-vocab/assets/"));
+      .handler(StaticHandler.create("ui/dist/dk-voc-ui/assets/"));
 
     router.route("/").produces("text/html")
       .handler(routingContext -> {
       HttpServerResponse response = routingContext.response();
-      response.sendFile("ui/dist/ui-vocab/index.html");
+      response.sendFile("ui/dist/dk-voc-ui/index.html");
     });
 
     /** Get/Post master context 
