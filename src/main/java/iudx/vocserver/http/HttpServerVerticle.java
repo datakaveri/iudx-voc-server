@@ -116,7 +116,7 @@ public class HttpServerVerticle extends AbstractVerticle {
     *  Notes: This is the first registered route to prevent conflict with json-ld response
     *  @TODO: Handle failures while sending file, spacing needs to be fixed.
     * */
-    router.getWithRegex("^\\/(?!assets\\/)(?!static\\/)[A-Za-z0-9]+")
+    router.getWithRegex("^\\/(?!assets\\/)(?!static\\/)[A-Za-z0-9_]+")
       .produces("text/html")
       .handler(
         routingContext -> {
