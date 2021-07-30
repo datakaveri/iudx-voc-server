@@ -1,10 +1,7 @@
 {
-  "authserver.jksfile": "can be the same as vocserver.jksfile",
-  "authserver.jkspasswd": "password",
   "authserver.type": "iudxauth or localauth",
   "authserver.url": "authurl",
-  "vocserver.jksfile": "JKS file",
-  "vocserver.jkspasswd": "Some password",
+  "vocserver.webhookpasswd": "Some password",
   "vocserver.http.port": 8080,
   "vocserver.id": "org/sha1/example.com/",
   "vocserver.http.instances": 2,

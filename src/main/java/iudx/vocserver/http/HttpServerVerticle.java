@@ -42,9 +42,7 @@ public class HttpServerVerticle extends AbstractVerticle {
   public static final String CONFIG_HTTP_SERVER_PORT = "vocserver.http.port";
   public static final String CONFIG_DB_QUEUE = "vocserver.database.queue";
   public static final String CONFIG_AUTH_QUEUE = "vocserver.auth.queue";
-  public static final String JKS_FILE = "vocserver.jksfile";
-  // NOTE: We use the same JKS_PASSWD for the keystore and the github webhook
-  public static final String JKS_PASSWD = "vocserver.jkspasswd";
+  public static final String WEBHOOK_PASSWD = "vocserver.webhookpasswd";
   public static final String CONFIG_SEARCH_QUEUE = "vocserver.search.queue";
   // Default logger
   private static final Logger LOGGER = LoggerFactory.getLogger(HttpServerVerticle.class);
@@ -72,15 +70,12 @@ public class HttpServerVerticle extends AbstractVerticle {
     dbService = DBService.createProxy(vertx, dbQueue);
     authService = AuthService.createProxy(vertx, authQueue);
 
-    String webhookPasswd = config().getString(JKS_PASSWD);
+    String webhookPasswd = config().getString(WEBHOOK_PASSWD);
 
     HttpServerOptions options = new HttpServerOptions()
             .setCompressionSupported(true)
             .setCompressionLevel(5)
-            .setSsl(true)
-            .setKeyStoreOptions(new JksOptions()
-            .setPath(config().getString(JKS_FILE))
-            .setPassword(config().getString(JKS_PASSWD)));
+            .setSsl(false);
     HttpServer server = vertx.createHttpServer(options);
 
     /** Load the APIs class */
