@@ -1,12 +1,12 @@
 {
-  "authserver.type": "iudxauth or localauth",
-  "authserver.url": "authurl",
-  "vocserver.webhookpasswd": "Some password",
+  "vocserver.type": "localauth",
+  "vocserver.webhookpasswd": "pass",
+  "vocserver.localpassword": "pass",
   "vocserver.http.port": 8080,
   "vocserver.id": "org/sha1/example.com/",
   "vocserver.http.instances": 2,
   "vocserver.database.queue": "vocserver.database.queue",
-  "vocserver.database.url": "mongodb://localhost:27017",
+  "vocserver.database.url": "mongodb://db:27017",
   "vocserver.database.username": "abc",
   "vocserver.database.password": "123",
   "vocserver.database.name": "voc",
@@ -16,3 +16,4 @@
   "vocserver.search.queue":"vocserver.search.queue",
   "vocserver.testing": false
 }
+
