@@ -28,12 +28,7 @@ public class AuthVerticle extends AbstractVerticle {
   public void start(Promise<Void> promise) throws Exception {
 
 
-    WebClientOptions options = new WebClientOptions()
-                     .setSsl(true)
-                     .setKeyStoreOptions(new JksOptions()
-                         .setPath(config().getString(AUTH_KEYSTORE_PATH))
-                         .setPassword(config()
-                           .getString(AUTH_KEYSTORE_PASSWORD)));
+    WebClientOptions options = new WebClientOptions();
 
     WebClient client = WebClient.create(vertx, options);
 
