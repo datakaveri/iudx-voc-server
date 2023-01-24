@@ -7,3 +7,6 @@
 [submodule "frontend"]
 	path = iudx-voc-ui
 	url = https://github.com/datakaveri/iudx-voc-ui.git
+[submodule "agri-voc"]
+	path = agri-voc
+	url = git@github.com:datakaveri/agri-voc.git
