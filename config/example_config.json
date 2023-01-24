@@ -6,6 +6,7 @@
   "vocserver.id": "org/sha1/example.com/",
   "vocserver.http.instances": 2,
   "vocserver.database.queue": "vocserver.database.queue",
+  "vocserver.reponame": "iudx-voc/",
   "vocserver.database.url": "mongodb://db:27017",
   "vocserver.database.username": "abc",
   "vocserver.database.password": "123",

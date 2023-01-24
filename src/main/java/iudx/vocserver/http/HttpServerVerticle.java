@@ -44,6 +44,7 @@ public class HttpServerVerticle extends AbstractVerticle {
   public static final String CONFIG_AUTH_QUEUE = "vocserver.auth.queue";
   public static final String WEBHOOK_PASSWD = "vocserver.webhookpasswd";
   public static final String CONFIG_SEARCH_QUEUE = "vocserver.search.queue";
+  public static final String VOC_REPO_NAME = "vocserver.reponame";
   // Default logger
   private static final Logger LOGGER = LoggerFactory.getLogger(HttpServerVerticle.class);
 
@@ -53,6 +54,7 @@ public class HttpServerVerticle extends AbstractVerticle {
   private AuthService authService;
   private String serverId ;
   private SearchService searchService;
+  private String vocRepo;
   // APIS
   private VocApisInterface vocApis;
 
@@ -65,6 +67,7 @@ public class HttpServerVerticle extends AbstractVerticle {
     String dbQueue = config().getString(CONFIG_DB_QUEUE);
     String authQueue = config().getString(CONFIG_AUTH_QUEUE);
     serverId = config().getString(CONFIG_SERVER_ID);
+    vocRepo = config().getString(VOC_REPO_NAME);
 
     searchService = SearchService.createProxy(vertx, CONFIG_SEARCH_QUEUE);
     dbService = DBService.createProxy(vertx, dbQueue);
@@ -79,7 +82,7 @@ public class HttpServerVerticle extends AbstractVerticle {
     HttpServer server = vertx.createHttpServer(options);
 
     /** Load the APIs class */
-    vocApis = new VocApis(dbService, searchService);
+    vocApis = new VocApis(dbService, searchService, vocRepo);
 
     /** ROUTES */
     Router router = Router.router(vertx);

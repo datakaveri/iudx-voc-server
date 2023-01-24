@@ -58,6 +58,7 @@ public final class VocApis implements VocApisInterface {
 
   private static String VOC_REPO = "iudx-voc/";
   private static String DESCRIPTORS_REPO = "user-contrib-models/";
+  private String vocRepo = VOC_REPO;
 
   private static String UPDATE_REPO_CMD = "nohup sleep 5 && git fetch && git reset --hard origin/master &";
   private static String PUSH_SCHEMAS_CMD = "nohup python3 utils/push/hook.py &";
@@ -70,9 +71,13 @@ public final class VocApis implements VocApisInterface {
    * @return void
    * @TODO Throw error if load failed
    */
-  public VocApis(DBService dbService, SearchService searchClient) {
+  public VocApis(DBService dbService, SearchService searchClient, String vocRepo) {
     this.dbService = dbService;
     this.searchClient = searchClient;
+    if (vocRepo.charAt(vocRepo.length() -1) != '/') {
+      this.vocRepo = vocRepo + "/";
+    }
+    this.vocRepo = vocRepo;
 
     try {
       // Loads from resources folder
