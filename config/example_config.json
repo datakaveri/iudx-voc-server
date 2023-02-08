@@ -1,4 +1,5 @@
 {
+  "vocserver.prefix": "iudx:",
   "vocserver.type": "localauth",
   "vocserver.webhookpasswd": "pass",
   "vocserver.localpassword": "pass",

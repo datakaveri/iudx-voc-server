@@ -20,6 +20,7 @@ public class DBVerticle extends AbstractVerticle {
   public static final String CONFIG_DB_UNAME = "vocserver.database.username";
   public static final String CONFIG_DB_PASSWORD = "vocserver.database.password";
   public static final String CONFIG_SEARCH_QUEUE = "vocserver.search.queue";
+  public static final String CONFIG_PREFIX = "vocserver.prefix";
 
   private static final Logger LOGGER = LoggerFactory.getLogger(DBVerticle.class);
 
@@ -37,7 +38,9 @@ public class DBVerticle extends AbstractVerticle {
                             config().getString(CONFIG_DB_POOLNAME));
     SearchService searchClient = SearchService.createProxy(vertx, config().getString(CONFIG_SEARCH_QUEUE));
 
-    DBService.create(dbClient, searchClient, ready -> {
+    String prefix = config().getString(CONFIG_PREFIX);
+
+    DBService.create(dbClient, searchClient, prefix, ready -> {
       if (ready.succeeded()) {
         ServiceBinder binder = new ServiceBinder(vertx);
         binder

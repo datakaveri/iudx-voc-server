@@ -26,6 +26,8 @@ class DBServiceImpl implements DBService {
   private static final Logger LOGGER = LoggerFactory.getLogger(DBServiceImpl.class);
   private final MongoClient dbClient;
   private final SearchService searchClient;
+
+  private String prefix = "iudx:";
   
   /** Begin Queries */ 
 
@@ -46,7 +48,7 @@ class DBServiceImpl implements DBService {
     "{\"type\": \"$1\"}";
 
   private static final String QUERY_SUMMARIZE = 
-    "[ { \"$match\": { \"_id\": \"iudx:$1\" } },"
+    "[ { \"$match\": { \"_id\": \"$0:$1\" } },"
     +    "{ \"$unwind\": \"$@graph\" },"
     +    "{ \"$match\": { \"@graph.rdfs:label\": \"$1\" } },"
     +    "{ \"$project\": { \"_id\": \"$@graph.rdfs:label\","
@@ -54,7 +56,7 @@ class DBServiceImpl implements DBService {
     +            "\"label\": \"$@graph.rdfs:label\","
     +            "\"comment\": \"$@graph.rdfs:comment\","
     +            "\"subClassOf\": \"$@graph.rdfs:subClassOf.@id\","
-    +            "\"dataModelDomain\": \"$@graph.iudx:dataModelDomain.@id\""
+    +            "\"dataModelDomain\": \"$@graph.$0:dataModelDomain.@id\""
     +     "}}, {\"$merge\": \"summary\"}]";
 
   private static final String QUERY_SIMPLE_SEARCH =
@@ -71,10 +73,18 @@ class DBServiceImpl implements DBService {
   * @param dbClient MongoDB Client
   * @param readyHandler Async query result handler. Returns query results as JSONArray
   */
-  DBServiceImpl(MongoClient dbClient, SearchService searchClient, Handler<AsyncResult<DBService>> readyHandler) {
+  DBServiceImpl(MongoClient dbClient, SearchService searchClient, String prefix, Handler<AsyncResult<DBService>> readyHandler) {
     this.dbClient = dbClient;
     this.searchClient = searchClient;
+    this.prefix = prefix;
     readyHandler.handle(Future.succeededFuture(this));
+  }
+
+
+  @Override
+  public DBService setPrefix(String prefix) {
+    this.prefix = prefix;
+    return this;
   }
 
   /** Begin function implementation */
@@ -92,6 +102,7 @@ class DBServiceImpl implements DBService {
                 .put("aggregate", collectionName)
                 .put("pipeline",
                     new JsonArray(QUERY_SUMMARIZE
+                            .replace("$0", prefix)
                             .replace("$1", name)
                             .replace("$2", type)))
                 .put("cursor",  new JsonObject().put("batchSize", 1000));
@@ -151,7 +162,7 @@ class DBServiceImpl implements DBService {
   @Override
   public DBService relationshipSearch(String key, String value, Handler<AsyncResult<JsonArray>> resultHandler) {
     dbClient.findWithOptions("summary",
-        new JsonObject(QUERY_RELATIONSHIP_SEARCH.replace("$1", key).replace("$2", "iudx:" + value)),
+        new JsonObject(QUERY_RELATIONSHIP_SEARCH.replace("$1", key).replace("$2", prefix + value)),
         new FindOptions().setFields(new JsonObject().put("_id", false)),
         res -> {
           if (res.succeeded()) {
@@ -271,7 +282,7 @@ class DBServiceImpl implements DBService {
   @Override
   public DBService getProperty(String name, Handler<AsyncResult<JsonObject>> resultHandler) {
     dbClient.findWithOptions("properties",
-        new JsonObject(QUERY_MATCH_ID.replace("$1", "iudx:"+name)),
+        new JsonObject(QUERY_MATCH_ID.replace("$1", prefix+name)),
         new FindOptions().setFields(new JsonObject().put("_id", false)
           .put("@id", false))
         .setLimit(1),
@@ -297,7 +308,7 @@ class DBServiceImpl implements DBService {
   @Override
   public DBService getClass(String name, Handler<AsyncResult<JsonObject>> resultHandler) {
     dbClient.findWithOptions("classes",
-        new JsonObject(QUERY_MATCH_ID.replace("$1", "iudx:"+name)),
+        new JsonObject(QUERY_MATCH_ID.replace("$1", prefix+name)),
         new FindOptions().setFields(new JsonObject().put("_id", false)
           .put("@id", false))
         .setLimit(1),
@@ -323,7 +334,7 @@ class DBServiceImpl implements DBService {
   @Override
   public DBService getExamples(String name, Handler<AsyncResult<JsonArray>> resultHandler) {
     dbClient.findWithOptions("examples",
-        new JsonObject(QUERY_MATCH_TYPE.replace("$1", "iudx:"+name)),
+        new JsonObject(QUERY_MATCH_TYPE.replace("$1", prefix+name)),
         new FindOptions().setFields(new JsonObject().put("_id", false)),
         res -> {
           if (res.succeeded()) {
@@ -392,7 +403,7 @@ class DBServiceImpl implements DBService {
    */
   @Override
   public DBService insertProperty(String name, JsonObject prop, Handler<AsyncResult<Boolean>> resultHandler) {
-    prop = prop.put("_id", "iudx:"+name);
+    prop = prop.put("_id", prefix+name);
     dbClient.save("properties",
         prop,
         res -> {
@@ -411,7 +422,7 @@ class DBServiceImpl implements DBService {
    */
   @Override
   public DBService insertClass(String name, JsonObject cls, Handler<AsyncResult<Boolean>> resultHandler) {
-    cls = cls.put("_id", "iudx:"+name);
+    cls = cls.put("_id", prefix+name);
     dbClient.save("classes",
         cls,
         res -> {
@@ -520,7 +531,7 @@ class DBServiceImpl implements DBService {
   public DBService deleteClass(String name, Handler<AsyncResult<Boolean>> resultHandler) {
     LOGGER.info("Deleting class " + name);
     dbClient.findOneAndDelete("classes",
-        new JsonObject(QUERY_MATCH_ID.replace("$1", "iudx:"+name)),
+        new JsonObject(QUERY_MATCH_ID.replace("$1", prefix+name)),
         res -> {
           if (res.succeeded()) {
             resultHandler.handle(Future.succeededFuture(true));
@@ -540,7 +551,7 @@ class DBServiceImpl implements DBService {
   public DBService deleteExamples(String name, Handler<AsyncResult<Boolean>> resultHandler) {
     LOGGER.info("Deleting example of type " + name);
     dbClient.removeDocuments("examples",
-        new JsonObject(QUERY_MATCH_TYPE.replace("$1", "iudx:"+name)),
+        new JsonObject(QUERY_MATCH_TYPE.replace("$1", prefix+name)),
         res -> {
           if (res.succeeded()) {
             resultHandler.handle(Future.succeededFuture(true));
@@ -559,7 +570,7 @@ class DBServiceImpl implements DBService {
   @Override
   public DBService deleteProperty(String name, Handler<AsyncResult<Boolean>> resultHandler) {
     dbClient.findOneAndDelete("properties",
-        new JsonObject(QUERY_MATCH_ID.replace("$1", "iudx:"+name)),
+        new JsonObject(QUERY_MATCH_ID.replace("$1", prefix+name)),
         res -> {
           if (res.succeeded()) {
             resultHandler.handle(Future.succeededFuture());

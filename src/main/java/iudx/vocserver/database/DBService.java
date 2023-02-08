@@ -33,6 +33,11 @@ public interface DBService {
   @Fluent
   DBService makeSummary(String name, Handler<AsyncResult<JsonObject>> resultHandler);
 
+
+
+  @Fluent
+  DBService setPrefix(String prefix);
+
   /**
    * makeDescriptorSummary - Make summary of descriptor type and id 
    * @param name type of the descriptor
@@ -216,9 +221,9 @@ public interface DBService {
 
 
   @GenIgnore
-  static DBService create(MongoClient dbClient, SearchService searchClient,
+  static DBService create(MongoClient dbClient, SearchService searchClient, String prefix,
       Handler<AsyncResult<DBService>> readyHandler) {
-    return new DBServiceImpl(dbClient, searchClient, readyHandler);
+    return new DBServiceImpl(dbClient, searchClient, prefix, readyHandler);
   }
 
   @GenIgnore
