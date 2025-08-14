@@ -37,8 +37,8 @@ interface VocApisInterface {
   void deleteMasterHandler(RoutingContext context);
   void deleteSchemaHandler(RoutingContext context);
   void deleteExampleHandler(RoutingContext context);
-  void webhookHandler(RoutingContext context); 
-  void descriptorHookHandler(RoutingContext context); 
+  void webhookHandler(RoutingContext context);
+  void descriptorHookHandler(RoutingContext context);
 }
 
 public final class VocApis implements VocApisInterface {
@@ -107,8 +107,8 @@ public final class VocApis implements VocApisInterface {
           .end();
       }
     });
-    Proc.execCommand("cd " + VOC_REPO + " && " + UPDATE_REPO_CMD);
-    Proc.execCommand("cd " + VOC_REPO + " && " + PUSH_SCHEMAS_CMD);
+    Proc.execCommand("cd " + vocRepo + " && " + UPDATE_REPO_CMD);
+    Proc.execCommand("cd " + vocRepo + " && " + PUSH_SCHEMAS_CMD);
     context.response()
       .putHeader("content-type", "application/json")
       .setStatusCode(200)
@@ -382,9 +382,9 @@ public final class VocApis implements VocApisInterface {
           .setStatusCode(404)
           .end();
       }
-    }); 
+    });
   }
-  
+
   /**
    * Search for schemas through a relationship
    *
@@ -441,7 +441,7 @@ public final class VocApis implements VocApisInterface {
         .end();
       }
     });
-  } 
+  }
   /**
    * Insert the master schema
    *
@@ -507,7 +507,7 @@ public final class VocApis implements VocApisInterface {
         dbService.insertClass(name, context.getBodyAsJson(), reply -> {
           if (reply.succeeded()) {
             LOGGER.info("Inserted " + name);
-            // TODO: Very inefficient. Consider making a service that 
+            // TODO: Very inefficient. Consider making a service that
             //          inserts label and summary
             dbService.makeSummary(name, res -> {} );
             context.response().setStatusCode(201).end();
@@ -558,7 +558,7 @@ public final class VocApis implements VocApisInterface {
       } else {
         context.response().setStatusCode(404).end();
       }
-    }); 
+    });
   }
 
   /**
@@ -585,7 +585,7 @@ public final class VocApis implements VocApisInterface {
     });
   }
 
-  /** 
+  /**
    * Delete the master schema
    *
    * @param context {@link RoutingContext}
@@ -626,7 +626,7 @@ public final class VocApis implements VocApisInterface {
       dbService.deleteClass(name, reply -> {
         if (reply.succeeded()) {
           LOGGER.info("Deleted " + name);
-          // TODO: Very inefficient. Consider making a service that 
+          // TODO: Very inefficient. Consider making a service that
           //          inserts label and summary
           dbService.deleteFromSummary(name, res -> {} );
           context.response().setStatusCode(204).end();
